@@ -17,9 +17,8 @@
 	  <Folder Include="Models\" />
 	  <Folder Include="Controls\" />
 	  <Folder Include="MSBuildFiles\" />
-	  <Folder Include="Views\" />
 	  <Folder Include="Services\" />
+	  <Folder Include="Views\" />
 	  <Folder Include="Themes\GKFluent\" />
-	  <Folder Include="ViewModels\" />
 	</ItemGroup>
 </Project>
