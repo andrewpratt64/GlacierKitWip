@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("GlacierKitViewModelItemTemplate")]
+[assembly: AssemblyTitle("GlacierKitModuleProjectTemplate")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Andrew Pratt")]
-[assembly: AssemblyProduct("GlacierKitViewModelItemTemplate")]
+[assembly: AssemblyProduct("GlacierKitModuleProjectTemplate")]
 [assembly: AssemblyCopyright("Copyright © Andrew Pratt 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("1831f5e2-ddea-452f-87b4-fa8ee10fbaed")]
+[assembly: Guid("a087a69d-3d76-4bc5-b7ed-c04b19f8c8e1")]
 
 // Version information for an assembly consists of the following four values:
 //

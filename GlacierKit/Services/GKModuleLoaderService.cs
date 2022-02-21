@@ -1,4 +1,6 @@
 ﻿using GlacierKitCore.ViewModels.EditorWindows;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,8 +12,11 @@ using System.Threading.Tasks;
 
 namespace GlacierKit.Services
 {
-    internal class GKModuleLoaderService
+    public class GKModuleLoaderService
     {
+        private string? _gkModulesDir = null;
+
+
         /// <summary>
         /// Enumerates possible states of the loader
         /// </summary>
@@ -57,12 +62,31 @@ namespace GlacierKit.Services
         public IEnumerable<Type> EditorWindowViewModels => _editorWindowViewModels;
 
 
+        /// <summary>
+        /// Filepath of the "gkmodules" directory
+        /// </summary>
+        public string GKModulesDirectory
+        {
+            get
+            {
+                // Calculate the filepath if it's unknown
+                if (_gkModulesDir == null)
+                {
+                    string? assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    Debug.Assert(assemblyDir != null);
+                    _gkModulesDir = Path.Combine(assemblyDir, "gkmodules");
+                }
+                // Return the cached filepath
+                return _gkModulesDir;
+            }
+        }
+
+
 
         /// <summary>
         /// Synchronously loads all dlls from the "gkmodules" directory
         /// </summary>
-        /// <param name="modulesDir">Filepath of the folder containing the gk modules to load</param>
-        public void LoadModules(string modulesDir)
+        public void LoadModules()
         {
             Debug.Assert(State == ELoaderState.NotLoaded);
 
@@ -70,7 +94,7 @@ namespace GlacierKit.Services
             State = ELoaderState.Loading;
 
             // Iterate over every .dll file in the modules directory
-            foreach (string moduleFile in Directory.GetFiles(modulesDir, "*.dll"))
+            foreach (string moduleFile in Directory.GetFiles(GKModulesDirectory, "*.dll"))
             {
                 // Load the assembly for this dll
                 Assembly moduleAssembly = Assembly.LoadFile(moduleFile);

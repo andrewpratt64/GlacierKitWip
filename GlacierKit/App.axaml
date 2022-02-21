@@ -8,5 +8,8 @@
 
     <Application.Styles>
         <FluentTheme Mode="Light"/>
+		<StyleInclude Source="avares://Dock.Avalonia/Themes/DockFluentTheme.axaml"/>
+		<StyleInclude Source="avares://GlacierKitCore/Themes/GKFluent/GKFluent.axaml"/>
+		<StyleInclude Source="/Themes/GKFluent/InternalGKFluent.axaml"/>
     </Application.Styles>
 </Application>

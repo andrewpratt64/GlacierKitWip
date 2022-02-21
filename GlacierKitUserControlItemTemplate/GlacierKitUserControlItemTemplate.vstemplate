@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+	<TemplateData>
+		<Name>Glacier Kit User Control</Name>
+		<Description>A user control with a view and a view model</Description>
+		<Icon>GlacierKitUserControlItemTemplate.ico</Icon>
+		<TemplateID>3d514783-5593-4238-a239-db43ba471ec6</TemplateID>
+		<ProjectType>CSharp</ProjectType>
+		<RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+		<NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+		<DefaultName>NewControl</DefaultName>
+	</TemplateData>
+	<TemplateContent>
+
+		<References>
+			<Reference>
+				<Assembly>System</Assembly>
+			</Reference>
+		</References>
+
+
+		<ProjectItem
+			TargetFileName="ViewModels/$fileinputname$ViewModel.cs"
+			ReplaceParameters="true"
+			>ViewModels/ViewModel.cs</ProjectItem>
+
+		<ProjectItem
+			TargetFileName="Views/$fileinputname$View.axaml"
+			ReplaceParameters="true"
+			>Views/View.axaml</ProjectItem>
+
+		<ProjectItem
+			TargetFileName="Views/$fileinputname$View.axaml.cs"
+			ReplaceParameters="true"
+			>Views/View.axaml.cs</ProjectItem>
+		
+	</TemplateContent>
+</VSTemplate>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Rule Name="GlacierKitModulePropertiesPage"
+      Description="Glacier Kit module settings"
+      DisplayName="Glacier Kit"
+      PageTemplate="generic"
+      Order="500"
+      xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext"
+                HasConfigurationCondition="False" />
+  </Rule.DataSource>
+
+    <Rule.Categories>
+        <Category Name="Module"
+              DisplayName="Module"
+              Description="Settings for this Glacier Kit module." />
+    </Rule.Categories>
+
+    <StringProperty Name="GKModuleDeployPath"
+                DisplayName="Deploy Path"
+                Description="The file path of the &quot;gkmodules&quot; directory to copy module to after building."
+                Category="Module"
+				IsRequired="True"
+				Subtype="Folder">
+        <StringProperty.ValueEditors>
+            <ValueEditor EditorType="FolderPath"/>
+        </StringProperty.ValueEditors>
+    </StringProperty>
+
+
+</Rule>

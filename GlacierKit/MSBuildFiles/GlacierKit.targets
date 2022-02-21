@@ -1,0 +1,5 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Target Name="CreateGKModulesFolder" AfterTargets="Build">
+		<MakeDir Directories="$(MSBuildProjectDirectory)\$(OutputPath)gkmodules"/>
+	</Target>
+</Project>

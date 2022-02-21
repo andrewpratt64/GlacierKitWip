@@ -3,6 +3,7 @@ using Dock.Avalonia.Controls;
 using Dock.Model.Controls;
 using Dock.Model.Core;
 using Dock.Model.ReactiveUI;
+using GlacierKit.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

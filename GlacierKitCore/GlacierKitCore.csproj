@@ -19,6 +19,5 @@
 	  <Folder Include="MSBuildFiles\" />
 	  <Folder Include="Services\" />
 	  <Folder Include="Views\" />
-	  <Folder Include="Themes\GKFluent\" />
 	</ItemGroup>
 </Project>

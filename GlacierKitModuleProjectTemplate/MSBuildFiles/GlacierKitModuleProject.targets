@@ -5,6 +5,6 @@
 		</ItemGroup>
 		<Copy
 			SourceFiles="@(GKModuleBinFiles)"
-			DestinationFolder="$(MSBuildProjectDirectory)/../GlacierKit/$(OutputPath)/gkmodules" />
+			DestinationFolder="$(GKModuleDeployPath)" />
 	</Target>
 </Project>

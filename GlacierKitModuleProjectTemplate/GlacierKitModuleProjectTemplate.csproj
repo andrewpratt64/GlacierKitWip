@@ -9,11 +9,11 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <ProjectGuid>{1831F5E2-DDEA-452F-87B4-FA8EE10FBAED}</ProjectGuid>
+    <ProjectGuid>{A087A69D-3D76-4BC5-B7ED-C04B19F8C8E1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GlacierKitViewModelItemTemplate</RootNamespace>
-    <AssemblyName>GlacierKitViewModelItemTemplate</AssemblyName>
+    <RootNamespace>GlacierKitModuleProjectTemplate</RootNamespace>
+    <AssemblyName>GlacierKitModuleProjectTemplate</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
@@ -57,11 +57,30 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Class.cs" />
-    <None Include="GlacierKitViewModelItemTemplate.ico" />
+    <None Include="AssemblyInfo.cs" />
+    <None Include="Class1.cs" />
+    <None Include="MSBuildFiles\GlacierKitModuleProject.props" />
+    <None Include="MSBuildFiles\GlacierKitModuleProject.targets" />
+    <None Include="ProjectTemplate.csproj" />
+    <None Include="GlacierKitModuleProjectTemplate.ico" />
   </ItemGroup>
   <ItemGroup>
-    <VSTemplate Include="GlacierKitViewModelItemTemplate.vstemplate" />
+    <VSTemplate Include="GlacierKitModuleProjectTemplate.vstemplate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\" />
+    <Folder Include="Attributes\" />
+    <Folder Include="Controls\" />
+    <Folder Include="Models\" />
+    <Folder Include="Services\" />
+    <Folder Include="Themes\GKFluent\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="Views\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MSBuildFiles\GlacierKitModulePropertyPage.xaml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

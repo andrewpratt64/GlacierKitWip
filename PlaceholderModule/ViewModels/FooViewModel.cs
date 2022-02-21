@@ -1,10 +1,10 @@
 ﻿using GlacierKitCore.ViewModels;
 
 
-namespace GlacierKit.ViewModels
+namespace PlaceholderModule.ViewModels
 {
     public class FooViewModel : ViewModelBase
     {
-        
+
     }
 }
