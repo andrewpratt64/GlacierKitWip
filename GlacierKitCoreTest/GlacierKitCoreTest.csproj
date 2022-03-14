@@ -1,9 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>XUNIT_NULLABLE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>XUNIT_NULLABLE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +31,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GlacierKitCore\GlacierKitCore.csproj" />
+    <ProjectReference Include="..\GlacierKitTestShared\GlacierKitTestShared.csproj" />
+    <ProjectReference Include="..\PlaceholderModule\PlaceholderModule.csproj" />
   </ItemGroup>
+
+	<Import Project="$(MSBuildProjectDirectory)\MSBuildFiles\GlacierKitCoreTest.props" />
+	<Import Project="$(MSBuildProjectDirectory)\MSBuildFiles\GlacierKitCoreTest.targets" />
 
 </Project>

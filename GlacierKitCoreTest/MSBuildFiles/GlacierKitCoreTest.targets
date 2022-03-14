@@ -1,0 +1,16 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Target Name="CleanGKModulesFolder" AfterTargets="CoreClean">
+		<RemoveDir Directories="$(MSBuildProjectDirectory)\$(OutputPath)gkmodules"/>
+	</Target>
+
+	<Target Name="CleanGKModulesFolderBeforeCopyFromSource" AfterTargets="Build">
+		<CallTarget Targets="CleanGKModulesFolder"/>
+	</Target>
+	
+	<Target Name="CopyGKModulesFolderFromSource" AfterTargets="CleanGKModulesFolderBeforeCopyFromSource">
+		<ItemGroup>
+			<SourceGKModuleFiles Include="$(MSBuildProjectDirectory)\..\GlacierKit\$(OutputPath)gkmodules\*.dll"/>
+		</ItemGroup>
+		<Copy SourceFiles="@(SourceGKModuleFiles)" DestinationFolder="$(MSBuildProjectDirectory)\$(OutputPath)gkmodules"/>
+	</Target>
+</Project>

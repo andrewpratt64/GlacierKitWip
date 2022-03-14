@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GlacierKitTest": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GlacierKit.Services
+namespace GlacierKitCore.Services
 {
     public class GKModuleLoaderService
     {
@@ -41,8 +41,8 @@ namespace GlacierKit.Services
         }
 
 
-        private List<Assembly> _moduleAssemblies = new();
-        private List<Type> _editorWindowViewModels = new();
+        private readonly List<Assembly> _moduleAssemblies = new();
+        private readonly List<Type> _editorWindowViewModels = new();
 
 
         /// <summary>
@@ -54,12 +54,12 @@ namespace GlacierKit.Services
         /// <summary>
         /// Collection of loaded GK module assemblies
         /// </summary>
-        public IEnumerable<Assembly> ModuleAssemblies => _moduleAssemblies;
+        public ICollection<Assembly> ModuleAssemblies => _moduleAssemblies;
 
         /// <summary>
         /// Collection of view model types for editor windows loaded from GK modules
         /// </summary>
-        public IEnumerable<Type> EditorWindowViewModels => _editorWindowViewModels;
+        public ICollection<Type> EditorWindowViewModels => _editorWindowViewModels;
 
 
         /// <summary>
@@ -72,9 +72,7 @@ namespace GlacierKit.Services
                 // Calculate the filepath if it's unknown
                 if (_gkModulesDir == null)
                 {
-                    string? assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                    Debug.Assert(assemblyDir != null);
-                    _gkModulesDir = Path.Combine(assemblyDir, "gkmodules");
+                    _gkModulesDir = GetGKModulesDirectoryFor(typeof(GKModuleLoaderService).Assembly);
                 }
                 // Return the cached filepath
                 return _gkModulesDir;
@@ -82,11 +80,33 @@ namespace GlacierKit.Services
         }
 
 
+        /// <summary>
+        /// Calculates the filepath of the "gkmodules" directory
+        /// </summary>
+        /// <param name="assembly">The assembly containing the gkmodules directory</param>
+        /// <returns>The folder's filepath</returns>
+        public static string GetGKModulesDirectoryFor(Assembly assembly)
+        {
+            string? assemblyDir = Path.GetDirectoryName(assembly.Location);
+            Debug.Assert(assemblyDir != null);
+            return Path.Combine(assemblyDir, "gkmodules");
+        }
+
 
         /// <summary>
         /// Synchronously loads all dlls from the "gkmodules" directory
         /// </summary>
         public void LoadModules()
+        {
+            LoadModules(GKModulesDirectory);
+        }
+
+        /// <summary>
+        /// Synchronously loads all dlls from the "gkmodules" directory
+        /// </summary>
+        /// <param name="modulesDirectory">Path of the gkmodules directory </param>
+        /// <example>LoadModules("C:/MyStuff/GlacierKit/GlacierKit/bin/Debug/net5.0/gkmodules")</example>
+        public void LoadModules(string modulesPath)
         {
             Debug.Assert(State == ELoaderState.NotLoaded);
 
@@ -94,7 +114,7 @@ namespace GlacierKit.Services
             State = ELoaderState.Loading;
 
             // Iterate over every .dll file in the modules directory
-            foreach (string moduleFile in Directory.GetFiles(GKModulesDirectory, "*.dll"))
+            foreach (string moduleFile in Directory.GetFiles(modulesPath, "*.dll"))
             {
                 // Load the assembly for this dll
                 Assembly moduleAssembly = Assembly.LoadFile(moduleFile);
@@ -105,8 +125,8 @@ namespace GlacierKit.Services
                 // Iterate over all exported types assembly
                 foreach (var type in moduleAssembly.GetExportedTypes())
                 {
-                    // Remember this exported type if it's a view model for an editor window
-                    if (type.IsSubclassOf(typeof(EditorWindowViewModel)))
+                    // Remember this exported type if it's an instantiable view model for an editor window
+                    if (EditorWindowViewModel.IsTypeAnInstantiableEditorWindow(type))
                         _editorWindowViewModels.Add(type);
                 }
             }

@@ -15,10 +15,10 @@ namespace GlacierKitTestShared.Tests
     public class UtilTest
     {
 #pragma warning disable IDE1006 // Naming Styles
-#pragma warning disable CS8603 // Possible null reference return.
-        private static Func<object> _DATA_GoodCode => new(() => { return null; });
-#pragma warning restore CS8603 // Possible null reference return.
-        private static Func<object> _DATA_BadCode => new(() => {throw new Exception(); });
+        private static object _DATA_NotNullValue => new();
+
+        private static Action _DATA_GoodCode => new(() => {});
+        private static Action _DATA_BadCode => new(() => {throw new Exception(); });
 
         
         private class _DATA_GoodClass
@@ -35,6 +35,59 @@ namespace GlacierKitTestShared.Tests
             }
         }
 #pragma warning restore IDE1006 // Naming Styles
+
+
+        [Fact]
+        public static void Null_value_while_expecting_null_with_AssertNullConditional_passes()
+        {
+            // Arrange
+            Exception? exception;
+
+            // Act
+            exception = Record.Exception(() => Util.AssertNullConditional(true, null));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public static void Null_value_while_expecting_not_null_with_AssertNullConditional_fails()
+        {
+            // Arrange
+            Exception? exception;
+
+            // Act
+            exception = Record.Exception(() => Util.AssertNullConditional(false, null));
+
+            // Assert
+            Assert.NotNull(exception);
+        }
+
+        [Fact]
+        public static void Not_null_value_while_expecting_null_with_AssertNullConditional_fails()
+        {
+            // Arrange
+            Exception? exception;
+
+            // Act
+            exception = Record.Exception(() => Util.AssertNullConditional(true, _DATA_NotNullValue));
+
+            // Assert
+            Assert.NotNull(exception);
+        }
+
+        [Fact]
+        public static void Not_null_value_while_expecting_not_null_with_AssertNullConditional_passes()
+        {
+            // Arrange
+            Exception? exception;
+
+            // Act
+            exception = Record.Exception(() => Util.AssertNullConditional(false, _DATA_NotNullValue));
+
+            // Assert
+            Assert.Null(exception);
+        }
 
 
         [Fact]

@@ -11,7 +11,17 @@ namespace GlacierKitCore.ViewModels.EditorWindows
     [GKViewModel]
     public abstract class EditorWindowViewModel : Tool
     {
-        // TODO: This should be set in some sort of "gk module manifest" object or something
         public abstract string EditorName { get; }
+
+
+        // TODO: Shorter name?
+        public static bool IsTypeAnInstantiableEditorWindow(Type? type)
+        {
+            // A type may be instantiated as an editor window if it is:
+            //  - Not null
+            //  - A subclass of EditorWindowViewModel
+            //  - Not abstract
+            return (type?.IsSubclassOf(typeof(EditorWindowViewModel)) ?? false) && !type!.IsAbstract;
+        }
     }
 }

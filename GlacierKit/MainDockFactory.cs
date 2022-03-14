@@ -3,37 +3,45 @@ using Dock.Avalonia.Controls;
 using Dock.Model.Controls;
 using Dock.Model.Core;
 using Dock.Model.ReactiveUI;
+using GlacierKitCore.Models;
 using GlacierKit.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace GlacierKit
 {
-    internal class MainDockFactory : Factory
+    public class MainDockFactory : Factory
     {
-        // TODO: Change data type?
-        private readonly object _context;
+        private readonly EditorContext _context;
 
-        public MainDockFactory(object context)
+
+        internal MainViewModel? MainDockable
+        { get; private set; }
+
+
+
+        public MainDockFactory(EditorContext context)
         {
             _context = context;
+            MainDockable = null;
         }
 
 
         public override IRootDock CreateLayout()
         {
-            var mainViewModel = new MainViewModel(this);
+            MainDockable = new MainViewModel(this);
 
-            var root = CreateRootDock();
+            IRootDock root = CreateRootDock();
 
             root.Id = "Root";
             //root.Title = "Root";
-            root.ActiveDockable = mainViewModel;
-            root.DefaultDockable = mainViewModel;
-            root.VisibleDockables = CreateList<IDockable>(mainViewModel);
+            root.ActiveDockable = MainDockable;
+            root.DefaultDockable = MainDockable;
+            root.VisibleDockables = CreateList<IDockable>(MainDockable);
             root.CanClose = false;
             root.CanFloat = false;
             root.IsCollapsable = false;

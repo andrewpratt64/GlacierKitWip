@@ -1,0 +1,57 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:GlacierKit.ViewModels"
+		xmlns:gkvm="using:GlacierKitCore.ViewModels"
+		xmlns:idc="clr-namespace:Dock.Avalonia.Controls;assembly=Dock.Avalonia"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="GlacierKit.Views.MainWindowView"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="GlacierKit">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+	<DockPanel LastChildFill="True">
+		<!--Menu DockPanel.Dock="Top">
+			<MenuItem Header="(TEMPORARY)">
+				<MenuItem Header="View Names (READ-ONLY)" Items="{Binding TMP_WindowTypes}">
+					<MenuItem.Styles>
+						<Style Selector="MenuItem">
+							<Setter Property="Header" Value="{Binding Name, FallbackValue=ERROR}"/>
+						</Style>
+					</MenuItem.Styles>
+				</MenuItem>
+				<MenuItem
+					Header="Create View"
+					Items="{Binding TMP_WindowTypes, Mode=OneWay}"
+					SelectedItem="{Binding TMP_SelectedWindowType, Mode=OneWayToSource}"
+				>
+					<MenuItem.Styles>
+						<Style Selector="MenuItem">
+							<Setter Property="Header" Value="{Binding Name, FallbackValue=ERROR}"/>
+							<Setter Property="Command" Value="{Binding }"/>
+						</Style>
+					</MenuItem.Styles>
+				</MenuItem>
+			</MenuItem>
+		</Menu-->
+		<StackPanel DockPanel.Dock="Top" Orientation="Vertical" Margin="5">
+			<TextBlock Text="{Binding TMP_SelectedWindowType.Name}, Mode=OneWay, FallbackValue=FALLBACK"/>
+			<TextBlock Text="hi"/>
+			<ItemsRepeater Items="{Binding TMP_WindowTypes}">
+				<ItemsRepeater.ItemTemplate>
+					<DataTemplate>
+						<Button
+							Content="{Binding Name}"
+							Command="{Binding OnHit}"/>
+					</DataTemplate>
+				</ItemsRepeater.ItemTemplate>
+			</ItemsRepeater>
+		</StackPanel>
+		<idc:DockControl Layout="{Binding DockLayout}"/>
+	</DockPanel>
+
+</Window>

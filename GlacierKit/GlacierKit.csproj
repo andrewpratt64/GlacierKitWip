@@ -5,9 +5,10 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
-		<Folder Include="Models\" />
 		<AvaloniaResource Include="Assets\**" />
 		<Folder Include="Attributes\" />
+		<Folder Include="Models\" />
+		<Folder Include="Services\" />
 		<None Remove=".gitignore" />
 	</ItemGroup>
 	<ItemGroup>
@@ -22,6 +23,11 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\GlacierKitCoreTest\GlacierKitCoreTest.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Views\MainWindowView.axaml.cs">
+	    <DependentUpon>MainWindowView.axaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<Import Project="$(MSBuildProjectDirectory)\MSBuildFiles\GlacierKit.props" />
