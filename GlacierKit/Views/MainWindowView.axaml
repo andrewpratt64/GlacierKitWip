@@ -15,42 +15,33 @@
     </Design.DataContext>
 
 	<DockPanel LastChildFill="True">
-		<!--Menu DockPanel.Dock="Top">
+		<Menu DockPanel.Dock="Top">
 			<MenuItem Header="(TEMPORARY)">
-				<MenuItem Header="View Names (READ-ONLY)" Items="{Binding TMP_WindowTypes}">
+				<MenuItem
+					Header="View Names (READ-ONLY)"
+					Name="PART_TMP_WindowTypes_ReadOnly"
+					Items="{Binding TMP_WindowTypes}"
+				>
 					<MenuItem.Styles>
-						<Style Selector="MenuItem">
+						<Style Selector="MenuItem MenuItem">
 							<Setter Property="Header" Value="{Binding Name, FallbackValue=ERROR}"/>
 						</Style>
 					</MenuItem.Styles>
 				</MenuItem>
 				<MenuItem
 					Header="Create View"
+					Name="PART_TMP_WindowTypes_CreateView"
 					Items="{Binding TMP_WindowTypes, Mode=OneWay}"
-					SelectedItem="{Binding TMP_SelectedWindowType, Mode=OneWayToSource}"
 				>
 					<MenuItem.Styles>
-						<Style Selector="MenuItem">
+						<Style Selector="#PART_TMP_WindowTypes_CreateView MenuItem">
 							<Setter Property="Header" Value="{Binding Name, FallbackValue=ERROR}"/>
-							<Setter Property="Command" Value="{Binding }"/>
+							<Setter Property="Command" Value="{Binding OnHit}"/>
 						</Style>
 					</MenuItem.Styles>
 				</MenuItem>
 			</MenuItem>
-		</Menu-->
-		<StackPanel DockPanel.Dock="Top" Orientation="Vertical" Margin="5">
-			<TextBlock Text="{Binding TMP_SelectedWindowType.Name}, Mode=OneWay, FallbackValue=FALLBACK"/>
-			<TextBlock Text="hi"/>
-			<ItemsRepeater Items="{Binding TMP_WindowTypes}">
-				<ItemsRepeater.ItemTemplate>
-					<DataTemplate>
-						<Button
-							Content="{Binding Name}"
-							Command="{Binding OnHit}"/>
-					</DataTemplate>
-				</ItemsRepeater.ItemTemplate>
-			</ItemsRepeater>
-		</StackPanel>
+		</Menu>
 		<idc:DockControl Layout="{Binding DockLayout}"/>
 	</DockPanel>
 
