@@ -11,7 +11,7 @@ namespace GlacierKitCore.ViewModels.EditorWindows
     [GKViewModel]
     public abstract class EditorWindowViewModel : Tool
     {
-        public abstract string EditorName { get; }
+        public static string EditorName => "Editor Window";
 
 
         // TODO: Shorter name?

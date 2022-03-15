@@ -14,9 +14,29 @@ namespace GlacierKit.ViewModels
     [GKViewModel]
     public class MainViewModel : DocumentDock
     {
+        // We force CanCreateDocument to always be false since a plus icon to add a
+        //  document is shown when it's true. There isn't a good way to determine
+        //  what document should be added when hitting a generic plus button, so it
+        //  should never be visible
+        public new bool CanCreateDocument
+        {
+            get => false;
+
+            // The setter is a stub instead of read-only
+            //  since it's possible code elsewhere won't
+            //  expect this property to be read-only
+            set { }
+        }
+
+
         [Reactive]
         public Type? NewDocumentType
         { get; set; }
+
+
+        [Reactive]
+        public bool IsNewDocumentTypeValid
+        { get; private set; }
 
 
         public MainViewModel() : this(new MainDockFactory(new()), null) { }
@@ -25,12 +45,14 @@ namespace GlacierKit.ViewModels
            : base()
         {
             // Do basic initialization
+            NewDocumentType = null;
+            IsNewDocumentTypeValid = false;
+
             Factory = initialFactory ?? new MainDockFactory(new());
 
             Id = "Main";
             Title = "Main";
 
-            CanCreateDocument = false;
             CanClose = false;
             CanPin = false;
             CanFloat = false;
@@ -45,18 +67,12 @@ namespace GlacierKit.ViewModels
             }
 
 
-            // A document may be created when the new document type is not null
-            this.WhenAnyValue(x => x.NewDocumentType)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(x => CanCreateDocument = !(x?.IsAbstract ?? true));
-
-
             CreateDocument = ReactiveCommand.Create(
                 // Command implementation
                 () =>
                 {
                     // Don't execute if we aren't able to
-                    if (!CanCreateDocument)
+                    if (!IsNewDocumentTypeValid)
                     {
                         Trace.TraceWarning(
                             "Can't create a document with type "
@@ -80,6 +96,11 @@ namespace GlacierKit.ViewModels
                     }
                 }
             );
+
+
+            // Update IsNewDocumentTypeValid when NewDocumentType changes
+            this.WhenAnyValue(x => x.NewDocumentType)
+                .Subscribe(x => IsNewDocumentTypeValid = EditorWindowViewModel.IsTypeAnInstantiableEditorWindow(x));
         }
     }
 }

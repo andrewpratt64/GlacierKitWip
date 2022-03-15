@@ -17,9 +17,12 @@ namespace GlacierKitTest.Tests.ViewModels
 {
     public class MainViewModelTest
     {
+        
         private static readonly Type? _DATA_ValidValueForNewDocumentType = typeof(FooViewModel);
         private static readonly Type? _DATA_AbstractValueForNewDocumentType = typeof(BarViewModel);
 
+
+        #region Constructor
 
         [Fact]
         public static void Default_ctor_works()
@@ -50,6 +53,11 @@ namespace GlacierKitTest.Tests.ViewModels
             // Assert
             Util.AssertCodeDoesNotThrowException(() => new MainViewModel(factory, dockable));
         }
+
+        #endregion
+
+
+        #region NewDocumentType
 
         [Fact]
         public static void NewDocumentType_is_initially_null()
@@ -139,8 +147,13 @@ namespace GlacierKitTest.Tests.ViewModels
             Util.AssertCodeDoesNotThrowException(() => vm.NewDocumentType = newDocumentType);
         }
 
+        #endregion
+
+
+        #region IsNewDocumentTypeValid
+
         [Fact]
-        public static void CanCreateDocument_is_initially_false()
+        public static void IsNewDocumentTypeValid_is_initially_false()
         {
             // Arrange
             MainViewModel vm;
@@ -148,14 +161,14 @@ namespace GlacierKitTest.Tests.ViewModels
 
             // Act
             vm = new();
-            actualValue = vm.CanCreateDocument;
+            actualValue = vm.IsNewDocumentTypeValid;
 
             // Assert
             Assert.False(actualValue);
         }
 
         [Fact]
-        public static void CanCreateDocument_is_false_when_NewDocumentType_is_abstract()
+        public static void IsNewDocumentTypeValid_is_false_when_NewDocumentType_is_abstract()
         {
             // Arrange
             MainViewModel vm;
@@ -167,14 +180,14 @@ namespace GlacierKitTest.Tests.ViewModels
             vm = new();
             vm.NewDocumentType = initialDocumentType;
             vm.NewDocumentType = newDocumentType;
-            actualValue = vm.CanCreateDocument;
+            actualValue = vm.IsNewDocumentTypeValid;
 
             // Assert
             Assert.False(actualValue);
         }
 
         [Fact]
-        public static void CanCreateDocument_is_false_when_NewDocumentType_is_null()
+        public static void IsNewDocumentTypeValid_is_false_when_NewDocumentType_is_null()
         {
             // Arrange
             MainViewModel vm;
@@ -186,14 +199,14 @@ namespace GlacierKitTest.Tests.ViewModels
             vm = new();
             vm.NewDocumentType = initialDocumentType;
             vm.NewDocumentType = newDocumentType;
-            actualValue = vm.CanCreateDocument;
+            actualValue = vm.IsNewDocumentTypeValid;
 
             // Assert
             Assert.False(actualValue);
         }
 
         [Fact]
-        public static void CanCreateDocument_is_true_when_NewDocumentType_is_valid()
+        public static void IsNewDocumentTypeValid_is_true_when_NewDocumentType_is_valid()
         {
             // Arrange
             MainViewModel vm;
@@ -203,11 +216,16 @@ namespace GlacierKitTest.Tests.ViewModels
             // Act
             vm = new();
             vm.NewDocumentType = newDocumentType;
-            actualValue = vm.CanCreateDocument;
+            actualValue = vm.IsNewDocumentTypeValid;
 
             // Assert
             Assert.True(actualValue);
         }
+
+        #endregion
+
+
+        #region CreateDocument
 
         [Fact]
         public static void CreateDocument_is_not_null()
@@ -222,6 +240,11 @@ namespace GlacierKitTest.Tests.ViewModels
 
             Assert.NotNull(actualCommand);
         }
+
+        #endregion
+
+
+        #region CreateDocument
 
         [Fact]
         public static void VisibleDockables_initial_value_is_not_null()
@@ -394,5 +417,8 @@ namespace GlacierKitTest.Tests.ViewModels
             // Assert
             Assert.Equal(expectedDifference, countAfter - countBefore);
         }
+
+        #endregion
+    
     }
 }

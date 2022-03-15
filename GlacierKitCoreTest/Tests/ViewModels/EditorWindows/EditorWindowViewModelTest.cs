@@ -18,6 +18,7 @@ namespace GlacierKitCoreTest.Tests.ViewModels
         }
         private class _TYPE_RELATED_CONCRETE_CLASS : EditorWindowViewModel
         {
+            public static new string EditorName => "Related Concrete Class";
         }
         private abstract class _TYPE_RELATED_ABSTRACT_CLASS : EditorWindowViewModel
         {
