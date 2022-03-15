@@ -10,6 +10,7 @@ namespace GlacierKitCoreTest.Tests.ViewModels
 {
     public class EditorWindowViewModelTest
     {
+#pragma warning disable IDE1006 // Naming Styles
         private class _TYPE_UNRELATED_CONCRETE_CLASS
         {
         }
@@ -23,6 +24,7 @@ namespace GlacierKitCoreTest.Tests.ViewModels
         private abstract class _TYPE_RELATED_ABSTRACT_CLASS : EditorWindowViewModel
         {
         }
+#pragma warning restore IDE1006 // Naming Styles
 
 
         // This could potentially be rewritten as a [Theory], but it might not matter

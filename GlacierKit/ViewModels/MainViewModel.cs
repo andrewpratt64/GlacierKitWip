@@ -18,6 +18,7 @@ namespace GlacierKit.ViewModels
         //  document is shown when it's true. There isn't a good way to determine
         //  what document should be added when hitting a generic plus button, so it
         //  should never be visible
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Should always be false, but also intentionally hides DocumentDock.CanCreateDocument")]
         public new bool CanCreateDocument
         {
             get => false;

@@ -23,6 +23,12 @@
 		<Folder Include="Themes\GKFluent\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="Views\PushyButtonsView.axaml.cs">
+	    <DependentUpon>PushyButtonsView.axaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
 	<Import Project="$(MSBuildProjectDirectory)\MSBuildFiles\GlacierKitModuleProject.props" />
 	<Import Project="$(MSBuildProjectDirectory)\MSBuildFiles\GlacierKitModuleProject.targets" />
 

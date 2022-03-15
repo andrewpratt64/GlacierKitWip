@@ -36,7 +36,6 @@ namespace GlacierKit.ViewModels
         // TODO: Some collection property for the Menu control (probably with ITree?)
 
         // TEMPORARY START
-        public string ipsum => "EBDB";
         public class TMP_WindowType : ViewModelBase
         {
             public string Name

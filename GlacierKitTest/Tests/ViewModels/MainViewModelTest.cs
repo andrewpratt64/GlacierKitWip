@@ -254,7 +254,6 @@ namespace GlacierKitTest.Tests.ViewModels
             EditorContext initialCtx;
             IFactory initialFactory;
             IDockable initialDockable;
-            Type? newDocumentType = _DATA_ValidValueForNewDocumentType;
             IList<IDockable>? actualValue;
 
             // Act
