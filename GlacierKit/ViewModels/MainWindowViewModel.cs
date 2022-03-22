@@ -1,4 +1,5 @@
 using Dock.Model.Core;
+using GlacierKitCore.Commands;
 using GlacierKitCore.Models;
 using GlacierKitCore.Services;
 using GlacierKitCore.ViewModels;
@@ -60,6 +61,9 @@ namespace GlacierKit.ViewModels
         internal ObservableCollection<TMP_WindowType> TMP_WindowTypes
         { get; }
 
+        internal ObservableCollection<IGKCommand> TMP_Commands
+        { get; }
+
         public object? TMP_SelectedWindowType
         { get; set; } = null;
         public ReactiveCommand<Unit, Unit> TMP_WindowTypeHit
@@ -95,6 +99,7 @@ namespace GlacierKit.ViewModels
             Ctx.ModuleLoader.LoadModules();
 
             TMP_WindowTypes = new ObservableCollection<TMP_WindowType> {};
+            TMP_Commands = new ObservableCollection<IGKCommand> {};
             
             TMP_WindowTypeHit = ReactiveCommand.Create(() =>
             {
@@ -115,6 +120,11 @@ namespace GlacierKit.ViewModels
                    TypeData = windowType,
                    Owner = this
                });
+            }
+
+            foreach (var command in Ctx.ModuleLoader.GKCommands)
+            {
+                TMP_Commands.Add(command);
             }
             // TEMPORARY END
 

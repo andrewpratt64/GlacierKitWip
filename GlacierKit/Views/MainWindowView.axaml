@@ -17,6 +17,7 @@
 	<DockPanel LastChildFill="True">
 		<Menu DockPanel.Dock="Top">
 			<MenuItem Header="(TEMPORARY)">
+				
 				<MenuItem
 					Header="View Names (READ-ONLY)"
 					Name="PART_TMP_WindowTypes_ReadOnly"
@@ -28,6 +29,7 @@
 						</Style>
 					</MenuItem.Styles>
 				</MenuItem>
+				
 				<MenuItem
 					Header="Create View"
 					Name="PART_TMP_WindowTypes_CreateView"
@@ -40,6 +42,19 @@
 						</Style>
 					</MenuItem.Styles>
 				</MenuItem>
+
+				<MenuItem
+					Header="Commands"
+					Name="PART_TMP_Commands"
+					Items="{Binding TMP_Commands, Mode=OneWay}">
+					<MenuItem.Styles>
+						<Style Selector="#PART_TMP_Commands MenuItem">
+							<Setter Property="Header" Value="{Binding DisplayName, FallbackValue=ERROR}"/>
+							<Setter Property="Command" Value="{Binding Command}"/>
+						</Style>
+					</MenuItem.Styles>
+				</MenuItem>
+				
 			</MenuItem>
 		</Menu>
 		<idc:DockControl Layout="{Binding DockLayout}"/>
