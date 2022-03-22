@@ -1,4 +1,5 @@
-﻿using GlacierKitCore.ViewModels.EditorWindows;
+﻿using GlacierKitCore.Commands;
+using GlacierKitCore.ViewModels.EditorWindows;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
@@ -43,6 +44,7 @@ namespace GlacierKitCore.Services
 
         private readonly List<Assembly> _moduleAssemblies = new();
         private readonly List<Type> _editorWindowViewModels = new();
+        private readonly List<IGKCommand> _gkCommands = new();
 
 
         /// <summary>
@@ -61,6 +63,11 @@ namespace GlacierKitCore.Services
         /// </summary>
         public ICollection<Type> EditorWindowViewModels => _editorWindowViewModels;
 
+        /// <summary>
+        /// Collection of GK commands loaded from GK modules
+        /// </summary>
+        public ICollection<IGKCommand> GKCommands => _gkCommands;
+
 
         /// <summary>
         /// Filepath of the "gkmodules" directory
@@ -78,6 +85,23 @@ namespace GlacierKitCore.Services
                 return _gkModulesDir;
             }
         }
+
+
+        private void LoadGKCommandsFromProvider(Type providerType)
+        {
+            // Iterate over all of the properties in providerType
+            foreach (PropertyInfo property in providerType.GetProperties())
+            {
+                // Remember the property value, if it's a valid GKCommand
+                if (property.PropertyType.GetInterfaces().Contains(typeof(IGKCommand)) && property.IsStatic() && !property.CanWrite)
+                {
+                    var command = property.GetValue(null) as IGKCommand;
+                    Debug.Assert(command != null);
+                    _gkCommands.Add(command);
+                }
+            }
+        }
+
 
 
         /// <summary>
@@ -128,6 +152,9 @@ namespace GlacierKitCore.Services
                     // Remember this exported type if it's an instantiable view model for an editor window
                     if (EditorWindowViewModel.IsTypeAnInstantiableEditorWindow(type))
                         _editorWindowViewModels.Add(type);
+                    // Load the commands from this type if it's a command provider
+                    else if (GKCommand.IsTypeAGKCommandProvider(type))
+                        LoadGKCommandsFromProvider(type);
                 }
             }
 

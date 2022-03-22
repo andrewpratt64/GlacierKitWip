@@ -1,4 +1,5 @@
 ﻿using Dock.Model.Controls;
+using GlacierKitCore.Commands;
 using GlacierKitCore.Services;
 using GlacierKitCore.ViewModels.EditorWindows;
 using ReactiveUI;
@@ -36,6 +37,17 @@ namespace GlacierKitCore.Models
                     return windowType;
                 return null;
             });
+        }
+
+
+        public GKCommand<TParam, TResult>? GetCommand<TParam, TResult>(string id)
+        {
+            return (GKCommand<TParam, TResult>?)
+                ModuleLoader.GKCommands.FirstOrDefault(cmd =>
+                       cmd.GKCommandId == id
+                    && cmd.TParamValue == typeof(TParam)
+                    && cmd.TResultValue== typeof(TResult)
+                );
         }
     }
 }

@@ -15,12 +15,12 @@ namespace PlaceholderModule.ViewModels
 {
     public class PushyButtonsViewModel : EditorWindowViewModel
     {
-        public static new string EditorName => "Pushy Buttons";
+        public static new string DisplayName => "Pushy Buttons";
 
 
         public PushyButtonsViewModel()
         {
-            Title = EditorName;
+            Title = DisplayName;
         }
     }
 }

@@ -1,13 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
-		<GKModuleDeployPath>C:\Dev\GlacierKit\GlacierKit\bin\Debug\net5.0\gkmodules</GKModuleDeployPath>
+		<GKModuleDeployPath>C:\Dev\GlacierKit\GlacierKit\bin\$(Configuration)\net5.0\gkmodules</GKModuleDeployPath>
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <None Remove="MSBuildFiles\GlacierKitModulePropertyPage.xaml" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\GlacierKitCore\GlacierKitCore.csproj" />

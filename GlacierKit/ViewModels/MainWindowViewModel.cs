@@ -111,7 +111,7 @@ namespace GlacierKit.ViewModels
             foreach (var windowType in Ctx.ModuleLoader.EditorWindowViewModels)
             {
                TMP_WindowTypes.Add(new TMP_WindowType{
-                   Name = (windowType.GetProperty("EditorName")?.GetValue(null) as string) ?? "<FAILED TO GET PROPERTY VALUE>",
+                   Name = (windowType.GetProperty("DisplayName")?.GetValue(null) as string) ?? "<FAILED TO GET PROPERTY VALUE>",
                    TypeData = windowType,
                    Owner = this
                });

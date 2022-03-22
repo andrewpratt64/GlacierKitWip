@@ -7,14 +7,14 @@ namespace PlaceholderModule.ViewModels
 {
     public class FooViewModel : EditorWindowViewModel
     {
-        public static new string EditorName => "The Foo View";
+        public static new string DisplayName => "The Foo View";
 
 
         public static string FooData => DateTime.UnixEpoch.AddHours(123.456).TimeOfDay.ToString(@"hh\:mm");
 
         public FooViewModel()
         {
-            Title = EditorName;
+            Title = DisplayName;
         }
     }
 }

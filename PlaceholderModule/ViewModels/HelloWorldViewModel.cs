@@ -7,11 +7,11 @@ namespace PlaceholderModule.ViewModels
 {
     public class HelloWorldViewModel : EditorWindowViewModel
     {
-        public static new string EditorName => "Welcomer of Worlds";
+        public static new string DisplayName => "Welcomer of Worlds";
 
         public HelloWorldViewModel()
         {
-            Title = EditorName;
+            Title = DisplayName;
         }
     }
 }

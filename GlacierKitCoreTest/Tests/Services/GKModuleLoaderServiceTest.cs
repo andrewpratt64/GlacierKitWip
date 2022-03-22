@@ -90,6 +90,19 @@ namespace GlacierKitCoreTest.Tests.Services
         }
 
         [Fact]
+        public static void GKCommands_starts_empty()
+        {
+            // Arrange
+            GKModuleLoaderService? service;
+
+            // Act
+            service = new GKModuleLoaderService();
+
+            // Assert
+            Assert.Empty(service.GKCommands);
+        }
+
+        [Fact]
         public static void GKModulesDirectory_has_expected_prefix()
         {
             // Arrange
@@ -150,6 +163,20 @@ namespace GlacierKitCoreTest.Tests.Services
 
             // Assert
             Assert.NotEmpty(service.EditorWindowViewModels);
+        }
+
+        [Fact]
+        public static void GKCommands_not_empty_after_running_LoadModules()
+        {
+            // Arrange
+            GKModuleLoaderService? service;
+
+            // Act
+            service = new GKModuleLoaderService();
+            service.LoadModules();
+
+            // Assert
+            Assert.NotEmpty(service.GKCommands);
         }
 
         [Fact]

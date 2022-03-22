@@ -1,4 +1,5 @@
-﻿using GlacierKitCore.Models;
+﻿using GlacierKitCore.Commands;
+using GlacierKitCore.Models;
 using GlacierKitCore.Services;
 using GlacierKitTestShared;
 using PlaceholderModule.ViewModels;
@@ -18,6 +19,8 @@ namespace GlacierKitCoreTest.Tests.Models
     {
         private static readonly Type? _DATA_ValidInputForCreateEditorWindow = typeof(FooViewModel);
         private static readonly Type? _DATA_InvalidInputForCreateEditorWindow = typeof(BarViewModel);
+        private static readonly string _DATA_ValidIdForGetCommand = "PlaceholderModule_PrintHi";
+        private static readonly string _DATA_InvalidIdForGetCommand = "IDontExist";
 
 
 
@@ -184,6 +187,92 @@ namespace GlacierKitCoreTest.Tests.Models
             // Assert
             Assert.Equal(expectedValue, actualValue);
             commandDisposable.Dispose();
+        }
+
+        [Fact]
+        public static void GetCommand_with_valid_id_before_loading_returns_null()
+        {
+            // Arrange
+            EditorContext? ctx;
+            string commandId = _DATA_ValidIdForGetCommand;
+            GKCommand<Unit, Unit>? returnValue;
+
+            // Act
+            ctx = new();
+            returnValue = ctx.GetCommand<Unit, Unit>(commandId);
+
+            // Assert
+            Assert.Null(returnValue);
+        }
+
+        [Fact]
+        public static void GetCommand_with_invalid_id_before_loading_returns_null()
+        {
+            // Arrange
+            EditorContext? ctx;
+            string commandId = _DATA_InvalidIdForGetCommand;
+            GKCommand<Unit, Unit>? returnValue;
+
+            // Act
+            ctx = new();
+            returnValue = ctx.GetCommand<Unit, Unit>(commandId);
+
+            // Assert
+            Assert.Null(returnValue);
+        }
+
+        [Fact]
+        public static void GetCommand_with_valid_id_after_loading_dosent_return_null()
+        {
+            // Arrange
+            EditorContext? ctx;
+            string commandId = _DATA_ValidIdForGetCommand;
+            GKCommand<Unit, Unit>? returnValue;
+
+            // Act
+            ctx = new();
+            ctx.ModuleLoader.LoadModules();
+            returnValue = ctx.GetCommand<Unit, Unit>(commandId);
+
+            // Assert
+            Assert.NotNull(returnValue);
+        }
+
+        [Fact]
+        public static void GetCommand_with_invalid_id_after_loading_returns_null()
+        {
+            // Arrange
+            EditorContext? ctx;
+            string commandId = _DATA_InvalidIdForGetCommand;
+            GKCommand<Unit, Unit>? returnValue;
+
+            // Act
+            ctx = new();
+            ctx.ModuleLoader.LoadModules();
+            returnValue = ctx.GetCommand<Unit, Unit>(commandId);
+
+            // Assert
+            Assert.Null(returnValue);
+        }
+
+        [Fact]
+        public static void Executing_command_with_assumed_value_from_GetCommand_does_not_throw()
+        {
+            // Arrange
+            EditorContext? ctx;
+            string commandId = _DATA_ValidIdForGetCommand;
+            GKCommand<Unit, Unit>? returnValue;
+
+            // Act
+            ctx = new();
+            ctx.ModuleLoader.LoadModules();
+            returnValue = ctx.GetCommand<Unit, Unit>(commandId);
+
+            // Assert
+            Util.AssertCodeDoesNotThrowException(() =>
+            {
+                returnValue!.Command.Execute().Subscribe();
+            });
         }
     }
 }
