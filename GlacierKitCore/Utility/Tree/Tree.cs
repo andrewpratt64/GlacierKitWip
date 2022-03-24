@@ -12,6 +12,59 @@ namespace GlacierKitCore.Utility.Tree
     public interface ITree
     {
         /// <summary>
+        /// Bitflags for addressing nodes based on their type of node
+        /// </summary>
+        [Flags]
+        public enum ENodeTypeFlags
+        {
+            /// <summary>
+            /// Excludes all nodes
+            /// </summary>
+            None = 0,
+            /// <summary>
+            /// Includes root nodes; i.e. nodes with no parents
+            /// </summary>
+            RootNodes = 1,
+            /// <summary>
+            /// Includes branch nodes; i.e. nodes with both parents and children
+            /// </summary>
+            BranchNodes = 2,
+            /// <summary>
+            /// Includes leaf nodes; i.e. nodes with no children
+            /// </summary>
+            LeafNodes = 4,
+            /// <summary>
+            /// Includes all nodes
+            /// </summary>
+            All = RootNodes | BranchNodes | LeafNodes,
+            /// <summary>
+            /// Includes all nodes that are not root nodes
+            /// </summary>
+            NonRootNodes = All & ~RootNodes,
+            /// <summary>
+            /// Includes all nodes that are not branch nodes
+            /// </summary>
+            NonBranchNodes = All & ~BranchNodes,
+            /// <summary>
+            /// Includes all nodes that are not leaf nodes
+            /// </summary>
+            NonLeafNodes = All & ~LeafNodes
+        }
+
+
+        /// <summary>
+        /// Determines what nodes may be reparented
+        /// </summary>
+        public abstract ENodeTypeFlags ReparentableNodes
+        { get; }
+
+        /// <summary>
+        /// Determines what nodes may be deleted
+        /// </summary>
+        public abstract ENodeTypeFlags DeletableNodes
+        { get; }
+
+        /// <summary>
         /// If true, only one node may be the root of the tree at a time
         /// </summary>
         public abstract bool IsSingleRootOnly
@@ -20,8 +73,7 @@ namespace GlacierKitCore.Utility.Tree
         /// <summary>
         /// If true, root nodes may be swapped with other nodes
         /// </summary>
-        public abstract bool IsReparentingRootAllowed
-        { get; }
+        public bool IsReparentingRootAllowed => ReparentableNodes.HasFlag(ENodeTypeFlags.All);
 
         /// <summary>
         /// If true, nodes may be parented to their children
@@ -61,8 +113,9 @@ namespace GlacierKitCore.Utility.Tree
     /// <typeparam name="TreeNode_t">The type of each node</typeparam>
     public abstract class Tree<TreeNode_t> : ITree
     {
+        public abstract ITree.ENodeTypeFlags ReparentableNodes { get; }
+        public abstract ITree.ENodeTypeFlags DeletableNodes { get; }
         public abstract bool IsSingleRootOnly { get; }
-        public abstract bool IsReparentingRootAllowed { get; }
         public abstract bool AreCircularDependenciesAllowed { get; }
         public abstract bool AreMultipleParentsAllowed { get; }
         public abstract bool DoNodesKnowParents { get; }
