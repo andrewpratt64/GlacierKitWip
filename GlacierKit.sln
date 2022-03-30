@@ -31,7 +31,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{F9E9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Placeholders", "Placeholders", "{B79A3E3F-5F4B-4B73-857F-04EE9E6F9C6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaceholderModule", "PlaceholderModule\PlaceholderModule.csproj", "{1DDF4167-7DE8-4FF7-A841-AFDFC9328725}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlaceholderModule", "PlaceholderModule\PlaceholderModule.csproj", "{1DDF4167-7DE8-4FF7-A841-AFDFC9328725}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{55F8B9E5-9B06-4BA4-9BD0-8196947B429D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

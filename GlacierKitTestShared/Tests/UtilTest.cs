@@ -175,7 +175,7 @@ namespace GlacierKitTestShared.Tests
         #endregion
 
 
-        #region Test constructor
+        #region Test_constructor
         [Fact]
         public static void Bad_class_with_AssertDefaultCtorDoesNotThrowException_fails()
         {
@@ -228,5 +228,97 @@ namespace GlacierKitTestShared.Tests
             Assert.Null(exception);
         }
         #endregion
+
+        [Fact]
+        public static void AssertCollectionsHaveSameItems_with_two_empty_collections_passes()
+        {
+            // Arrange
+            Exception? exception;
+            IEnumerable<string> expectedCollection = new List<string>{};
+            IEnumerable<string> actualCollection = new List<string>{};
+
+            // Act
+            exception = Record.Exception(() => Util.AssertCollectionsHaveSameItems(expectedCollection, actualCollection));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public static void AssertCollectionsHaveSameItems_with_different_collections_fails()
+        {
+            // Arrange
+            Exception? exception;
+            IEnumerable<string> expectedCollection = new List<string>
+            {
+                "Apple",
+                "Banana",
+                "Pear"
+            };
+            IEnumerable<string> actualCollection = new List<string>
+            {
+                "Red",
+                "Orange",
+                "Yellow",
+                "Lime"
+            };
+
+            // Act
+            exception = Record.Exception(() => Util.AssertCollectionsHaveSameItems(expectedCollection, actualCollection));
+
+            // Assert
+            Assert.NotNull(exception);
+        }
+
+        [Fact]
+        public static void AssertCollectionsHaveSameItems_with_different_size_collections_fails()
+        {
+            // Arrange
+            Exception? exception;
+            IEnumerable<string> expectedCollection = new List<string>
+            {
+                "Apple",
+                "Banana",
+                "Pear"
+            };
+            IEnumerable<string> actualCollection = new List<string>
+            {
+                "Apple",
+                "Banana",
+                "Pear",
+                "Banana"
+            };
+
+            // Act
+            exception = Record.Exception(() => Util.AssertCollectionsHaveSameItems(expectedCollection, actualCollection));
+
+            // Assert
+            Assert.NotNull(exception);
+        }
+
+        [Fact]
+        public static void AssertCollectionsHaveSameItems_with_identical_collections_passes()
+        {
+            // Arrange
+            Exception? exception;
+            IEnumerable<string> expectedCollection = new List<string>
+            {
+                "Apple",
+                "Banana",
+                "Pear"
+            };
+            IEnumerable<string> actualCollection = new List<string>
+            {
+                "Apple",
+                "Banana",
+                "Pear"
+            };
+
+            // Act
+            exception = Record.Exception(() => Util.AssertCollectionsHaveSameItems(expectedCollection, actualCollection));
+
+            // Assert
+            Assert.Null(exception);
+        }
     }
 }

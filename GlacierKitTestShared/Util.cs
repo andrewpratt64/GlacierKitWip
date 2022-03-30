@@ -1,11 +1,14 @@
-﻿using System;
+﻿using GlacierKitTestShared.CommonTestData;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace GlacierKitTestShared
 {
     public static class Util
     {
-        #region Null check
+        #region Null_check
         /// <summary>
         /// Verifies that a given value either is or isn't null
         /// </summary>
@@ -20,7 +23,7 @@ namespace GlacierKitTestShared
         }
         #endregion
 
-        #region Test that code does/doesn't throw
+        #region Test_that_code_does/doesn't_throw
         /// <summary>
         /// Tests if the given code throws an exception
         /// </summary>
@@ -65,7 +68,7 @@ namespace GlacierKitTestShared
         #endregion
 
 
-        #region Test constructor
+        #region Test_constructor
         /// <summary>
         /// Verifies that a class's default constructor doesn't throw an exception
         /// </summary>
@@ -88,5 +91,23 @@ namespace GlacierKitTestShared
             AssertDefaultCtorDoesNotThrowException<T>();
         }
         #endregion
-    }
+
+        #region Test_collections
+
+        /// <summary>
+        /// Verifies that two collections are the same size and contain the same items, ignoring the order they appear
+        /// </summary>
+        /// <typeparam name="TItem">Type of each item</typeparam>
+        /// <param name="expectedItems">The items expected to be in <paramref name="actualItems"/></param>
+        /// <param name="actualItems">The collection to test</param>
+        /// <exception cref="Xunit.Sdk.EmptyException">Thrown if the items of the two collections don't match</exception>
+        public static void AssertCollectionsHaveSameItems<TItem>(IEnumerable<TItem> expectedItems, IEnumerable<TItem> actualItems)
+        {
+			Assert.Equal(expectedItems.Count(), actualItems.Count());
+            Assert.Empty(expectedItems.Except(actualItems));
+            Assert.Empty(actualItems.Except(expectedItems));
+        }
+
+		#endregion
+	}
 }
