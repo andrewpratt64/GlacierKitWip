@@ -28,8 +28,8 @@ namespace GlacierKitCore.Utility.Tree
         /// <summary>
         /// The parent nodes of this node, if any
         /// </summary>
-        public abstract IEnumerable<TTreeNode>? ParentNodes
-        { get; }
+        /*public abstract IEnumerable<TTreeNode>? ParentNodes
+        { get; }*/
 
         /// <summary>
         /// The child nodes of this node, if any

@@ -1,6 +1,7 @@
 ﻿using DynamicData;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,7 +42,6 @@ namespace GlacierKitCore.Utility.Tree
 		{ get; }
 
 
-
 		private void AddRootNodeUnsafe(CommonNodeForTree node)
 		{
 			_nodes.Add(node);
@@ -57,11 +57,13 @@ namespace GlacierKitCore.Utility.Tree
 		private bool CannotAddRootNode(CommonNodeForTree node)
 		{
 			return
-				// Prevent adding nodes that already belong to the tree
-				DoesNodeBelongToTree(node)
+				// Prevent adding nodes from other tree types
+				node.Tree != this
 				// Prevent adding root nodes if the tree only allows one root at a time
 				//	and a root already exists
-				|| (IsSingleRootOnly && _rootNodes.Count > 0);
+				|| (IsSingleRootOnly && _rootNodes.Count > 0)
+				// Prevent adding nodes that already belong to the tree
+				|| DoesNodeBelongToTree(node);
 		}
 
 
@@ -83,7 +85,14 @@ namespace GlacierKitCore.Utility.Tree
             return _nodes.Items.Contains(node);
         }
 
-        public override IEnumerator<CommonNodeForTree>? GetChildrenOf(CommonNodeForTree node)
+
+		public override bool DeleteNode(CommonNodeForTree node, bool shouldDeleteRecursively = true)
+		{
+			throw new NotImplementedException();
+		}
+
+
+		public override IEnumerable<CommonNodeForTree>? GetChildrenOf(CommonNodeForTree node)
         {
             throw new NotImplementedException();
         }
@@ -92,6 +101,11 @@ namespace GlacierKitCore.Utility.Tree
         {
             throw new NotImplementedException();
         }
+
+		/*public override IEnumerable<CommonNodeForTree>? GetParentsOf(CommonNodeForTree node)
+		{
+			throw new NotImplementedException();
+		}*/
 
 		public override IObservable<IChangeSet<CommonNodeForTree>> RootNodesConnect()
 		{

@@ -72,6 +72,27 @@ namespace GlacierKitCore.Utility.Tree
             NonLeafNodes = All & ~LeafNodes
         }
 
+		/// <summary>
+		/// The types of relationships between a tree and a tree node
+		/// </summary>
+		public enum ETreeAndNodeRelationshipType
+		{
+			/// <summary>
+			/// The tree node uses a different type of tree than the tree being compared
+			/// </summary>
+			DifferentTypes,
+			/// <summary>
+			/// The tree node uses the same type of tree than the tree being compared, but does not
+			/// belong to the tree being compared
+			/// </summary>
+			SameTypes,
+			/// <summary>
+			/// The tree node uses the same type of tree than the tree being compared, and
+			/// belongs to the tree being compared
+			/// </summary>
+			SameTypesAndOwned
+		}
+
 
         /// <summary>
         /// Determines what nodes may be reparented
@@ -147,12 +168,19 @@ namespace GlacierKitCore.Utility.Tree
         /// <returns>The node's parent, or null if no parent exists</returns>
         public abstract TTreeNode? GetParentOf(TTreeNode node);
 
-        /// <summary>
-        /// Accessor for a node's children
-        /// </summary>
-        /// <param name="node">Node who's children to get</param>
-        /// <returns>The node's children</returns>
-        public abstract IEnumerator<TTreeNode>? GetChildrenOf(TTreeNode node);
+		/// <summary>
+		/// Accessor for a node's parents
+		/// </summary>
+		/// <param name="node">Node who's parents to get</param>
+		/// <returns>The node's parent, or null if no parents exist</returns>
+		//public abstract IEnumerable<TTreeNode>? GetParentsOf(TTreeNode node);
+
+		/// <summary>
+		/// Accessor for a node's children
+		/// </summary>
+		/// <param name="node">Node who's children to get</param>
+		/// <returns>The node's children</returns>
+		public abstract IEnumerable<TTreeNode>? GetChildrenOf(TTreeNode node);
 
         /// <summary>
         /// Test if a given node is part of the tree
@@ -167,6 +195,13 @@ namespace GlacierKitCore.Utility.Tree
         /// <param name="node">The new root node to add</param>
         /// <returns>True if <paramref name="node"/> was added to the tree, false otherwise</returns>
         public abstract bool AddRootNodeToTree(TTreeNode node);
+
+		/// <summary>
+		/// Attempts to remove a node from the tree
+		/// </summary>
+		/// <param name="node">The node to delete</param>
+		/// <returns>True if node was deleted, false otherwise</returns>
+		public abstract bool DeleteNode(TTreeNode node, bool shouldDeleteRecursively);
     }
 
 
@@ -191,9 +226,11 @@ namespace GlacierKitCore.Utility.Tree
 		public abstract bool DoNodesKnowChildren { get; }
 		public abstract bool DoNodesKnowSiblings { get; }
 
+		public abstract bool DeleteNode(TTreeNode node, bool shouldDeleteRecursively = true);
 		public abstract bool AddRootNodeToTree(TTreeNode node);
 		public abstract bool DoesNodeBelongToTree(TTreeNode node);
-		public abstract IEnumerator<TTreeNode>? GetChildrenOf(TTreeNode node);
+		public abstract IEnumerable<TTreeNode>? GetChildrenOf(TTreeNode node);
 		public abstract TTreeNode? GetParentOf(TTreeNode node);
+		//public abstract IEnumerable<TTreeNode>? GetParentsOf(TTreeNode node);
 	}
 }

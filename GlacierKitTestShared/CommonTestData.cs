@@ -1,5 +1,7 @@
-﻿using System;
+﻿using GlacierKitCore.Utility.Tree;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
@@ -36,6 +38,7 @@ namespace GlacierKitTestShared.CommonTestData
     }
 
 
+	// TODO: Remove ExpectedFlagValue<TFlag>?
 	/// <summary>
 	/// Represents the expected state of a bitflag
 	/// </summary>
@@ -87,4 +90,6 @@ namespace GlacierKitTestShared.CommonTestData
 			return !ExpectedValue.Value;
 		}
 	}
+
+
 }

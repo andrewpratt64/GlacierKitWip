@@ -17,16 +17,18 @@ namespace GlacierKitCore.Utility.Tree
 		INodeForTree<CommonTree>
     {
         private IEnumerable<CommonNodeForTree> _children;
-        private IEnumerable<CommonNodeForTree> _parents;
+        //private IEnumerable<CommonNodeForTree> _parents;
+		private CommonNodeForTree? _parent;
 
 
 		[Reactive]
         public CommonTree Tree
 		{ get; internal set; }
 
-        public INodeForTree<CommonTree>? ParentNode => _parents.FirstOrDefault();
+        //public INodeForTree<CommonTree>? ParentNode => _parents.FirstOrDefault();
+        public INodeForTree<CommonTree>? ParentNode => _parent;
 
-        public IEnumerable<INodeForTree<CommonTree>>? ParentNodes => _parents;
+        //public IEnumerable<INodeForTree<CommonTree>>? ParentNodes => _parents;
 
         public IEnumerable<INodeForTree<CommonTree>>? ChildNodes => _children;
 
@@ -52,14 +54,16 @@ namespace GlacierKitCore.Utility.Tree
         {
 			Tree = tree;
 			_children = new List<CommonNodeForTree>();
-			_parents = new List<CommonNodeForTree>();
-        }
+			//_parents = new List<CommonNodeForTree>();
+			_parent = null;
+
+		}
 
 
-		public IObservable<IChangeSet<CommonNodeForTree>> ParentsConnect()
+		/*public IObservable<IChangeSet<CommonNodeForTree>> ParentsConnect()
 		{
 			throw new NotImplementedException();
-		}
+		}*/
 		public IObservable<IChangeSet<CommonNodeForTree>> ChildrenConnect()
 		{
 			throw new NotImplementedException();
