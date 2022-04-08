@@ -1,11 +1,13 @@
 ﻿using GlacierKitCore.Utility.Tree;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Xunit;
 
 namespace GlacierKitTestShared.CommonTestData
@@ -92,4 +94,169 @@ namespace GlacierKitTestShared.CommonTestData
 	}
 
 
+
+	public static class RecursiveTheoryData
+	{
+		public static IEnumerable ValuesOfType(Type type)
+		{
+			if (type == typeof(bool))
+			{
+				return new List<bool> { true, false };
+			}
+			if (type.IsEnum)
+			{
+				return (IEnumerable)
+				(
+					from object enumValue in Enum.GetValues(type)
+					select enumValue
+				);
+			}
+			throw new NotImplementedException($"Can't get values of type \"{type.Name}\"");
+		}
+
+		public static IEnumerable<T> ValuesOfType<T>()
+		{
+			return (IEnumerable<T>)ValuesOfType(typeof(T));
+		}
+
+
+		public static IEnumerable ValuesOf(object source)
+		{
+			if (source is IEnumerable enumerableSource)
+				return enumerableSource;
+			if (source is Type sourceType)
+				return ValuesOfType(sourceType);
+			throw new NotImplementedException($"Can't get values of type \"{source.GetType().Name}\"");
+		}
+
+
+		private static void CreateTheoryDataFromInternal(
+			IDictionary<string, object> sources,
+			ICollection<IDictionary<string, object?>> handledSources,
+			IDictionary<string, object?> withValues
+		)
+		{
+			KeyValuePair<string, object> source = sources.First();
+			bool isMoreRecursionNeeded = sources.Count > 1;
+
+			Dictionary<string, object>? nextLevelSources =
+				isMoreRecursionNeeded
+				? sources
+					.Where(param => param.Key != source.Key)
+					.ToDictionary(param => param.Key, param => param.Value)
+				: null
+			;
+
+			foreach (object? value in ValuesOf(source.Value))
+			{
+				withValues[source.Key] = value;
+				if (isMoreRecursionNeeded)
+					CreateTheoryDataFromInternal(nextLevelSources!, handledSources, withValues);
+				else
+					handledSources.Add(new Dictionary<string, object?>(withValues));
+			}
+			withValues.Remove(source.Key);
+		}
+		
+		public static IEnumerable<IDictionary<string, object?>> CreateTheoryDataFrom(IDictionary<string, object> sources)
+		{
+			ICollection<IDictionary<string, object?>> data = new List<IDictionary<string, object?>>();
+			CreateTheoryDataFromInternal(
+				sources,
+				data,
+				new Dictionary<string, object?>()
+			);
+
+			return data;
+		}
+	}
+
+
+
+	/*
+	public class CommonTreeTheoryData : TheoryData<CommonTree>
+	{
+		private void CreateWith(Dictionary<string, List<object?>> paramValues, IDictionary<string, object?> withValues)
+		{
+			KeyValuePair<string, List<object?>> thisParam = paramValues.First();
+			bool isMoreRecursionNeeded = paramValues.Count > 1;
+
+			Dictionary<string, List<object?>>? nextLevelParamValues =
+				isMoreRecursionNeeded
+				? paramValues
+					.Where(param => param.Key != thisParam.Key)
+					.ToDictionary(param => param.Key, param => param.Value)
+				: null
+			;
+
+			foreach ( object? value in thisParam.Value )
+			{
+				withValues[thisParam.Key] = value;
+				if (isMoreRecursionNeeded)
+					CreateWith(nextLevelParamValues!, withValues);
+				else
+				{
+					// NOTE: This requires manual editing if CommonTree's constructor changes
+					Add(new CommonTree(
+						reparentableNodes:
+							withValues.ContainsKey(nameof(CommonTree.ReparentableNodes))
+							? (ITree.ENodeSetTypeFlags)withValues[nameof(CommonTree.ReparentableNodes)]!
+							: ITree.ENodeSetTypeFlags.All,
+						deletableNodes:
+							withValues.ContainsKey(nameof(CommonTree.DeletableNodes))
+							? (ITree.ENodeSetTypeFlags)withValues[nameof(CommonTree.DeletableNodes)]!
+							: ITree.ENodeSetTypeFlags.NonRootNodes,
+						isSingleRootOnly:
+							withValues.ContainsKey(nameof(CommonTree.IsSingleRootOnly))
+							? (bool)withValues[nameof(CommonTree.IsSingleRootOnly)]!
+							: true,
+						areCircularDependenciesAllowed:
+							withValues.ContainsKey(nameof(CommonTree.AreCircularDependenciesAllowed))
+							? (bool)withValues[nameof(CommonTree.AreCircularDependenciesAllowed)]!
+							: false,
+						areMultipleParentsAllowed:
+							withValues.ContainsKey(nameof(CommonTree.AreMultipleParentsAllowed))
+							? (bool)withValues[nameof(CommonTree.AreMultipleParentsAllowed)]!
+							: false
+					));
+				}
+			}
+
+		}
+
+
+		CommonTreeTheoryData(IEnumerable<string> propertiesToTest, IDictionary<string, object?> withValues)
+		{
+			Dictionary<string, List<object?>> paramValues = new();
+
+			foreach (string propertyToTest in propertiesToTest)
+			{
+				Debug.Assert(
+					!withValues.ContainsKey(propertyToTest),
+					$"Duplicate property \"{propertyToTest}\" in {nameof(propertiesToTest)} and {nameof(withValues)}"
+				);
+
+				System.Reflection.PropertyInfo? propertyInfo = typeof(CommonTree).GetProperty(propertyToTest);
+
+				Debug.Assert(
+					propertyInfo != null,
+					$"CommonTree has no property \"{propertiesToTest}\""
+				);
+
+				Type propertyType = propertyInfo.PropertyType;
+
+				if (propertyType == typeof(bool))
+					paramValues[propertyToTest] = new List<object?> { true, false };
+				else if (propertyType == typeof(ITree.ENodeSetTypeFlags))
+				{
+					paramValues[propertyToTest] = new List<object?>();
+					foreach (object enumValue in Enum.GetValues(propertyType))
+						paramValues[propertyToTest].Add(enumValue);
+				}
+			}
+
+			CreateWith(paramValues, withValues);
+		}
+	}
+	*/
 }

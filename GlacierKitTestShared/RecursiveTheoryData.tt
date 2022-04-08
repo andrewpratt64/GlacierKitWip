@@ -1,0 +1,262 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ assembly name="System" #>
+<#@ assembly name="System.Collections" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Xml" #>
+
+<#@ assembly name="$(SolutionDir)\GlacierKitCore\$(OutputPath)GlacierKitCore.dll" #>
+
+<#@ output extension=".cs" #>
+
+// TODO: Unit test T4 code generation?
+
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Xunit;
+
+
+namespace GlacierKitTestShared.CommonTestData
+{
+	<#
+	foreach (KeyValuePair<string, List<(string ParamType, string Name)>> theoryDataItem in GetTheoryDataSet())
+	{
+		string classIdentifier = "_TYPE_" + theoryDataItem.Key + "TheoryData";
+		string templateArgs = StringifyTheoryDataTemplateArgs(theoryDataItem.Value);
+		
+	#>
+		public partial class <#=classIdentifier#> :
+			TheoryData<<#=templateArgs#>>
+		{
+			public <#=classIdentifier#>()
+			{
+				foreach
+				(
+					IDictionary<string, object?> item
+					in RecursiveTheoryData.CreateTheoryDataFrom(<#=StringifyParamsAsNewDictionaryForSource(theoryDataItem.Value)#>)
+				)
+					Add(<#=StringifyParamsForAdd(theoryDataItem.Value)#>);
+			}
+		}
+	<#
+	}
+	#>
+}
+
+
+<#+
+
+#nullable enable
+
+
+private Dictionary<string, List<(string ParamType, string Name)>> ParseTheoryDataModel(string path)
+{
+	XmlDocument model = new();
+	model.Load(path);
+	if (model.DocumentElement is XmlElement element)
+		return VisitTheoryDataModelRoot(element);
+	throw new Exception(path + " is missing a root xml node");
+}
+
+private string VisitTheoryDataModelTextNode(XmlNode node, string nodeName)
+{
+	Debug.Assert(
+		node.InnerText.Length > 0,
+		"\"" + nodeName + "\" nodes must have text content for their value"
+	);
+
+	return node.InnerText;
+}
+
+private Dictionary<string, List<(string ParamType, string Name)>> VisitTheoryDataModelRoot(XmlElement node)
+{
+	Debug.Assert(
+		node.LocalName == "RecursiveTheoryDataModel",
+		"Root node must be \"RecursiveTheoryDataModel\""
+	);
+
+	Dictionary<string, List<(string ParamType, string Name)>> output = new();
+
+	foreach (XmlNode classNode in node.ChildNodes)
+	{
+		if (classNode.NodeType == XmlNodeType.Element)
+		{
+			KeyValuePair<string, List<(string ParamType, string Name)>> classNodeOutput =
+				VisitTheoryDataModelClass(classNode);
+			output[classNodeOutput.Key] = classNodeOutput.Value;
+		}
+	}
+
+	return output;
+}
+
+private KeyValuePair<string, List<(string ParamType, string Name)>> VisitTheoryDataModelClass(XmlNode node)
+{
+	Debug.Assert(
+		node.LocalName == "class",
+		"Only \"class\" nodes may be children of the root \"RecursiveTheoryDataModel\" node"
+	);
+
+	string? classIdentifier = null;
+	List<(string ParamType, string Name)>? classParams = null;
+
+	foreach(XmlNode childNode in node.ChildNodes)
+	{
+		if (childNode.NodeType == XmlNodeType.Element)
+		{
+			if (childNode.LocalName == "identifier")
+			{
+				Debug.Assert(
+					classIdentifier == null,
+					"\"class\" nodes may only have one \"identifier\" child node"
+				);
+
+				classIdentifier = VisitTheoryDataModelTextNode(childNode, "identifier");
+			}
+			else if (childNode.LocalName == "params")
+			{
+				Debug.Assert(
+					classParams == null,
+					"\"class\" nodes may only have one \"params\" child node"
+				);
+
+				classParams = VisitTheoryDataModelClassParams(childNode);
+			}
+		}
+	}
+
+	return new KeyValuePair<string, List<(string ParamType, string Name)>>(
+		key: classIdentifier!,
+		value: classParams!
+	);
+}
+
+private List<(string ParamType, string Name)> VisitTheoryDataModelClassParams(XmlNode node)
+{
+	List<(string ParamType, string Name)> output = new();
+
+	foreach (XmlNode childNode in node.ChildNodes)
+	{
+		if (childNode.NodeType == XmlNodeType.Element)
+			output.Add(VisitTheoryDataModelClassParam(childNode));
+	}
+
+	return output;
+}
+
+private (string ParamType, string Name) VisitTheoryDataModelClassParam(XmlNode node)
+{
+	Debug.Assert(
+		node.LocalName == "param",
+		"Only \"param\" nodes may be children of \"params\" nodes"
+	);
+
+	string? paramType = null;
+	string? paramName = null;
+
+	foreach (XmlNode childNode in node.ChildNodes)
+	{
+		if (childNode.NodeType == XmlNodeType.Element)
+		{
+			if (childNode.LocalName == "type")
+			{
+				Debug.Assert(
+					paramType == null,
+					"\"param\" nodes may only have one \"type\" child node"
+				);
+
+				paramType = VisitTheoryDataModelTextNode(childNode, "param");
+			}
+			else if (childNode.LocalName == "name")
+			{
+				Debug.Assert(
+					paramName == null,
+					"\"param\" nodes may only have one \"name\" child node"
+				);
+
+				paramName = VisitTheoryDataModelTextNode(childNode, "name");
+			}
+			else
+				throw new Exception("\"param\" nodes may only have \"type\" and \"name\" nodes as children");
+		}
+	}
+
+	return (ParamType: paramType!, Name: paramName!);
+}
+
+
+
+private string GetTheoryDataModelPath()
+{
+	return this.Host.ResolvePath("RecursiveTheoryDataModel.xml");
+}
+
+
+private Dictionary<string, List<(string ParamType, string Name)>> GetTheoryDataSet()
+{
+	return ParseTheoryDataModel(GetTheoryDataModelPath());
+}
+
+
+private string StringifyAsCsv(IEnumerable<string> items)
+{
+	string output = string.Empty;
+	foreach (string item in items)
+		output += item + ',';
+	return output.TrimEnd(',');
+}
+
+private string TransformAndStringifyAsCsv<TItem>(IEnumerable<TItem> items, Func<TItem, string> transformer)
+{
+	List<string> output = new();
+	foreach (var item in items)
+		output.Add(transformer(item));
+	return StringifyAsCsv(output);
+}
+
+
+private string StringifyTheoryDataTemplateArgs(IEnumerable<(string ParamType, string Name)> theoryDataParams)
+{
+	return TransformAndStringifyAsCsv(
+		theoryDataParams,
+		theoryDataParam => theoryDataParam.ParamType
+	);
+}
+
+
+private string StringifySingleParamForSource((string ParamType, string Name) theoryDataParam)
+{
+	return $"[\"{theoryDataParam.Name}\"] = typeof({theoryDataParam.ParamType})";
+}
+
+private string StringifyParamsAsNewDictionaryForSource(IEnumerable<(string ParamType, string Name)> theoryDataParams)
+{
+	return
+		"new Dictionary<string, object>(){"
+		+ TransformAndStringifyAsCsv(theoryDataParams, StringifySingleParamForSource)
+		+ "}";
+}
+
+
+private string StringifySingleParamForAdd((string ParamType, string Name) theoryDataParam)
+{
+	return $"({theoryDataParam.ParamType})item[\"theoryDataParam.Name\"]!";
+}
+
+private string StringifyParamsForAdd(IEnumerable<(string ParamType, string Name)> theoryDataParams)
+{
+	return TransformAndStringifyAsCsv(theoryDataParams, StringifySingleParamForAdd);
+}
+#>

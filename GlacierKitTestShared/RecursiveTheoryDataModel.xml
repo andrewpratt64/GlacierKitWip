@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<RecursiveTheoryDataModel>
+	<class>
+		<identifier>CommonTree_DeleteNode</identifier>
+		<params>
+			<param>
+				<type>GlacierKitCore.Utility.Tree.ITree.ENodeType</type>
+				<name>typeToDelete</name>
+			</param>
+			<param>
+				<type>GlacierKitCore.Utility.Tree.ITree.ETreeAndNodeRelationshipType</type>
+				<name>relationshipOfNodeToDelete</name>
+			</param>
+			<param>
+				<type>GlacierKitCore.Utility.Tree.ITree.ENodeSetTypeFlags</type>
+				<name>deletableNodes</name>
+			</param>
+			<param>
+				<type>bool</type>
+				<name>shouldDeleteRecursively</name>
+			</param>
+			<param>
+				<type>bool</type>
+				<name>expectedReturnValue</name>
+			</param>
+		</params>
+	</class>
+</RecursiveTheoryDataModel>

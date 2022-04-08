@@ -109,5 +109,12 @@ namespace GlacierKitTestShared
         }
 
 		#endregion
+
+
+		#region Misc_utility_methods
+
+		
+
+		#endregion
 	}
 }
