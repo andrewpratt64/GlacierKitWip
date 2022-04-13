@@ -27,7 +27,6 @@ namespace GlacierKitCore.Models
 		/// <summary>
 		/// True if a new root node may be created, false otherwise
 		/// </summary>
-		[Reactive]
 		public abstract bool CanAddRootNode { get; protected set; }
 
 		#endregion
@@ -76,9 +75,7 @@ namespace GlacierKitCore.Models
 		/// </summary>
 		protected Tree()
 		{
-			throw new NotImplementedException();
-
-			//_nodes = new();
+			_nodes = new();
 		}
 
 		#endregion
@@ -96,6 +93,7 @@ namespace GlacierKitCore.Models
 		/// <summary>
 		/// The root node of the tree, or null if the tree is empty
 		/// </summary>
+		[Reactive]
 		public TreeNode<TNodeValue>? RootNode { get; internal set; }
 
 		#endregion
@@ -124,7 +122,18 @@ namespace GlacierKitCore.Models
 		/// </summary>
 		public SingleRootTree() : base()
 		{
-			throw new NotImplementedException();
+			CreateRootNode = ReactiveCommand.Create<TNodeValue, TreeNode<TNodeValue>>(
+				execute: nodeValue =>
+				{
+					TreeNode<TNodeValue> newRootNode = new(
+						containingTree: this,
+						nodeValue: nodeValue,
+						parent: null
+					);
+					RootNode = newRootNode;
+					return newRootNode;
+				}
+			);
 		}
 
 		#endregion
@@ -145,7 +154,7 @@ namespace GlacierKitCore.Models
 
 
 		#region Public_override_properties
-
+		[Reactive]
 		public override bool CanAddRootNode { get; protected set; }
 
 		#endregion
@@ -159,6 +168,20 @@ namespace GlacierKitCore.Models
 		#endregion
 
 
+		#region Public_methods
+
+		/// <summary>
+		/// Connect to and observe changes of all of the tree's root nodes
+		/// </summary>
+		/// <returns>An observable that emits the change set of root nodes</returns>
+		public IObservable<IChangeSet<TreeNode<TNodeValue>>> ConnectToRootNodes()
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
+
+
 		#region Constructor
 
 		/// <summary>
@@ -166,7 +189,18 @@ namespace GlacierKitCore.Models
 		/// </summary>
 		public MultiRootTree() : base()
 		{
-			throw new NotImplementedException();
+			CreateRootNode = ReactiveCommand.Create<TNodeValue, TreeNode<TNodeValue>>(
+				execute: nodeValue =>
+				{
+					TreeNode<TNodeValue> newRootNode = new(
+						containingTree: this,
+						nodeValue: nodeValue,
+						parent: null
+					);
+					//RootNode = newRootNode;
+					return newRootNode;
+				}
+			);
 		}
 
 		#endregion

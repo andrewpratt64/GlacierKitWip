@@ -18,7 +18,7 @@ namespace GlacierKitCore.Models
 	/// </summary>
 	/// <typeparam name="TNodeValue">The type of data this node represents</typeparam>
 	/// <remarks>This is used instead of DynamicData's <see cref="DynamicData.Node{TObject, TKey}"/> to restrict how nodes are constructed and to avoid re-generating trees</remarks>
-	public abstract class TreeNode<TNodeValue> : ReactiveObject
+	public class TreeNode<TNodeValue> : ReactiveObject
 	{
 		#region Private_fields
 
@@ -156,18 +156,6 @@ namespace GlacierKitCore.Models
 		public bool IsRootNode{ get; }
 
 		/// <summary>
-		/// True if this node may be deleted, false otherwise
-		/// </summary>
-		[ObservableAsProperty]
-		public bool CanDelete { get; }
-
-		/// <summary>
-		/// True if this node may be deleted along with all of it's direct and indirect children, false otherwise
-		/// </summary>
-		[ObservableAsProperty]
-		public bool CanRecursivelyDelete { get; }
-
-		/// <summary>
 		/// True if this node may reparent to the node stated by <see cref="DesiredParent"/>, false otherwise
 		/// </summary>
 		[ObservableAsProperty]
@@ -184,10 +172,8 @@ namespace GlacierKitCore.Models
 		/// <param name="containingTree"><inheritdoc cref="ContainingTree"/></param>
 		/// <param name="nodeValue"><inheritdoc cref="Value"/></param>
 		/// <param name="parent"><inheritdoc cref="Parent"/></param>
-		protected TreeNode(Tree<TNodeValue> containingTree, TNodeValue nodeValue, TreeNode<TNodeValue>? parent)
+		internal TreeNode(Tree<TNodeValue> containingTree, TNodeValue nodeValue, TreeNode<TNodeValue>? parent)
 		{
-			throw new NotImplementedException();
-			/*
 			_childNodes = new();
 
 			ContainingTree = containingTree;
@@ -207,7 +193,8 @@ namespace GlacierKitCore.Models
 			Delete = ReactiveCommand.Create<bool, Unit>(
 				execute: nodeValue =>
 				{
-					throw new NotImplementedException();
+					return Unit.Default;
+					//throw new NotImplementedException();
 				}
 				//canExecute: TODO
 			);
@@ -219,7 +206,6 @@ namespace GlacierKitCore.Models
 				}
 				//canExecute: TODO
 			);
-			*/
 		}
 
 		#endregion
