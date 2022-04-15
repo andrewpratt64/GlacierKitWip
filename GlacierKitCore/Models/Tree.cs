@@ -4,6 +4,7 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,6 +18,7 @@ namespace GlacierKitCore.Models
 	{
 		#region Non_public_fields
 
+		// NOTE: This field is instantiated and owned by the tree, but all manipulations comes from tree nodes
 		internal readonly SourceList<TreeNode<TNodeValue>> _nodes;
 
 		#endregion
@@ -40,7 +42,7 @@ namespace GlacierKitCore.Models
 		/// <returns>An observable that emits the change set of nodes</returns>
 		public IObservable<IChangeSet<TreeNode<TNodeValue>>> ConnectToNodes()
 		{
-			throw new NotImplementedException();
+			return _nodes.Connect();
 		}
 
 		#endregion
@@ -88,6 +90,13 @@ namespace GlacierKitCore.Models
 	/// <typeparam name="TNodeValue"><inheritdoc cref="Tree{TNodeValue}"/></typeparam>
 	public class SingleRootTree<TNodeValue> : Tree<TNodeValue>
 	{
+		#region Private_fields
+
+		private IObservable<bool> _canCreateRootNodeObservable;
+
+		#endregion
+
+
 		#region Public_properties
 
 		/// <summary>
@@ -122,6 +131,12 @@ namespace GlacierKitCore.Models
 		/// </summary>
 		public SingleRootTree() : base()
 		{
+			// Root node may be added only when no root node already exists
+			_canCreateRootNodeObservable = this.WhenAnyValue(x => x.RootNode)
+				.Select(x => x == null);
+			_canCreateRootNodeObservable.ToPropertyEx(this, x => x.CanAddRootNode);
+
+
 			CreateRootNode = ReactiveCommand.Create<TNodeValue, TreeNode<TNodeValue>>(
 				execute: nodeValue =>
 				{
@@ -131,8 +146,10 @@ namespace GlacierKitCore.Models
 						parent: null
 					);
 					RootNode = newRootNode;
+					
 					return newRootNode;
-				}
+				},
+				canExecute: _canCreateRootNodeObservable
 			);
 		}
 
@@ -176,7 +193,7 @@ namespace GlacierKitCore.Models
 		/// <returns>An observable that emits the change set of root nodes</returns>
 		public IObservable<IChangeSet<TreeNode<TNodeValue>>> ConnectToRootNodes()
 		{
-			throw new NotImplementedException();
+			return _rootNodes.Connect();
 		}
 
 		#endregion
@@ -189,6 +206,11 @@ namespace GlacierKitCore.Models
 		/// </summary>
 		public MultiRootTree() : base()
 		{
+			_rootNodes = new();
+
+			// Adding root nodes is always allowed
+			CanAddRootNode = true;
+
 			CreateRootNode = ReactiveCommand.Create<TNodeValue, TreeNode<TNodeValue>>(
 				execute: nodeValue =>
 				{
@@ -197,7 +219,7 @@ namespace GlacierKitCore.Models
 						nodeValue: nodeValue,
 						parent: null
 					);
-					//RootNode = newRootNode;
+					_rootNodes.Add(newRootNode);
 					return newRootNode;
 				}
 			);
