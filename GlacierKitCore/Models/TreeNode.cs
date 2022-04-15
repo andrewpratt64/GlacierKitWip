@@ -5,6 +5,7 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -23,6 +24,7 @@ namespace GlacierKitCore.Models
 		#region Private_fields
 
 		private SourceList<TreeNode<TNodeValue>> _childNodes;
+		private IObservable<bool> _canReparentObservable;
 
 		#endregion
 
@@ -36,6 +38,34 @@ namespace GlacierKitCore.Models
 		public IObservable<IChangeSet<TreeNode<TNodeValue>>> ConnectToChildNodes()
 		{
 			throw new NotImplementedException();
+		}
+
+
+		/// <summary>
+		/// Test if this node is a direct or indirect child of another node
+		/// </summary>
+		/// <param name="node">Node to test if this is a child of or not</param>
+		/// <returns>True if this node is a child of <paramref name="node"/>, false otherwise.</returns>
+		public bool IsChildOf(TreeNode<TNodeValue> node)
+		{
+			// Return false if this node was passed; a node can't be a child of itself
+			if (node == this)
+				return false;
+
+			// Walk up the tree until a root node is passed
+			TreeNode<TNodeValue>? nextNode = this;
+			do
+			{
+				nextNode = nextNode.Parent;
+				// Short-circuit and return true if one of the parent nodes are the one we're looking for
+				if (nextNode == node)
+					return true;
+			}
+			while (nextNode != null);
+
+			// If a root node was passed, we aren't a child
+			return false;
+			
 		}
 
 		#endregion
@@ -174,38 +204,96 @@ namespace GlacierKitCore.Models
 		/// <param name="parent"><inheritdoc cref="Parent"/></param>
 		internal TreeNode(Tree<TNodeValue> containingTree, TNodeValue nodeValue, TreeNode<TNodeValue>? parent)
 		{
+			// Init fields
 			_childNodes = new();
 
+			// Init properties
 			ContainingTree = containingTree;
 			Value = nodeValue;
 			Parent = parent;
-
 			DesiredParent = Optional<TreeNode<TNodeValue>?>.Empty;
 
+
+			// Init OAPHs
+
+			// Node can reparent to it's desired parent when the desired parent...
+			_canReparentObservable = this.WhenAnyValue(x => x.DesiredParent)
+				.Select
+				(x =>
+					// ...has a value,
+					x.HasValue
+					// is not this node,
+					&& x.Value != this
+					// and isn't a child of this node
+					&& ((!x.Value?.IsChildOf(this)) ?? true)
+				);
+			_canReparentObservable.ToPropertyEx(this, x => x.CanReparent);
+
+			// This is a root node when it's "Parent" property is set to null
+			this.WhenAnyValue(x => x.Parent)
+				.Select(x => x == null)
+				.ToPropertyEx(this, x => x.IsRootNode);
+
+
+			// Init commands
 			AddChild = ReactiveCommand.Create<TNodeValue, TreeNode<TNodeValue>>(
 				execute: nodeValue =>
 				{
-					throw new NotImplementedException();
+					// Create a new node as a child of this node
+					TreeNode<TNodeValue> newChildNode = new(
+						containingTree: ContainingTree,
+						nodeValue: nodeValue,
+						parent: this
+					);
+					// Remember the child
+					_childNodes.Add(newChildNode);
+					// Return the child
+					return newChildNode;
 				}
-				//canExecute: TODO
 			);
 
 			Delete = ReactiveCommand.Create<bool, Unit>(
-				execute: nodeValue =>
+				execute: shouldDeleteRecursively =>
 				{
+					// Delete all direct children if this is a recursive delete
+					if (shouldDeleteRecursively)
+					{
+						foreach (TreeNode<TNodeValue> childNode in _childNodes.Items)
+						{
+							childNode.Delete.Execute(true).Wait();
+						}
+					}
+					// Move all direct children up a depth level if this is not a recursive delete
+					else
+					{
+						foreach (TreeNode<TNodeValue> childNode in _childNodes.Items)
+						{
+							childNode.DesiredParent = Parent;
+							Debug.Assert(childNode.CanReparent, "Child node is unable to be moved up a level when deleting parent nonrecursively.");
+							childNode.Reparent.Execute().Wait();
+						}
+					}
+
+					// Register node from tree
+					ContainingTree._nodes.Remove(this);
+
 					return Unit.Default;
-					//throw new NotImplementedException();
 				}
-				//canExecute: TODO
 			);
 
 			Reparent = ReactiveCommand.Create<Unit, Unit>(
 				execute: nodeValue =>
 				{
-					throw new NotImplementedException();
-				}
-				//canExecute: TODO
+					// Change our parent to our desired parent
+					Parent = DesiredParent.Value;
+
+					return Unit.Default;
+				},
+				canExecute: _canReparentObservable
 			);
+
+			// Register node to containing tree
+			ContainingTree._nodes.Add(this);
 		}
 
 		#endregion

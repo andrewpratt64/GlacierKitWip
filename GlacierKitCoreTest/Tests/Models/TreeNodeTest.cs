@@ -100,6 +100,391 @@ namespace GlacierKitCoreTest.Tests.Models
 		#endregion
 
 
+		#region ConnectToChildNodes
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void Calling_ConnectToChildNodes_doesnt_throw(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+
+			// Act
+			tree = treeSource();
+			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+
+			// Assert
+			Util.AssertCodeDoesNotThrowException(
+				() => node.ConnectToChildNodes()
+			);
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void ConnectToChildNodes_doesnt_return_null(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+
+			// Act
+			tree = treeSource();
+			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+
+			// Assert
+			Assert.NotNull(node.ConnectToChildNodes());
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void ConnectToChildNodes_return_value_contains_pre_existing_nodes(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			List<TreeNode<object>> preExistingNodes = new();
+			IObservable<IChangeSet<TreeNode<object>>> returnValue;
+			ReadOnlyObservableCollection<TreeNode<object>> returnValueAsCollection;
+			IDisposable disposable;
+			const int childNodesToCreate = 3;
+			Assert.True(childNodesToCreate > 0);
+
+			// Act
+			tree = treeSource();
+			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			for (int i = 0; i < childNodesToCreate; i++)
+				preExistingNodes.Add(node.AddChild.Execute(GeneralUseData.SmallInt).Wait());
+
+			returnValue = tree.ConnectToNodes();
+			disposable = returnValue.Bind(out returnValueAsCollection).Subscribe();
+
+			// Assert
+			Util.AssertCollectionsHaveSameItems(preExistingNodes, returnValueAsCollection);
+
+			// Cleanup
+			disposable.Dispose();
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void ConnectToChildNodes_return_value_reflects_future_added_nodes(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			List<TreeNode<object>> nodes = new();
+			IObservable<IChangeSet<TreeNode<object>>> returnValue;
+			ReadOnlyObservableCollection<TreeNode<object>> returnValueAsCollection;
+			IDisposable disposable;
+			const int childNodesToCreateBeforeBinding = 3;
+			const int childNodesToCreateAfterBinding = 2;
+			Assert.True(childNodesToCreateBeforeBinding > 0);
+			Assert.True(childNodesToCreateAfterBinding > 0);
+
+			// Act
+			tree = treeSource();
+			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			for (int i = 0; i < childNodesToCreateBeforeBinding; i++)
+				nodes.Add(node.AddChild.Execute(GeneralUseData.SmallInt).Wait());
+
+			returnValue = tree.ConnectToNodes();
+			disposable = returnValue.Bind(out returnValueAsCollection).Subscribe();
+
+			for (int i = 0; i < childNodesToCreateAfterBinding; i++)
+				nodes.Add(node.AddChild.Execute(GeneralUseData.SmallInt).Wait());
+
+			// Assert
+			Util.AssertCollectionsHaveSameItems(nodes, returnValueAsCollection);
+
+			// Cleanup
+			disposable.Dispose();
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void ConnectToChildNodes_return_value_reflects_future_removed_nodes(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			List<TreeNode<object>> nodes = new();
+			IObservable<IChangeSet<TreeNode<object>>> returnValue;
+			ReadOnlyObservableCollection<TreeNode<object>> returnValueAsCollection;
+			IDisposable disposable;
+			const int childNodesToCreateBeforeBinding = 3;
+			const int childNodesToRemoveAfterBinding = 2;
+			Assert.True(childNodesToCreateBeforeBinding > 0);
+			Assert.True(childNodesToRemoveAfterBinding > 0);
+			Assert.True(childNodesToRemoveAfterBinding <= childNodesToCreateBeforeBinding);
+
+			// Act
+			tree = treeSource();
+			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			for (int i = 0; i < childNodesToCreateBeforeBinding; i++)
+				nodes.Add(node.AddChild.Execute(GeneralUseData.SmallInt).Wait());
+
+			returnValue = tree.ConnectToNodes();
+			disposable = returnValue.Bind(out returnValueAsCollection).Subscribe();
+
+			for (int i = 0; i < childNodesToRemoveAfterBinding; i++)
+				nodes.Remove(nodes.Last());
+
+			// Assert
+			Util.AssertCollectionsHaveSameItems(nodes, returnValueAsCollection);
+
+			// Cleanup
+			disposable.Dispose();
+		}
+
+		#endregion
+
+
+		#region IsChildOf
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void Calling_IsChildOf_with_direct_parent_doesnt_throw(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			TreeNode<object> nodeParam;
+
+			// Act
+			tree = treeSource();
+			TreeNode<object> root = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			nodeParam = root.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+			node = nodeParam.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+
+			// Assert
+			Util.AssertCodeDoesNotThrowException(
+				() => node.IsChildOf(nodeParam)
+			);
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void Calling_IsChildOf_with_direct_parent_returns_true(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			TreeNode<object> nodeParam;
+
+			// Act
+			tree = treeSource();
+			TreeNode<object> root = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			nodeParam = root.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+			node = nodeParam.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+
+			// Assert
+			Assert.True(node.IsChildOf(nodeParam));
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void Calling_IsChildOf_with_indirect_parent_doesnt_throw(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			TreeNode<object> nodeParam;
+
+			// Act
+			tree = treeSource();
+			TreeNode<object> root = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			nodeParam = root.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+			node = nodeParam.AddChild.Execute(GeneralUseData.SmallInt).Wait()
+				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+
+			// Assert
+			Util.AssertCodeDoesNotThrowException(
+				() => node.IsChildOf(nodeParam)
+			);
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void Calling_IsChildOf_with_indirect_parent_returns_true(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			TreeNode<object> nodeParam;
+
+			// Act
+			tree = treeSource();
+			TreeNode<object> root = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			nodeParam = root.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+			node = nodeParam.AddChild.Execute(GeneralUseData.SmallInt).Wait()
+				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+
+			// Assert
+			Assert.True(node.IsChildOf(nodeParam));
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void Calling_IsChildOf_with_child_doesnt_throw(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			TreeNode<object> nodeParam;
+
+			// Act
+			tree = treeSource();
+			TreeNode<object> root = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			node = root.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+			nodeParam = node.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+
+			// Assert
+			Util.AssertCodeDoesNotThrowException(
+				() => node.IsChildOf(nodeParam)
+			);
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void Calling_IsChildOf_with_child_returns_false(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			TreeNode<object> nodeParam;
+
+			// Act
+			tree = treeSource();
+			TreeNode<object> root = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			node = root.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+			nodeParam = node.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+
+			// Assert
+			Assert.False(node.IsChildOf(nodeParam));
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void Calling_IsChildOf_with_root_sibling_doesnt_throw(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			TreeNode<object> nodeParam;
+
+			// Act
+			tree = treeSource();
+			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			nodeParam = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+
+			// Assert
+			Util.AssertCodeDoesNotThrowException(
+				() => node.IsChildOf(nodeParam)
+			);
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void Calling_IsChildOf_with_root_sibling_returns_false(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			TreeNode<object> nodeParam;
+
+			// Act
+			tree = treeSource();
+			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			nodeParam = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+
+			// Assert
+			Assert.False(node.IsChildOf(nodeParam));
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void Calling_IsChildOf_with_non_root_sibling_doesnt_throw(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			TreeNode<object> nodeParam;
+
+			// Act
+			tree = treeSource();
+			TreeNode<object> root = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			node = root.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+			nodeParam = root.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+
+			// Assert
+			Util.AssertCodeDoesNotThrowException(
+				() => node.IsChildOf(nodeParam)
+			);
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void Calling_IsChildOf_with_non_root_sibling_returns_false(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			TreeNode<object> nodeParam;
+
+			// Act
+			tree = treeSource();
+			TreeNode<object> root = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			node = root.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+			nodeParam = root.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+
+			// Assert
+			Assert.False(node.IsChildOf(nodeParam));
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void Calling_IsChildOf_with_itself_doesnt_throw(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			TreeNode<object> nodeParam;
+
+			// Act
+			tree = treeSource();
+			TreeNode<object> root = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			node = root.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+			nodeParam = node;
+
+			// Assert
+			Util.AssertCodeDoesNotThrowException(
+				() => node.IsChildOf(nodeParam)
+			);
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void Calling_IsChildOf_with_itself_returns_false(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			TreeNode<object> nodeParam;
+
+			// Act
+			tree = treeSource();
+			TreeNode<object> root = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			node = root.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+			nodeParam = node;
+
+			// Assert
+			Assert.False(node.IsChildOf(nodeParam));
+		}
+
+		#endregion
+
+
 		#region ContainingTree
 
 		[Theory]
