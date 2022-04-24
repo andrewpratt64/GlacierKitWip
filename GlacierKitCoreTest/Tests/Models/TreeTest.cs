@@ -1,10 +1,13 @@
 ﻿using DynamicData;
 using GlacierKitCore.Models;
 using GlacierKitTestShared;
+using Microsoft.Reactive.Testing;
 using ReactiveUI;
+using ReactiveUI.Testing;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
@@ -28,8 +31,8 @@ namespace GlacierKitCoreTest.Tests.Models
 #pragma warning restore IDE1006 // Naming Styles
 	#endregion
 
-	
 
+	[SuppressMessage("Style", "IDE0018:Variable declaration can be inlined", Justification = "Test code often intentionally seperates declaration (Arrange) and assignment (Act)")]
 	public class TreeTest
 	{
 		#region Theory_data
@@ -55,7 +58,9 @@ namespace GlacierKitCoreTest.Tests.Models
 
 		[Theory]
 		[MemberData(nameof(_DATA_TreeTheoryData))]
+#pragma warning disable IDE1006 // Naming Styles
 		public static void _DATA_TreeTheoryData_Provides_unique_instances_on_each_invoke(Func<Tree<object>> treeSource)
+#pragma warning restore IDE1006 // Naming Styles
 		{
 			// Arrange
 			List<Tree<object>> returnedValues = new();
@@ -98,10 +103,12 @@ namespace GlacierKitCoreTest.Tests.Models
 			disposable = tree.CreateRootNode.CanExecute
 				.Subscribe(x => CreateRootNode_CanExecuteCurrentValue = x);
 
+#pragma warning disable IDE0037 // Use inferred member name
 			updateValues = () => values.Add((
 				CreateRootNode_CanExecute: CreateRootNode_CanExecuteCurrentValue,
 				CanAddRootNode: tree.CanAddRootNode
 			));
+#pragma warning restore IDE0037 // Use inferred member name
 
 			updateValues();
 			rootNode = tree.CreateRootNode.Execute(GeneralUseData.TinyString).Wait();
@@ -299,31 +306,30 @@ namespace GlacierKitCoreTest.Tests.Models
 			tree = treeSource();
 
 			// Add a single root node
-			nodes.Add(tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait());
+			nodes.Add(tree.CreateRootNode.Execute("Root").Wait());
 			// Add another two root nodes, if possible.
 			//	Temporarily remember one of them for later if added
 			TreeNode<object>? temporaryOtherRootNode = null;
 			if (tree.CanAddRootNode)
 			{
-				temporaryOtherRootNode = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+				temporaryOtherRootNode = tree.CreateRootNode.Execute("Another root").Wait();
 				nodes.Add(temporaryOtherRootNode);
-				nodes.Add(tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait());
+				nodes.Add(tree.CreateRootNode.Execute("Yet another root").Wait());
 			}
 
 			// Temporarily remember the first root node
 			TreeNode<object> temporaryRootNode = nodes[0];
 			// Create two children of that root node and remember both temporarily
 			TreeNode<object> temporaryBranchNode = temporaryRootNode
-				.AddChild.Execute(GeneralUseData.SmallString).Wait();
+				.AddChild.Execute("Branch").Wait();
 			TreeNode<object> temporaryOtherBranchNode = temporaryRootNode
-				.AddChild.Execute(GeneralUseData.SmallString).Wait();
+				.AddChild.Execute("Another branch").Wait();
 			// Create a child of that node as well and remember it temporarily
 			TreeNode<object> temporaryLeafNode = temporaryBranchNode
-				.AddChild.Execute(GeneralUseData.SmallString).Wait();
+				.AddChild.Execute("Leaf").Wait();
 			// Add extra children to the temporarily remembered nodes
-			nodes.Add(temporaryRootNode.AddChild.Execute(GeneralUseData.SmallString).Wait());
-			nodes.Add(temporaryBranchNode.AddChild.Execute(GeneralUseData.SmallString).Wait());
-			nodes.Add(temporaryOtherBranchNode.AddChild.Execute(GeneralUseData.SmallString).Wait());
+			nodes.Add(temporaryRootNode.AddChild.Execute("Some node").Wait());
+			nodes.Add(temporaryOtherBranchNode.AddChild.Execute("A child of another branch").Wait());
 			// Add the temporarily remembered nodes to the nodes List
 			//	(excluding temporaryRootNode, since it should already be added)
 			nodes.Add(temporaryBranchNode);
@@ -335,6 +341,7 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Delete some of the previously remembered nodes
 			nodes.Remove(temporaryLeafNode);
+			_ = temporaryLeafNode.Delete.Execute(true).Wait();
 			nodes.Remove(temporaryBranchNode);
 			_ = temporaryBranchNode.Delete.Execute(true).Wait();
 			nodes.Remove(temporaryOtherBranchNode);
@@ -405,17 +412,23 @@ namespace GlacierKitCoreTest.Tests.Models
 		[Trait("TreeClass", "SingleRootTree")]
 		public static void SingleRootTree_RootNode_is_null_after_removing_root_node()
 		{
-			// Arrange
-			SingleRootTree<object> tree;
-			TreeNode<object> rootNode;
+			new TestScheduler().With(scheduler =>
+			{
+				// Arrange
+				SingleRootTree<object> tree;
+				TreeNode<object> rootNode;
+				TreeNode<object>? actualValue;
 
-			// Act
-			tree = new();
-			rootNode = tree.CreateRootNode.Execute(GeneralUseData.SmallString).Wait();
-			rootNode.Delete.Execute(false).Wait();
+				// Act
+				tree = new();
+				rootNode = tree.CreateRootNode.Execute(GeneralUseData.SmallString).Wait();
+				rootNode.Delete.Execute(false).Wait();
+				scheduler.AdvanceBy(2);
+				actualValue = tree.RootNode;
 
-			// Assert
-			Assert.Null(tree.RootNode);
+				// Assert
+				Assert.Null(tree.RootNode);
+			});
 		}
 
 		[Fact]
@@ -512,17 +525,23 @@ namespace GlacierKitCoreTest.Tests.Models
 		[Trait("TreeClass", "SingleRootTree")]
 		public static void SingleRootTree_CanAddRootNode_is_true_after_root_node_is_deleted()
 		{
-			// Arrange
-			SingleRootTree<object> tree;
-			TreeNode<object> rootNode;
+			new TestScheduler().With(scheduler =>
+			{
+				// Arrange
+				SingleRootTree<object> tree;
+				TreeNode<object> rootNode;
+				bool actualValue;
 
-			// Act
-			tree = new();
-			rootNode = tree.CreateRootNode.Execute(GeneralUseData.SmallString).Wait();
-			rootNode.Delete.Execute(false).Wait();
+				// Act
+				tree = new();
+				rootNode = tree.CreateRootNode.Execute(GeneralUseData.SmallString).Wait();
+				rootNode.Delete.Execute(false).Wait();
+				scheduler.AdvanceBy(2);
+				actualValue = tree.CanAddRootNode;
 
-			// Assert
-			Assert.True(tree.CanAddRootNode);
+				// Assert
+				Assert.True(actualValue);
+			});
 		}
 
 		[Fact]
@@ -781,8 +800,10 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Act
 			tree = new();
 			rootNodes.Add(tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait());
-			
+
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
 			returnValue = tree.ConnectToRootNodes();
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
 
 			rootNodes.Add(tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait());
 			rootNodes.Add(tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait());
@@ -835,7 +856,7 @@ namespace GlacierKitCoreTest.Tests.Models
 
 		[Fact]
 		[Trait("TreeClass", "MultiRootTree")]
-		public static void MultiRootTree_ConnectToRootNodes_return_value_gains_one_node_after_executing_AddChild_on_root_node()
+		public static void MultiRootTree_ConnectToRootNodes_return_value_unaffected_after_executing_AddChild_on_root_node()
 		{
 			// Arrange
 			MultiRootTree<object> tree;
@@ -844,7 +865,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			ReadOnlyObservableCollection<TreeNode<object>> returnValueAsCollection;
 			int returnValueAsCollectionCountBefore;
 			int returnValueAsCollectionCountAfter;
-			int expectedReturnValueAsCollectionCountDelta = 1;
+			int expectedReturnValueAsCollectionCountDelta = 0;
 			int actualReturnValueAsCollectionCountDelta;
 			IDisposable disposable;
 

@@ -57,7 +57,12 @@
 				
 			</MenuItem>
 		</Menu>
-		<idc:DockControl Layout="{Binding DockLayout}"/>
+		<!--idc:DockControl Layout="{Binding DockLayout}"/-->
+		<StackPanel Orientation="Vertical">
+			<TextBlock Text="{Binding TMP_Tree.CanAddRootNode}"/>
+			<TextBlock Text="{Binding TMP_Tree.RootNode.Value, TargetNullValue=NULL, FallbackValue=FALLBACK}"/>
+			<Button Command="{Binding TMP_Tree.CreateRootNode}" CommandParameter="hi">Add Root</Button>
+		</StackPanel>
 	</DockPanel>
 
 </Window>

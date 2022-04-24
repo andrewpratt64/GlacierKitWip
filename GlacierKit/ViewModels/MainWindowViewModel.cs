@@ -68,10 +68,14 @@ namespace GlacierKit.ViewModels
         { get; set; } = null;
         public ReactiveCommand<Unit, Unit> TMP_WindowTypeHit
         { get; set; }
-        // TEMPORARY END
 
-        
-        public MainWindowViewModel() : this(null) { }
+		public SingleRootTree<string> TMP_Tree
+		{ get; set; }
+
+		// TEMPORARY END
+
+
+		public MainWindowViewModel() : this(null) { }
         public MainWindowViewModel(EditorContext? ctx)
         {
             // Use the provided context, or create a new one
@@ -126,11 +130,16 @@ namespace GlacierKit.ViewModels
             {
                 TMP_Commands.Add(command);
             }
-            // TEMPORARY END
 
-            // Execute our private CreateEditorWindow command when the editor context's
-            //  CreateEditorWindow command is executed with valid arguments
-            this.WhenAnyObservable(x => x.Ctx.CreateEditorWindow)
+			TMP_Tree = new SingleRootTree<string>();
+
+			//var root = TMP_Tree.CreateRootNode.Execute("I'm the root").Wait();
+
+			// TEMPORARY END
+
+			// Execute our private CreateEditorWindow command when the editor context's
+			//  CreateEditorWindow command is executed with valid arguments
+			this.WhenAnyObservable(x => x.Ctx.CreateEditorWindow)
                 .WhereNotNull()
                 .InvokeCommand(CreateEditorWindow);
             

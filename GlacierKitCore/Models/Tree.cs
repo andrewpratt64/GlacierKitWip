@@ -3,8 +3,10 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,7 +18,7 @@ namespace GlacierKitCore.Models
 	/// <typeparam name="TNodeValue">The type of data each node represents</typeparam>
 	public abstract class Tree<TNodeValue> : ReactiveObject
 	{
-		#region Non_public_fields
+		#region Non_public_fields_and_properties
 
 		// NOTE: This field is instantiated and owned by the tree, but all manipulations comes from tree nodes
 		internal readonly SourceList<TreeNode<TNodeValue>> _nodes;
@@ -29,7 +31,7 @@ namespace GlacierKitCore.Models
 		/// <summary>
 		/// True if a new root node may be created, false otherwise
 		/// </summary>
-		public abstract bool CanAddRootNode { get; protected set; }
+		public abstract bool CanAddRootNode { get; }
 
 		#endregion
 
@@ -93,6 +95,9 @@ namespace GlacierKitCore.Models
 		#region Private_fields
 
 		private IObservable<bool> _canCreateRootNodeObservable;
+		private ObservableAsPropertyHelper<bool> _canCreateRootNodePropertyHelper;
+		private IDisposable? _rootNodeDeleteCommandSubscription;
+		
 
 		#endregion
 
@@ -110,8 +115,9 @@ namespace GlacierKitCore.Models
 
 		#region Public_override_properties
 
-		[Reactive]
-		public override bool CanAddRootNode {get; protected set; }
+		/*[ObservableAsProperty]
+		public override bool CanAddRootNode { get; }*/
+		public override bool CanAddRootNode => _canCreateRootNodePropertyHelper.Value;
 
 		#endregion
 
@@ -129,13 +135,23 @@ namespace GlacierKitCore.Models
 		/// <summary>
 		/// <inheritdoc cref="Tree{TNodeValue}.Tree"/>
 		/// </summary>
-		public SingleRootTree() : base()
+		public SingleRootTree() :
+			base()
 		{
 			// Root node may be added only when no root node already exists
 			_canCreateRootNodeObservable = this.WhenAnyValue(x => x.RootNode)
 				.Select(x => x == null);
-			_canCreateRootNodeObservable.ToPropertyEx(this, x => x.CanAddRootNode);
+			_canCreateRootNodePropertyHelper = _canCreateRootNodeObservable
+				.ToProperty(
+					source: this,
+					property: x => x.CanAddRootNode,
+					scheduler: RxApp.MainThreadScheduler
+				);
+			//_canCreateRootNodeObservable.ToPropertyEx(this, x => x.CanAddRootNode);
 
+			// Update the subscription to the root node's delete command when the root node is added or removed
+			_canCreateRootNodeObservable
+				.Subscribe(x => UpdateRootNodeDeleteCommandSubscription(x));
 
 			CreateRootNode = ReactiveCommand.Create<TNodeValue, TreeNode<TNodeValue>>(
 				execute: nodeValue =>
@@ -154,6 +170,30 @@ namespace GlacierKitCore.Models
 		}
 
 		#endregion
+
+
+		#region Private_methods
+
+		private void UpdateRootNodeDeleteCommandSubscription(bool didRootNodeJustBecomeNull)
+		{
+			if (didRootNodeJustBecomeNull)
+			{
+				// Dispose the subscription if the root node was just deleted
+				_rootNodeDeleteCommandSubscription?.Dispose();
+				_rootNodeDeleteCommandSubscription = null;
+			}
+			else
+			{
+				// Subscribe if the root node was just added
+				Debug.Assert(_rootNodeDeleteCommandSubscription == null);
+				// When the delete command executes, set RootNode to null
+				_rootNodeDeleteCommandSubscription = RootNode!.Delete.IsExecuting
+					.Where(x => x)
+					.Subscribe(_ => RootNode = null);
+			}
+		}
+
+		#endregion
 	}
 
 
@@ -166,13 +206,17 @@ namespace GlacierKitCore.Models
 		#region Non_public_fields
 
 		internal readonly SourceList<TreeNode<TNodeValue>> _rootNodes;
+		private IObservable<bool> _canCreateRootNodeObservable;
+		private ObservableAsPropertyHelper<bool> _canCreateRootNodePropertyHelper;
 
 		#endregion
 
 
 		#region Public_override_properties
-		[Reactive]
-		public override bool CanAddRootNode { get; protected set; }
+
+		/*[ObservableAsProperty]
+		public override bool CanAddRootNode { get; }*/
+		public override bool CanAddRootNode => _canCreateRootNodePropertyHelper.Value;
 
 		#endregion
 
@@ -209,7 +253,14 @@ namespace GlacierKitCore.Models
 			_rootNodes = new();
 
 			// Adding root nodes is always allowed
-			CanAddRootNode = true;
+			// Root node may be added only when no root node already exists
+			_canCreateRootNodeObservable = Observable.Return(true);
+			_canCreateRootNodePropertyHelper = _canCreateRootNodeObservable
+				.ToProperty(
+					source: this,
+					property: x => x.CanAddRootNode,
+					scheduler: RxApp.MainThreadScheduler
+				);
 
 			CreateRootNode = ReactiveCommand.Create<TNodeValue, TreeNode<TNodeValue>>(
 				execute: nodeValue =>

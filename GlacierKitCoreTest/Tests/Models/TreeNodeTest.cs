@@ -6,6 +6,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
@@ -14,12 +15,13 @@ using Xunit;
 
 namespace GlacierKitCoreTest.Tests.Models
 {
+	[SuppressMessage("Style", "IDE0018:Variable declaration can be inlined", Justification = "Test code often intentionally seperates declaration (Arrange) and assignment (Act)")]
 	public class TreeNodeTest
 	{
 		#region Theory_data
 #pragma warning disable IDE1006 // Naming Styles
 
-		private class _TYPE_DeleteTheoryData : TheoryData<Func<Tree<object>>, bool>
+		public class _TYPE_DeleteTheoryData : TheoryData<Func<Tree<object>>, bool>
 		{
 			public _TYPE_DeleteTheoryData()
 			{
@@ -31,7 +33,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 
-		private class _TYPE_Value_test_TheoryData : TheoryData<Func<Tree<object?>>, object?>
+		public class _TYPE_Value_test_TheoryData : TheoryData<Func<Tree<object?>>, object?>
 		{
 			private void AddWithValue(object? v)
 			{
@@ -52,15 +54,17 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 
-		internal readonly _TYPE_TreeTheoryData<object> _DATA_TreeTheoryData = new();
-		private readonly _TYPE_DeleteTheoryData _DATA_DeleteTheoryData = new();
-		private readonly _TYPE_Value_test_TheoryData _DATA_Value_test_TheoryData = new();
+		public static readonly _TYPE_TreeTheoryData<object> _DATA_TreeTheoryData = new();
+		public static readonly _TYPE_DeleteTheoryData _DATA_DeleteTheoryData = new();
+		public static readonly _TYPE_Value_test_TheoryData _DATA_Value_test_TheoryData = new();
 
 #pragma warning restore IDE1006 // Naming Styles
 		#endregion
 
 
 		#region Theory_data_tests
+
+#pragma warning disable IDE1006 // Naming Styles
 
 		private static void TheoryData_provides_unique_instances_on_each_invoke(Func<object> treeSource)
 		{
@@ -96,6 +100,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 #pragma warning restore xUnit1026 // Theory methods should use all of their parameters
+#pragma warning restore IDE1006 // Naming Styles
 
 		#endregion
 
@@ -188,7 +193,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			for (int i = 0; i < childNodesToCreateBeforeBinding; i++)
 				nodes.Add(node.AddChild.Execute(GeneralUseData.SmallInt).Wait());
 
-			returnValue = tree.ConnectToNodes();
+			returnValue = node.ConnectToChildNodes();
 			disposable = returnValue.Bind(out returnValueAsCollection).Subscribe();
 
 			for (int i = 0; i < childNodesToCreateAfterBinding; i++)
@@ -628,7 +633,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			tree = treeSource();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = null;
+			node.DesiredParent.LastValue = null;
 
 			if (node.CanReparent)
 				_ = node.Reparent.Execute().Wait();
@@ -656,7 +661,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Act
 			tree = treeSource();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			node.DesiredParent.LastValue = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 
 			Assert.True(node.CanReparent, "Can't finish test, something is likely wrong with CanReparent or this test's implementation. (CanReparent is false)");
 			_ = node.Reparent.Execute().Wait();
@@ -697,25 +702,25 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Act/Assert
 			// This just reparents the node a bunch of times to make sure the binding has the correct value
 			Assert.Equal(node.Parent, reactor);
-			node.DesiredParent = lowestBranchNode;
+			node.DesiredParent.LastValue = lowestBranchNode;
 			node.Reparent.Execute();
 			Assert.Equal(node.Value, reactor);
-			node.DesiredParent = rootNode;
+			node.DesiredParent.LastValue = rootNode;
 			node.Reparent.Execute();
 			Assert.Equal(node.Value, reactor);
-			node.DesiredParent = leafNode;
+			node.DesiredParent.LastValue = leafNode;
 			node.Reparent.Execute();
 			Assert.Equal(node.Value, reactor);
-			node.DesiredParent = lowerLeafNode;
+			node.DesiredParent.LastValue = lowerLeafNode;
 			node.Reparent.Execute();
 			Assert.Equal(node.Value, reactor);
-			node.DesiredParent = firstBranchNode;
+			node.DesiredParent.LastValue = firstBranchNode;
 			node.Reparent.Execute();
 			Assert.Equal(node.Value, reactor);
-			node.DesiredParent = null;
+			node.DesiredParent.LastValue = null;
 			node.Reparent.Execute();
 			Assert.Equal(node.Value, reactor);
-			node.DesiredParent = lowerBranchNode;
+			node.DesiredParent.LastValue = lowerBranchNode;
 			node.Reparent.Execute();
 			Assert.Equal(node.Value, reactor);
 
@@ -734,7 +739,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Arrange
 			Tree<object> tree;
 			TreeNode<object> node;
-			Optional<TreeNode<object>?> actualValue;
+			ReactiveOptional<TreeNode<object>?> actualValue;
 
 			// Act
 			tree = treeSource();
@@ -753,7 +758,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			Tree<object> tree;
 			TreeNode<object> node;
 			TreeNode<object> nodeToReparentTo;
-			Optional<TreeNode<object>?> actualValue;
+			ReactiveOptional<TreeNode<object>?> actualValue;
 
 			// Act
 			tree = treeSource();
@@ -762,7 +767,7 @@ namespace GlacierKitCoreTest.Tests.Models
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 
-			node.DesiredParent = nodeToReparentTo;
+			node.DesiredParent.LastValue = nodeToReparentTo;
 			node.Reparent.Execute().Wait();
 
 			actualValue = node.DesiredParent;
@@ -778,7 +783,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Arrange
 			Tree<object> tree;
 			TreeNode<object> node;
-			Optional<TreeNode<object>?> reactor = null;
+			ReactiveOptional<TreeNode<object>?> reactor = ReactiveOptional<TreeNode<object>?>.MakeEmpty();
 			IDisposable disposable;
 
 			// Act
@@ -793,15 +798,15 @@ namespace GlacierKitCoreTest.Tests.Models
 				.Subscribe(x => reactor = x);
 
 			// Act/Assert
-			Assert.Equal(node.Parent, reactor);
-			node.DesiredParent = root;
-			Assert.Equal(node.Parent, reactor);
-			node.DesiredParent = Optional<TreeNode<object>?>.Empty;
-			Assert.Equal(node.Parent, reactor);
-			node.DesiredParent = otherNode;
-			Assert.Equal(node.Parent, reactor);
-			node.DesiredParent = null;
-			Assert.Equal(node.Parent, reactor);
+			Assert.Equal(node.Parent, reactor.LastValue);
+			node.DesiredParent.LastValue = root;
+			Assert.Equal(node.Parent, reactor.LastValue);
+			node.DesiredParent = ReactiveOptional<TreeNode<object>?>.MakeEmpty();
+			Assert.Equal(node.Parent, reactor.LastValue);
+			node.DesiredParent.LastValue = otherNode;
+			Assert.Equal(node.Parent, reactor.LastValue);
+			node.DesiredParent.LastValue = null;
+			Assert.Equal(node.Parent, reactor.LastValue);
 
 			disposable.Dispose();
 		}
@@ -1175,7 +1180,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			tree = treeSource();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = node.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
@@ -1200,7 +1205,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			tree = treeSource();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = node.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -1229,7 +1234,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = node.AddChild.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
@@ -1254,7 +1259,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			tree = treeSource();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = node.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -1331,7 +1336,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			tree = treeSource();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = node;
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
@@ -1356,7 +1361,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			tree = treeSource();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = node;
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -1369,7 +1374,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Reparent_from_root_to_child_->_another_root
 
 		[Fact]
-		public static void Both_CanReparent_and_Reparent_CanExecute_are_false_for_root_node_whos_DesiredParent_is_another_root(/*Impossible in a SingleRootTree*/)
+		public static void Both_CanReparent_and_Reparent_CanExecute_are_true_for_root_node_whos_DesiredParent_is_another_root(/*Impossible in a SingleRootTree*/)
 		{
 			// Arrange
 			Tree<object> tree;
@@ -1382,13 +1387,13 @@ namespace GlacierKitCoreTest.Tests.Models
 			tree = new MultiRootTree<object>();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
 			// Assert
-			Assert.False(actualCanReparentValue);
-			Assert.False(actualReparent_CanExecuteValue);
+			Assert.True(actualCanReparentValue);
+			Assert.True(actualReparent_CanExecuteValue);
 
 			// Cleanup
 			disposable.Dispose();
@@ -1406,7 +1411,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			tree = new MultiRootTree<object>();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -1444,7 +1449,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			tree = treeSource();
 			desiredParent = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			node = desiredParent.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
@@ -1469,7 +1474,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			tree = treeSource();
 			desiredParent = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			node = desiredParent.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -1497,7 +1502,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			desiredParent = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			node = desiredParent.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
@@ -1523,7 +1528,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			desiredParent = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			node = desiredParent.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -1556,7 +1561,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			desiredParent = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			node = desiredParent.AddChild.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
@@ -1582,7 +1587,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			desiredParent = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			node = desiredParent.AddChild.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -1611,7 +1616,7 @@ namespace GlacierKitCoreTest.Tests.Models
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			node = desiredParent.AddChild.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
@@ -1638,7 +1643,7 @@ namespace GlacierKitCoreTest.Tests.Models
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			node = desiredParent.AddChild.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -1670,7 +1675,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
@@ -1695,7 +1700,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -1724,7 +1729,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			node = root.AddChild.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = root.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
@@ -1751,7 +1756,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			node = root.AddChild.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = root.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -1786,7 +1791,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = node.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
@@ -1812,7 +1817,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = node.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -1842,7 +1847,7 @@ namespace GlacierKitCoreTest.Tests.Models
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = node.AddChild.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
@@ -1869,7 +1874,7 @@ namespace GlacierKitCoreTest.Tests.Models
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = node.AddChild.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -1899,7 +1904,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			node = rootNode.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = rootNode.AddChild.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
@@ -1926,7 +1931,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			node = rootNode.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = rootNode.AddChild.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -2008,7 +2013,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = node;
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
@@ -2034,7 +2039,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = node;
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -2062,7 +2067,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			TreeNode<object> rootNode = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			node = rootNode.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = rootNode.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
@@ -2088,7 +2093,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			TreeNode<object> rootNode = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			node = rootNode.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = rootNode.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -2119,7 +2124,7 @@ namespace GlacierKitCoreTest.Tests.Models
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = rootNode.AddChild.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 			actualCanReparentValue = node.CanReparent;
 			IDisposable disposable = node.Reparent.CanExecute.Subscribe(x => actualReparent_CanExecuteValue = x);
 
@@ -2147,7 +2152,7 @@ namespace GlacierKitCoreTest.Tests.Models
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 			desiredParent = rootNode.AddChild.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = desiredParent;
+			node.DesiredParent.LastValue = desiredParent;
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -2212,7 +2217,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			tree = treeSource();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = null;
+			node.DesiredParent.LastValue = null;
 
 			if (node.CanReparent)
 				node.Reparent.Execute().Wait();
@@ -2237,7 +2242,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Act
 			tree = treeSource();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			node.DesiredParent.LastValue = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 
 			Assert.True(node.CanReparent, "Can't finish test, something is likely wrong with CanReparent or this test's implementation. (CanReparent is false)");
 			node.Reparent.Execute().Wait();

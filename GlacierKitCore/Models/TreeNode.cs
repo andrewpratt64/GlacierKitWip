@@ -23,8 +23,7 @@ namespace GlacierKitCore.Models
 	{
 		#region Private_fields
 
-		private SourceList<TreeNode<TNodeValue>> _childNodes;
-		private IObservable<bool> _canReparentObservable;
+		private readonly SourceList<TreeNode<TNodeValue>> _childNodes;
 
 		#endregion
 
@@ -37,7 +36,7 @@ namespace GlacierKitCore.Models
 		/// <returns>An observable that emits the change set of child nodes</returns>
 		public IObservable<IChangeSet<TreeNode<TNodeValue>>> ConnectToChildNodes()
 		{
-			throw new NotImplementedException();
+			return _childNodes.Connect();
 		}
 
 
@@ -116,7 +115,7 @@ namespace GlacierKitCore.Models
 		/// </list>
 		/// </remarks>
 		[Reactive]
-		public Optional<TreeNode<TNodeValue>?> DesiredParent { get; set; }
+		public ReactiveOptional<TreeNode<TNodeValue>?> DesiredParent { get; set; }
 
 		#endregion
 
@@ -211,31 +210,30 @@ namespace GlacierKitCore.Models
 			ContainingTree = containingTree;
 			Value = nodeValue;
 			Parent = parent;
-			DesiredParent = Optional<TreeNode<TNodeValue>?>.Empty;
+			DesiredParent = ReactiveOptional<TreeNode<TNodeValue>?>.MakeEmpty();
 
 
-			// Init OAPHs
+			#region Init_OAPHs
 
-			// Node can reparent to it's desired parent when the desired parent...
-			_canReparentObservable = this.WhenAnyValue(x => x.DesiredParent)
-				.Select
-				(x =>
-					// ...has a value,
-					x.HasValue
-					// is not this node,
-					&& x.Value != this
-					// and isn't a child of this node
-					&& ((!x.Value?.IsChildOf(this)) ?? true)
-				);
-			_canReparentObservable.ToPropertyEx(this, x => x.CanReparent);
+			// Have CanReparent react to changes in DesiredParent
+			IObservable<bool> canReparentObservable = this
+				.WhenAnyValue(x => x.DesiredParent.LastValue)
+				.Select(_ => CanReparentNow())
+				.ObserveOn(RxApp.MainThreadScheduler);
+			canReparentObservable.ToPropertyEx(this, x => x.CanReparent, initialValue: false, scheduler: RxApp.MainThreadScheduler);
 
-			// This is a root node when it's "Parent" property is set to null
+			// Have IsRootNode react to changes in Parent
+			//	This is a root node when it's "Parent" property is set to null
 			this.WhenAnyValue(x => x.Parent)
+				.ObserveOn(RxApp.MainThreadScheduler)
 				.Select(x => x == null)
 				.ToPropertyEx(this, x => x.IsRootNode);
 
+			#endregion
 
-			// Init commands
+
+			#region Init_commands
+
 			AddChild = ReactiveCommand.Create<TNodeValue, TreeNode<TNodeValue>>(
 				execute: nodeValue =>
 				{
@@ -268,13 +266,12 @@ namespace GlacierKitCore.Models
 					{
 						foreach (TreeNode<TNodeValue> childNode in _childNodes.Items)
 						{
-							childNode.DesiredParent = Parent;
-							Debug.Assert(childNode.CanReparent, "Child node is unable to be moved up a level when deleting parent nonrecursively.");
+							childNode.DesiredParent.LastValue = Parent;
 							childNode.Reparent.Execute().Wait();
 						}
 					}
 
-					// Register node from tree
+					// Unregister node from tree
 					ContainingTree._nodes.Remove(this);
 
 					return Unit.Default;
@@ -285,17 +282,34 @@ namespace GlacierKitCore.Models
 				execute: nodeValue =>
 				{
 					// Change our parent to our desired parent
-					Parent = DesiredParent.Value;
+					Parent = DesiredParent.LastValue;
 
 					return Unit.Default;
 				},
-				canExecute: _canReparentObservable
+				canExecute: canReparentObservable
 			);
+
+			#endregion
 
 			// Register node to containing tree
 			ContainingTree._nodes.Add(this);
 		}
 
 		#endregion
+
+		private bool CanReparentNow()
+		{
+			// Node can reparent to it's desired parent when the desired parent...
+			return
+				// ...has a value,
+				DesiredParent.HasValue
+				// is not this node,
+				&& DesiredParent.LastValue != this
+				// is not this node's direct parent,
+				&& DesiredParent.LastValue != Parent
+				// and isn't a child of this node
+				&& ((!DesiredParent.LastValue?.IsChildOf(this)) ?? true)
+			;
+		}
 	}
 }
