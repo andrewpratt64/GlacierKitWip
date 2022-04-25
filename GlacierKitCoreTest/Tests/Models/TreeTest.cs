@@ -820,7 +820,7 @@ namespace GlacierKitCoreTest.Tests.Models
 
 		[Fact]
 		[Trait("TreeClass", "MultiRootTree")]
-		public static void MultiRootTree_ConnectToRootNodes_return_value_reflects_future_removed_root_nodes()
+		public static void MultiRootTree_ConnectToRootNodes_return_value_reflects_future_removed_root_nodes()  
 		{
 			// Arrange
 			MultiRootTree<object> tree;
@@ -831,11 +831,11 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			tree = new();
-			rootNodes.Add(tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait());
-			rootNodes.Add(tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait());
-			rootNodes.Add(tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait());
-			rootNodes.Add(tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait());
-			rootNodes.Add(tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait());
+			rootNodes.Add(tree.CreateRootNode.Execute("Root #1").Wait());
+			rootNodes.Add(tree.CreateRootNode.Execute("Root #2").Wait());
+			rootNodes.Add(tree.CreateRootNode.Execute("Root #3").Wait());
+			rootNodes.Add(tree.CreateRootNode.Execute("Root #4").Wait());
+			rootNodes.Add(tree.CreateRootNode.Execute("Root #5").Wait());
 
 			returnValue = tree.ConnectToRootNodes();
 			disposable = returnValue.Bind(out returnValueAsCollection).Subscribe();

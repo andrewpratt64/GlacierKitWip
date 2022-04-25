@@ -97,7 +97,7 @@ namespace GlacierKitCore.Models
 		private IObservable<bool> _canCreateRootNodeObservable;
 		private ObservableAsPropertyHelper<bool> _canCreateRootNodePropertyHelper;
 		private IDisposable? _rootNodeDeleteCommandSubscription;
-		
+
 
 		#endregion
 
@@ -162,7 +162,7 @@ namespace GlacierKitCore.Models
 						parent: null
 					);
 					RootNode = newRootNode;
-					
+
 					return newRootNode;
 				},
 				canExecute: _canCreateRootNodeObservable
@@ -208,6 +208,7 @@ namespace GlacierKitCore.Models
 		internal readonly SourceList<TreeNode<TNodeValue>> _rootNodes;
 		private IObservable<bool> _canCreateRootNodeObservable;
 		private ObservableAsPropertyHelper<bool> _canCreateRootNodePropertyHelper;
+		private IDictionary<TreeNode<TNodeValue>, IDisposable> _rootNodeDeleteCommandSubscriptions;
 
 		#endregion
 
@@ -251,6 +252,7 @@ namespace GlacierKitCore.Models
 		public MultiRootTree() : base()
 		{
 			_rootNodes = new();
+			_rootNodeDeleteCommandSubscriptions = new Dictionary<TreeNode<TNodeValue>, IDisposable>();
 
 			// Adding root nodes is always allowed
 			// Root node may be added only when no root node already exists
@@ -261,6 +263,13 @@ namespace GlacierKitCore.Models
 					property: x => x.CanAddRootNode,
 					scheduler: RxApp.MainThreadScheduler
 				);
+
+			// When a new root node is added, subscribe to it's delete command
+			_rootNodes
+				.Connect()
+				.OnItemAdded(x => SubscribeToRootNodeDeleteCommand(x))
+				.Subscribe();
+
 
 			CreateRootNode = ReactiveCommand.Create<TNodeValue, TreeNode<TNodeValue>>(
 				execute: nodeValue =>
@@ -274,6 +283,27 @@ namespace GlacierKitCore.Models
 					return newRootNode;
 				}
 			);
+		}
+
+		#endregion
+
+
+		#region Private_methods
+
+		private void SubscribeToRootNodeDeleteCommand(TreeNode<TNodeValue> newRootNode)
+		{
+			// Remember the new root node, and unsubscribe when it's delete command executes
+			Debug.Assert(!_rootNodeDeleteCommandSubscriptions.ContainsKey(newRootNode));
+			_rootNodeDeleteCommandSubscriptions[newRootNode] = newRootNode.Delete.IsExecuting
+				.Where(x => x)
+				.Subscribe(_ => UnsubscribeFromRootNodeDeleteCommand(newRootNode));
+		}
+
+		private void UnsubscribeFromRootNodeDeleteCommand(TreeNode<TNodeValue> newRootNode)
+		{
+			_rootNodeDeleteCommandSubscriptions[newRootNode].Dispose();
+			_rootNodeDeleteCommandSubscriptions.Remove(newRootNode);
+			_rootNodes.Remove(newRootNode);
 		}
 
 		#endregion
