@@ -100,7 +100,9 @@ namespace GlacierKitTestShared
         /// <typeparam name="TItem">Type of each item</typeparam>
         /// <param name="expectedItems">The items expected to be in <paramref name="actualItems"/></param>
         /// <param name="actualItems">The collection to test</param>
+        /// <exception cref="ArgumentNullException">Thrown if the items of the two collections don't match</exception>
         /// <exception cref="Xunit.Sdk.EmptyException">Thrown if the items of the two collections don't match</exception>
+        /// <exception cref="Xunit.Sdk.EqualException">Thrown if the items of the two collections don't match</exception>
         public static void AssertCollectionsHaveSameItems<TItem>(IEnumerable<TItem> expectedItems, IEnumerable<TItem> actualItems)
         {
 			Assert.Equal(expectedItems.Count(), actualItems.Count());

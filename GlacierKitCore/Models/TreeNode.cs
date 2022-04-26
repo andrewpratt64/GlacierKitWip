@@ -271,7 +271,12 @@ namespace GlacierKitCore.Models
 						}
 					}
 
+					// Unregister node from parent, if any
+					Debug.Assert(Parent == null || Parent._childNodes.Items.Contains(this));
+					Parent?._childNodes.Remove(this);
+
 					// Unregister node from tree
+					Debug.Assert(ContainingTree._nodes.Items.Contains(this));
 					ContainingTree._nodes.Remove(this);
 
 					return Unit.Default;
@@ -283,6 +288,7 @@ namespace GlacierKitCore.Models
 				{
 					// Change our parent to our desired parent
 					Parent = DesiredParent.LastValue;
+					DesiredParent.HasValue = false;
 
 					return Unit.Default;
 				},

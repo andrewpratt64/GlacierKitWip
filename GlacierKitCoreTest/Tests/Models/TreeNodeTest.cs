@@ -158,6 +158,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Act
 			tree = treeSource();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			preExistingNodes.Add(node);
 			for (int i = 0; i < childNodesToCreate; i++)
 				preExistingNodes.Add(node.AddChild.Execute(GeneralUseData.SmallInt).Wait());
 
@@ -229,11 +230,15 @@ namespace GlacierKitCoreTest.Tests.Models
 			for (int i = 0; i < childNodesToCreateBeforeBinding; i++)
 				nodes.Add(node.AddChild.Execute(GeneralUseData.SmallInt).Wait());
 
-			returnValue = tree.ConnectToNodes();
+			returnValue = node.ConnectToChildNodes();
 			disposable = returnValue.Bind(out returnValueAsCollection).Subscribe();
 
 			for (int i = 0; i < childNodesToRemoveAfterBinding; i++)
-				nodes.Remove(nodes.Last());
+			{
+				TreeNode<object> nodeToDelete = nodes.Last();
+				nodes.Remove(nodeToDelete);
+				nodeToDelete.Delete.Execute(false).Wait();
+			}
 
 			// Assert
 			Util.AssertCollectionsHaveSameItems(nodes, returnValueAsCollection);
@@ -369,9 +374,8 @@ namespace GlacierKitCoreTest.Tests.Models
 			Assert.False(node.IsChildOf(nodeParam));
 		}
 
-		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
-		public static void Calling_IsChildOf_with_root_sibling_doesnt_throw(Func<Tree<object>> treeSource)
+		[Fact]
+		public static void Calling_IsChildOf_with_root_sibling_doesnt_throw()
 		{
 			// Arrange
 			Tree<object> tree;
@@ -379,7 +383,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			TreeNode<object> nodeParam;
 
 			// Act
-			tree = treeSource();
+			tree = new MultiRootTree<object>();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			nodeParam = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 
@@ -389,9 +393,8 @@ namespace GlacierKitCoreTest.Tests.Models
 			);
 		}
 
-		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
-		public static void Calling_IsChildOf_with_root_sibling_returns_false(Func<Tree<object>> treeSource)
+		[Fact]
+		public static void Calling_IsChildOf_with_root_sibling_returns_false()
 		{
 			// Arrange
 			Tree<object> tree;
@@ -399,7 +402,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			TreeNode<object> nodeParam;
 
 			// Act
-			tree = treeSource();
+			tree = new MultiRootTree<object>();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			nodeParam = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 
@@ -631,17 +634,10 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			tree = treeSource();
-			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait()
-				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			node.DesiredParent.LastValue = null;
+			TreeNode<object> rootNode = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			node = rootNode.AddChild.Execute(GeneralUseData.SmallInt).Wait();
 
-			if (node.CanReparent)
-				_ = node.Reparent.Execute().Wait();
-			else
-			{
-				Assert.True(node.Parent != null, "Can't finish test, something is likely wrong with CanReparent or this test's implementation. (CanReparent is false while Parent is null)");
-				node.Parent!.Delete.Execute(false);
-			}
+			node.Parent!.Delete.Execute(false).Wait();
 
 			actualValue = node.Parent;
 
@@ -649,9 +645,8 @@ namespace GlacierKitCoreTest.Tests.Models
 			Assert.Null(actualValue);
 		}
 
-		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
-		public static void Parent_is_not_null_after_becoming_a_non_root_node(Func<Tree<object>> treeSource)
+		[Fact]
+		public static void Parent_is_not_null_after_becoming_a_non_root_node()
 		{
 			// Arrange
 			Tree<object> tree;
@@ -659,7 +654,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			TreeNode<object>? actualValue;
 
 			// Act
-			tree = treeSource();
+			tree = new MultiRootTree<object>();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			node.DesiredParent.LastValue = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 
@@ -704,25 +699,25 @@ namespace GlacierKitCoreTest.Tests.Models
 			Assert.Equal(node.Parent, reactor);
 			node.DesiredParent.LastValue = lowestBranchNode;
 			node.Reparent.Execute();
-			Assert.Equal(node.Value, reactor);
+			Assert.Equal(node.Value, reactor!.Value);
 			node.DesiredParent.LastValue = rootNode;
 			node.Reparent.Execute();
-			Assert.Equal(node.Value, reactor);
+			Assert.Equal(node.Value, reactor!.Value);
 			node.DesiredParent.LastValue = leafNode;
 			node.Reparent.Execute();
-			Assert.Equal(node.Value, reactor);
+			Assert.Equal(node.Value, reactor!.Value);
 			node.DesiredParent.LastValue = lowerLeafNode;
 			node.Reparent.Execute();
-			Assert.Equal(node.Value, reactor);
+			Assert.Equal(node.Value, reactor!.Value);
 			node.DesiredParent.LastValue = firstBranchNode;
 			node.Reparent.Execute();
-			Assert.Equal(node.Value, reactor);
+			Assert.Equal(node.Value, reactor!.Value);
 			node.DesiredParent.LastValue = null;
 			node.Reparent.Execute();
-			Assert.Equal(node.Value, reactor);
+			Assert.Equal(node.Value, reactor!.Value);
 			node.DesiredParent.LastValue = lowerBranchNode;
 			node.Reparent.Execute();
-			Assert.Equal(node.Value, reactor);
+			Assert.Equal(node.Value, reactor!.Value);
 
 			disposable.Dispose();
 		}
@@ -797,16 +792,25 @@ namespace GlacierKitCoreTest.Tests.Models
 				.ObserveOn(RxApp.MainThreadScheduler)
 				.Subscribe(x => reactor = x);
 
+
 			// Act/Assert
-			Assert.Equal(node.Parent, reactor.LastValue);
+			Assert.False(node.DesiredParent.HasValue);
+			
 			node.DesiredParent.LastValue = root;
-			Assert.Equal(node.Parent, reactor.LastValue);
+			Assert.True(node.DesiredParent.HasValue);
+			Assert.Equal(node.DesiredParent.LastValue, reactor.LastValue);
+			
 			node.DesiredParent = ReactiveOptional<TreeNode<object>?>.MakeEmpty();
-			Assert.Equal(node.Parent, reactor.LastValue);
+			Assert.False(node.DesiredParent.HasValue);
+
 			node.DesiredParent.LastValue = otherNode;
-			Assert.Equal(node.Parent, reactor.LastValue);
+			Assert.True(node.DesiredParent.HasValue);
+			Assert.Equal(node.DesiredParent.LastValue, reactor.LastValue);
+			
 			node.DesiredParent.LastValue = null;
-			Assert.Equal(node.Parent, reactor.LastValue);
+			Assert.True(node.DesiredParent.HasValue);
+			Assert.Equal(node.DesiredParent.LastValue, reactor.LastValue);
+
 
 			disposable.Dispose();
 		}
@@ -823,15 +827,19 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Arrange
 			Tree<object> tree;
 			TreeNode<object> node;
-			bool actualValue;
+			bool? actualValue = null;
+			IDisposable disposable;
 
 			// Act
 			tree = treeSource();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
-			actualValue = node.AddChild.CanExecute.Wait();
+			disposable = node.AddChild.CanExecute.Subscribe(x => actualValue = x);
 
 			// Assert
 			Assert.True(actualValue);
+
+			// Cleanup
+			disposable.Dispose();
 		}
 
 		[Theory]
@@ -841,16 +849,20 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Arrange
 			Tree<object> tree;
 			TreeNode<object> node;
-			bool actualValue;
+			bool? actualValue = null;
+			IDisposable disposable;
 
 			// Act
 			tree = treeSource();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			actualValue = node.AddChild.CanExecute.Wait();
+			disposable = node.AddChild.CanExecute.Subscribe(x => actualValue = x);
 
 			// Assert
 			Assert.True(actualValue);
+
+			// Cleanup
+			disposable.Dispose();
 		}
 
 		[Theory]
@@ -941,15 +953,19 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Arrange
 			Tree<object> tree;
 			TreeNode<object> node;
-			bool actualValue;
+			bool? actualValue = null;
+			IDisposable disposable;
 
 			// Act
 			tree = treeSource();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
-			actualValue = node.Delete.CanExecute.Wait();
+			disposable = node.Delete.CanExecute.Subscribe(x => actualValue = x);
 
 			// Assert
 			Assert.True(actualValue);
+
+			// Cleanup
+			disposable.Dispose();
 		}
 
 		[Theory]
@@ -959,16 +975,20 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Arrange
 			Tree<object> tree;
 			TreeNode<object> node;
-			bool actualValue;
+			bool? actualValue = null;
+			IDisposable disposable;
 
 			// Act
 			tree = treeSource();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait()
 				.AddChild.Execute(GeneralUseData.SmallInt).Wait();
-			actualValue = node.Delete.CanExecute.Wait();
+			disposable = node.Delete.CanExecute.Subscribe(x => actualValue = x);
 
 			// Assert
 			Assert.True(actualValue);
+
+			// Cleanup
+			disposable.Dispose();
 		}
 
 		[Theory]
@@ -1128,19 +1148,20 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			tree = treeSource();
-			parentNode = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
-			node = parentNode.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+			parentNode = tree.CreateRootNode.Execute("Parent").Wait();
+			node = parentNode.AddChild.Execute("Node").Wait();
 			childNodes = new TreeNode<object>[numberOfChildNodesToCreatePerDepthLevel, numberOfDepthLevelsToCreate];
 			for (int childIndex = 0; childIndex < numberOfChildNodesToCreatePerDepthLevel; childIndex++)
 			{
-				childNodes[0, childIndex] = node.AddChild.Execute(GeneralUseData.SmallInt).Wait();
+				childNodes[0, childIndex] = node.AddChild.Execute($"Child #{childIndex} at lvl 0").Wait();
 				for (int depthLvl = 1; depthLvl < numberOfDepthLevelsToCreate; depthLvl++)
 				{
-					childNodes[depthLvl, childIndex] = childNodes[depthLvl - 1, childIndex].AddChild.Execute(GeneralUseData.SmallInt).Wait();
+					childNodes[depthLvl, childIndex] = childNodes[depthLvl - 1, childIndex].AddChild
+						.Execute($"Child #{childIndex} at lvl {depthLvl}").Wait();
 				}
 			}
 
-			node.Delete.Execute(false).Wait();
+			node.Delete.Execute(true).Wait();
 
 			disposable = parentNode.ConnectToChildNodes()
 				.Bind(out childNodesOfParentNode)
@@ -2223,24 +2244,26 @@ namespace GlacierKitCoreTest.Tests.Models
 				node.Reparent.Execute().Wait();
 			else
 			{
-				Assert.True(node.Parent != null, "Can't finish test, something is likely wrong with CanReparent or this test's implementation. (CanReparent is false while Parent is null)");
-				node.Parent!.Delete.Execute(false);
+				Assert.True(
+					node.Parent != null,
+					"Can't finish test, something is likely wrong with CanReparent or this test's implementation. (CanReparent is false while Parent is null)"
+				);
+				node.Parent!.Delete.Execute(false).Wait();
 			}
 
 			// Assert
 			Assert.True(node.IsRootNode);
 		}
 
-		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
-		public static void IsRootNode_is_false_for_node_after_becoming_a_non_root_node(Func<Tree<object>> treeSource)
+		[Fact]
+		public static void IsRootNode_is_false_for_node_after_becoming_a_non_root_node()
 		{
 			// Arrange
 			Tree<object> tree;
 			TreeNode<object> node;
 
 			// Act
-			tree = treeSource();
+			tree = new MultiRootTree<object>();
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			node.DesiredParent.LastValue = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 
@@ -2248,7 +2271,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			node.Reparent.Execute().Wait();
 
 			// Assert
-			Assert.True(node.IsRootNode);
+			Assert.False(node.IsRootNode);
 		}
 
 		#endregion

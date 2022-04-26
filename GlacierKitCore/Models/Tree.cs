@@ -140,6 +140,7 @@ namespace GlacierKitCore.Models
 		{
 			// Root node may be added only when no root node already exists
 			_canCreateRootNodeObservable = this.WhenAnyValue(x => x.RootNode)
+				.DistinctUntilChanged()
 				.Select(x => x == null);
 			_canCreateRootNodePropertyHelper = _canCreateRootNodeObservable
 				.ToProperty(
