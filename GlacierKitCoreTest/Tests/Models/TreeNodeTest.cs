@@ -2275,5 +2275,108 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		#endregion
+
+
+		#region PathToRoot
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void PathToRoot_has_expected_value_for_root_node(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			IEnumerable<TreeNode<object>> expectedValue;
+			IEnumerable<TreeNode<object>> actualValue;
+
+			// Act
+			tree = treeSource();
+			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
+			expectedValue = new List<TreeNode<object>>() { node };
+			actualValue = node.PathToRoot();
+
+			// Assert
+			Util.AssertCollectionsHaveSameItems(expectedValue, actualValue);
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void PathToRoot_has_expected_value_for_direct_child_of_root_node(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			IEnumerable<TreeNode<object>> expectedValue;
+			IEnumerable<TreeNode<object>> actualValue;
+
+			// Act
+			tree = treeSource();
+			TreeNode<object> root = tree.CreateRootNode.Execute("Root").Wait();
+			node = root.AddChild.Execute("Node").Wait();
+			expectedValue = new List<TreeNode<object>>() { node, root };
+			actualValue = node.PathToRoot();
+
+			// Assert
+			Util.AssertCollectionsHaveSameItems(expectedValue, actualValue);
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void PathToRoot_has_expected_value_for_indirect_child_of_root_node(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			IEnumerable<TreeNode<object>> expectedValue;
+			IEnumerable<TreeNode<object>> actualValue;
+
+			// Act
+			tree = treeSource();
+			TreeNode<object> root = tree.CreateRootNode.Execute("Root").Wait();
+			TreeNode<object>[] branches = new TreeNode<object>[3];
+			branches[0] = root.AddChild.Execute("Branch 0/2").Wait();
+			branches[1] = branches[0].AddChild.Execute("Branch 1/2").Wait();
+			branches[2] = branches[1].AddChild.Execute("Branch 2/2").Wait();
+			node = branches[2].AddChild.Execute("Node").Wait();
+			expectedValue = new List<TreeNode<object>>() { node, branches[2], branches[1], branches[0], root };
+			actualValue = node.PathToRoot();
+
+			// Assert
+			Util.AssertCollectionsHaveSameItems(expectedValue, actualValue);
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void PathToRoot_has_expected_value_for_indirect_child_of_root_node_when_unrelated_nodes_exist(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			TreeNode<object> node;
+			IEnumerable<TreeNode<object>> expectedValue;
+			IEnumerable<TreeNode<object>> actualValue;
+
+			// Act
+			tree = treeSource();
+			TreeNode<object> root = tree.CreateRootNode.Execute("Root").Wait();
+			TreeNode<object>[] branches = new TreeNode<object>[3];
+			root.AddChild.Execute("Unrelated child leaf of root").Wait();
+			TreeNode<object> tmp = root.AddChild.Execute("Unrelated child branch of root").Wait();
+			tmp.AddChild.Execute("Unrelated grandchild of root 0/1").Wait();
+			tmp.AddChild.Execute("Unrelated grandchild of root 1/1").Wait();
+			branches[0] = root.AddChild.Execute("Branch 0/2").Wait();
+			branches[0].AddChild.Execute("Unrelated child leaf of branch 0/2").Wait();
+			branches[1] = branches[0].AddChild.Execute("Branch 1/2").Wait();
+			branches[2] = branches[1].AddChild.Execute("Branch 2/2").Wait();
+			node = branches[2].AddChild.Execute("Node").Wait();
+			branches[2].AddChild.Execute("Unrelated child leaf 0/1 of branch 2/2").Wait();
+			branches[2].AddChild.Execute("Unrelated child leaf 1/1 of branch 2/2").Wait();
+			expectedValue = new List<TreeNode<object>>() { node, branches[2], branches[1], branches[0], root };
+			actualValue = node.PathToRoot();
+
+			// Assert
+			Util.AssertCollectionsHaveSameItems(expectedValue, actualValue);
+		}
+
+		#endregion
 	}
 }

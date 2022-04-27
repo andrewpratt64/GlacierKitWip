@@ -67,6 +67,24 @@ namespace GlacierKitCore.Models
 			
 		}
 
+
+		/// <summary>
+		/// Returns an ordered view of nodes, where each successive node is a parent of the previous node.
+		/// The first node is this node and the last is a root node.
+		/// </summary>
+		public IEnumerable<TreeNode<TNodeValue>> PathToRoot()
+		{
+			List<TreeNode<TNodeValue>> path = new();
+			TreeNode<TNodeValue>? nextNode = this;
+			do
+			{
+				path.Add(nextNode);
+				nextNode = nextNode.Parent;
+			}
+			while (nextNode != null);
+			return path;
+		}
+
 		#endregion
 
 
@@ -189,7 +207,7 @@ namespace GlacierKitCore.Models
 		/// </summary>
 		[ObservableAsProperty]
 		public bool CanReparent { get; }
-
+		
 		#endregion
 
 
@@ -303,6 +321,9 @@ namespace GlacierKitCore.Models
 
 		#endregion
 
+
+		#region Private_methods
+
 		private bool CanReparentNow()
 		{
 			// Node can reparent to it's desired parent when the desired parent...
@@ -317,5 +338,7 @@ namespace GlacierKitCore.Models
 				&& ((!DesiredParent.LastValue?.IsChildOf(this)) ?? true)
 			;
 		}
+
+		#endregion
 	}
 }
