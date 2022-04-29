@@ -148,6 +148,7 @@ namespace GlacierKitCoreTest.Tests.Models
 
 		#endregion
 
+
 		#region ConnectToNodes
 
 		[Theory]
@@ -361,14 +362,54 @@ namespace GlacierKitCoreTest.Tests.Models
 
 		#endregion
 
+
+		#region ShouldRecursivelyNotifyNodesOfReparenting
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[Trait("TreeClass", "Tree")]
+		[Trait("TestingMember", "Property_ShouldRecursivelyNotifyNodesOfReparenting")]
+		public static void Changes_to_ShouldRecursivelyNotifyNodesOfReparenting_may_be_reacted_to(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			bool? reactor = null;
+			IDisposable disposable;
+
+			// Act
+			tree = treeSource();
+			disposable = tree
+				.WhenAnyValue(x => x.ShouldRecursivelyNotifyNodesOfReparenting)
+				.ObserveOn(RxApp.MainThreadScheduler)
+				.Subscribe(x => reactor = x);
+
+			// Act / Assert
+			Assert.Equal(tree.ShouldRecursivelyNotifyNodesOfReparenting, reactor);
+			tree.ShouldRecursivelyNotifyNodesOfReparenting = false;
+			Assert.Equal(tree.ShouldRecursivelyNotifyNodesOfReparenting, reactor);
+			tree.ShouldRecursivelyNotifyNodesOfReparenting = true;
+			Assert.Equal(tree.ShouldRecursivelyNotifyNodesOfReparenting, reactor);
+			tree.ShouldRecursivelyNotifyNodesOfReparenting = false;
+			Assert.Equal(tree.ShouldRecursivelyNotifyNodesOfReparenting, reactor);
+			tree.ShouldRecursivelyNotifyNodesOfReparenting = false;
+			Assert.Equal(tree.ShouldRecursivelyNotifyNodesOfReparenting, reactor);
+			tree.ShouldRecursivelyNotifyNodesOfReparenting = true;
+			Assert.Equal(tree.ShouldRecursivelyNotifyNodesOfReparenting, reactor);
+
+			// Cleanup
+			disposable.Dispose();
+		}
+
 		#endregion
 
+	#endregion
 
-		#region SingleRootTree
+
+	#region SingleRootTree
 
 		#region Constructor
 
-		[Fact]
+			[Fact]
 		[Trait("TreeClass", "SingleRootTree")]
 		public static void SingleRootTree_Default_ctor_works()
 		{
@@ -376,6 +417,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		#endregion
+
 
 		#region RootNode
 
@@ -490,6 +532,7 @@ namespace GlacierKitCoreTest.Tests.Models
 
 		#endregion
 
+
 		#region CanAddRootNode
 
 		[Fact]
@@ -582,7 +625,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#endregion
 
 
-		#region MultiRootTree
+	#region MultiRootTree
 
 		#region Constructor
 
@@ -594,6 +637,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		#endregion
+
 
 		#region CanAddRootNode
 
@@ -723,6 +767,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		#endregion
+
 
 		#region ConnectToRootNodes
 

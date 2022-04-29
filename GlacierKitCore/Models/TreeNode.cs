@@ -67,24 +67,6 @@ namespace GlacierKitCore.Models
 			
 		}
 
-
-		/// <summary>
-		/// Returns an ordered view of nodes, where each successive node is a parent of the previous node.
-		/// The first node is this node and the last is a root node.
-		/// </summary>
-		public IEnumerable<TreeNode<TNodeValue>> PathToRoot()
-		{
-			List<TreeNode<TNodeValue>> path = new();
-			TreeNode<TNodeValue>? nextNode = this;
-			do
-			{
-				path.Add(nextNode);
-				nextNode = nextNode.Parent;
-			}
-			while (nextNode != null);
-			return path;
-		}
-
 		#endregion
 
 
@@ -207,7 +189,23 @@ namespace GlacierKitCore.Models
 		/// </summary>
 		[ObservableAsProperty]
 		public bool CanReparent { get; }
-		
+
+		/// <summary>
+		/// An ordered view of nodes, where each successive node is a parent of the previous node.
+		/// The first node is this node and the last is a root node.
+		/// </summary>
+		[ObservableAsProperty]
+		public IEnumerable<TreeNode<TNodeValue>> PathToRoot { get; }
+			/*List<TreeNode<TNodeValue>> path = new();
+			TreeNode<TNodeValue>? nextNode = this;
+			do
+			{
+				path.Add(nextNode);
+				nextNode = nextNode.Parent;
+			}
+			while (nextNode != null);
+			return path;*/
+
 		#endregion
 
 
@@ -229,8 +227,7 @@ namespace GlacierKitCore.Models
 			Value = nodeValue;
 			Parent = parent;
 			DesiredParent = ReactiveOptional<TreeNode<TNodeValue>?>.MakeEmpty();
-
-
+			
 			#region Init_OAPHs
 
 			// Have CanReparent react to changes in DesiredParent
@@ -246,6 +243,41 @@ namespace GlacierKitCore.Models
 				.ObserveOn(RxApp.MainThreadScheduler)
 				.Select(x => x == null)
 				.ToPropertyEx(this, x => x.IsRootNode);
+
+
+			// Have PathToRoot react to changes in direct and indirect parents,
+			//	 if reparent notifications are enabled
+
+			// (Observable for changes in parent)
+			IObservable<IEnumerable<TreeNode<TNodeValue>>> pathToRootParentObservable = this
+				.WhenAnyValue(x => x.Parent)
+				.ObserveOn(RxApp.MainThreadScheduler)
+				.Where(_ => ContainingTree.ShouldRecursivelyNotifyNodesOfReparenting)
+				.Select(_ => CalculatePathToRoot());
+			// (Observable for changes in parent's PathToRoot)
+			IObservable<IEnumerable<TreeNode<TNodeValue>>> pathToRootParentPathToRootObservable = this
+				.WhenAnyValue
+				(
+					x => x.Parent,
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+					x => x.Parent.PathToRoot,
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+					(parent, parentPathToRoot) => parentPathToRoot
+				)
+				.ObserveOn(RxApp.MainThreadScheduler)
+				.Where(_ => ContainingTree.ShouldRecursivelyNotifyNodesOfReparenting)
+				.Select(x => x.Prepend(this));
+			// (Binding of observables to this node's PathToRoot)
+			pathToRootParentObservable
+				.Merge(pathToRootParentPathToRootObservable)
+				.ToPropertyEx
+				(
+					source: this,
+					property: x => x.PathToRoot,
+					initialValue: new TreeNode<TNodeValue>[1] {this},
+					deferSubscription: true
+				);
+
 
 			#endregion
 
@@ -337,6 +369,20 @@ namespace GlacierKitCore.Models
 				// and isn't a child of this node
 				&& ((!DesiredParent.LastValue?.IsChildOf(this)) ?? true)
 			;
+		}
+
+
+		private IEnumerable<TreeNode<TNodeValue>> CalculatePathToRoot()
+		{
+			List<TreeNode<TNodeValue>> path = new();
+			TreeNode<TNodeValue>? nextNode = this;
+			do
+			{
+				path.Add(nextNode);
+				nextNode = nextNode.Parent;
+			}
+			while (nextNode != null);
+			return path;
 		}
 
 		#endregion

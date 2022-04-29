@@ -1,6 +1,7 @@
 ﻿using Avalonia.Data;
 using DynamicData;
 using GlacierKitCore.Models;
+using GlacierKitCore.Utility;
 using GlacierKitTestShared;
 using ReactiveUI;
 using System;
@@ -18,6 +19,52 @@ namespace GlacierKitCoreTest.Tests.Models
 	[SuppressMessage("Style", "IDE0018:Variable declaration can be inlined", Justification = "Test code often intentionally seperates declaration (Arrange) and assignment (Act)")]
 	public class TreeNodeTest
 	{
+		#region Private_utility_methods
+
+		private static bool IsNodesPathToRootNotEqualTo(TreeNode<object> node, IEnumerable<TreeNode<object>> compareTo)
+		{
+			if (node.PathToRoot.Count() != compareTo.Count())
+				return true;
+
+			for (int i = 0; i < compareTo.Count(); i++)
+			{
+				if (node.PathToRoot.ElementAt(i) != compareTo.ElementAt(i))
+					return true;
+			}
+			return false;
+		}
+
+		private static bool DidPathToRootChangeWhenReparenting(Tree<object> tree)
+		{
+
+			// Create nodes and get their initial values for PathToRoot
+			TreeNode<object> root = tree.CreateRootNode.Execute("Root").Wait();
+			IEnumerable<TreeNode<object>> rootValueBefore = root.PathToRoot;
+
+			TreeNode<object> initialParent = root.AddChild.Execute("Initial parent").Wait();
+			IEnumerable<TreeNode<object>> initialParentValueBefore = initialParent.PathToRoot;
+
+			TreeNode<object> nodeToReparent = initialParent.AddChild.Execute("Node").Wait();
+			IEnumerable<TreeNode<object>> nodeToReparentValueBefore = nodeToReparent.PathToRoot;
+
+			TreeNode<object> nodeToReparentTo = root.AddChild.Execute("Future Parent").Wait();
+			IEnumerable<TreeNode<object>> nodeToReparentToValueBefore = nodeToReparentTo.PathToRoot;
+
+			// Reparent a node
+			nodeToReparent.DesiredParent.LastValue = nodeToReparentTo;
+			nodeToReparent.Reparent.Execute().Wait();
+
+			// Compare the new PathToRoot values with the old ones and return true if any changed
+			return
+				   IsNodesPathToRootNotEqualTo(root, rootValueBefore)
+				|| IsNodesPathToRootNotEqualTo(initialParent, initialParentValueBefore)
+				|| IsNodesPathToRootNotEqualTo(nodeToReparent, nodeToReparentValueBefore)
+				|| IsNodesPathToRootNotEqualTo(nodeToReparentTo, nodeToReparentToValueBefore);
+		}
+
+		#endregion
+
+
 		#region Theory_data
 #pragma warning disable IDE1006 // Naming Styles
 
@@ -2291,9 +2338,10 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			tree = treeSource();
+			tree.ShouldRecursivelyNotifyNodesOfReparenting = true;
 			node = tree.CreateRootNode.Execute(GeneralUseData.SmallInt).Wait();
 			expectedValue = new List<TreeNode<object>>() { node };
-			actualValue = node.PathToRoot();
+			actualValue = node.PathToRoot;
 
 			// Assert
 			Util.AssertCollectionsHaveSameItems(expectedValue, actualValue);
@@ -2311,10 +2359,11 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			tree = treeSource();
+			tree.ShouldRecursivelyNotifyNodesOfReparenting = true;
 			TreeNode<object> root = tree.CreateRootNode.Execute("Root").Wait();
 			node = root.AddChild.Execute("Node").Wait();
 			expectedValue = new List<TreeNode<object>>() { node, root };
-			actualValue = node.PathToRoot();
+			actualValue = node.PathToRoot;
 
 			// Assert
 			Util.AssertCollectionsHaveSameItems(expectedValue, actualValue);
@@ -2332,6 +2381,7 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			tree = treeSource();
+			tree.ShouldRecursivelyNotifyNodesOfReparenting = true;
 			TreeNode<object> root = tree.CreateRootNode.Execute("Root").Wait();
 			TreeNode<object>[] branches = new TreeNode<object>[3];
 			branches[0] = root.AddChild.Execute("Branch 0/2").Wait();
@@ -2339,7 +2389,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			branches[2] = branches[1].AddChild.Execute("Branch 2/2").Wait();
 			node = branches[2].AddChild.Execute("Node").Wait();
 			expectedValue = new List<TreeNode<object>>() { node, branches[2], branches[1], branches[0], root };
-			actualValue = node.PathToRoot();
+			actualValue = node.PathToRoot;
 
 			// Assert
 			Util.AssertCollectionsHaveSameItems(expectedValue, actualValue);
@@ -2357,6 +2407,7 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			tree = treeSource();
+			tree.ShouldRecursivelyNotifyNodesOfReparenting = true;
 			TreeNode<object> root = tree.CreateRootNode.Execute("Root").Wait();
 			TreeNode<object>[] branches = new TreeNode<object>[3];
 			root.AddChild.Execute("Unrelated child leaf of root").Wait();
@@ -2371,10 +2422,42 @@ namespace GlacierKitCoreTest.Tests.Models
 			branches[2].AddChild.Execute("Unrelated child leaf 0/1 of branch 2/2").Wait();
 			branches[2].AddChild.Execute("Unrelated child leaf 1/1 of branch 2/2").Wait();
 			expectedValue = new List<TreeNode<object>>() { node, branches[2], branches[1], branches[0], root };
-			actualValue = node.PathToRoot();
+			actualValue = node.PathToRoot;
 
 			// Assert
 			Util.AssertCollectionsHaveSameItems(expectedValue, actualValue);
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void PathToRoot_is_unchanged_after_reparenting_when_ShouldRecursivelyNotifyNodesOfReparenting_is_false(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			bool shouldRecursivelyNotifyNodesOfReparenting = false;
+
+			// Act
+			tree = treeSource();
+			tree.ShouldRecursivelyNotifyNodesOfReparenting = shouldRecursivelyNotifyNodesOfReparenting;
+
+			// Assert
+			Assert.False(DidPathToRootChangeWhenReparenting(tree));
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_TreeTheoryData))]
+		public static void PathToRoot_changes_after_reparenting_when_ShouldRecursivelyNotifyNodesOfReparenting_is_true(Func<Tree<object>> treeSource)
+		{
+			// Arrange
+			Tree<object> tree;
+			bool shouldRecursivelyNotifyNodesOfReparenting = true;
+
+			// Act
+			tree = treeSource();
+			tree.ShouldRecursivelyNotifyNodesOfReparenting = shouldRecursivelyNotifyNodesOfReparenting;
+
+			// Assert
+			Assert.True(DidPathToRootChangeWhenReparenting(tree));
 		}
 
 		#endregion

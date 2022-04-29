@@ -33,6 +33,12 @@ namespace GlacierKitCore.Models
 		/// </summary>
 		public abstract bool CanAddRootNode { get; }
 
+		/// <summary>
+		/// When true, each time a node reparents to another node all of it's indirect children will be notified. When false, children are not notified.
+		/// </summary>
+		/// <remarks>Useful for when <see cref="TreeNode{TNodeValue}.PathToRoot"/> needs to be accessed.</remarks>
+		public abstract bool ShouldRecursivelyNotifyNodesOfReparenting { get; set; }
+
 		#endregion
 
 
@@ -94,8 +100,8 @@ namespace GlacierKitCore.Models
 	{
 		#region Private_fields
 
-		private IObservable<bool> _canCreateRootNodeObservable;
-		private ObservableAsPropertyHelper<bool> _canCreateRootNodePropertyHelper;
+		private readonly IObservable<bool> _canCreateRootNodeObservable;
+		private readonly ObservableAsPropertyHelper<bool> _canCreateRootNodePropertyHelper;
 		private IDisposable? _rootNodeDeleteCommandSubscription;
 
 
@@ -118,6 +124,9 @@ namespace GlacierKitCore.Models
 		/*[ObservableAsProperty]
 		public override bool CanAddRootNode { get; }*/
 		public override bool CanAddRootNode => _canCreateRootNodePropertyHelper.Value;
+
+		[Reactive]
+		public override bool ShouldRecursivelyNotifyNodesOfReparenting { get; set; }
 
 		#endregion
 
@@ -207,9 +216,9 @@ namespace GlacierKitCore.Models
 		#region Non_public_fields
 
 		internal readonly SourceList<TreeNode<TNodeValue>> _rootNodes;
-		private IObservable<bool> _canCreateRootNodeObservable;
-		private ObservableAsPropertyHelper<bool> _canCreateRootNodePropertyHelper;
-		private IDictionary<TreeNode<TNodeValue>, IDisposable> _rootNodeDeleteCommandSubscriptions;
+		private readonly IObservable<bool> _canCreateRootNodeObservable;
+		private readonly ObservableAsPropertyHelper<bool> _canCreateRootNodePropertyHelper;
+		private readonly IDictionary<TreeNode<TNodeValue>, IDisposable> _rootNodeDeleteCommandSubscriptions;
 
 		#endregion
 
@@ -219,6 +228,9 @@ namespace GlacierKitCore.Models
 		/*[ObservableAsProperty]
 		public override bool CanAddRootNode { get; }*/
 		public override bool CanAddRootNode => _canCreateRootNodePropertyHelper.Value;
+
+		[Reactive]
+		public override bool ShouldRecursivelyNotifyNodesOfReparenting { get; set; }
 
 		#endregion
 
