@@ -15,7 +15,7 @@
     </Design.DataContext>
 
 	<DockPanel LastChildFill="True">
-		<Menu DockPanel.Dock="Top">
+		<!--Menu DockPanel.Dock="Top">
 			<MenuItem Header="(TEMPORARY)">
 				
 				<MenuItem
@@ -56,12 +56,11 @@
 				</MenuItem>
 				
 			</MenuItem>
-		</Menu>
+		</Menu-->
 		<!--idc:DockControl Layout="{Binding DockLayout}"/-->
+		<ContentControl DockPanel.Dock="Top" Content="{Binding TMP_Menu}"/>
 		<StackPanel Orientation="Vertical">
-			<TextBlock Text="{Binding TMP_Tree.CanAddRootNode}"/>
-			<TextBlock Text="{Binding TMP_Tree.RootNode.Value, TargetNullValue=NULL, FallbackValue=FALLBACK}"/>
-			<Button Command="{Binding TMP_Tree.CreateRootNode}" CommandParameter="hi">Add Root</Button>
+			<Button Command="{Binding TMP_Menu.ItemTree.CreateRootNode}" CommandParameter="hi">Add Root</Button>
 		</StackPanel>
 	</DockPanel>
 

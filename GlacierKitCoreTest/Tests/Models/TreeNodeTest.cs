@@ -1225,7 +1225,6 @@ namespace GlacierKitCoreTest.Tests.Models
 
 
 		#region Reparent/CanReparent
-		// TODO: Test **BOTH** TreeNode.CanReparent and TreeNode.Reparent.CanExecute. They should == each other.
 
 		#region Reparent_from_root
 

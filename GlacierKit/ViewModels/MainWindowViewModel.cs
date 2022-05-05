@@ -3,6 +3,7 @@ using GlacierKitCore.Commands;
 using GlacierKitCore.Models;
 using GlacierKitCore.Services;
 using GlacierKitCore.ViewModels;
+using GlacierKitCore.ViewModels.Common;
 using GlacierKitCore.ViewModels.EditorWindows;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -51,8 +52,8 @@ namespace GlacierKit.ViewModels
                 if (Owner != null)
                 {
                     Owner.TMP_SelectedWindowType = TypeData;
-                    var observable = Owner.TMP_WindowTypeHit.Execute();
-                    var disposable = observable.Subscribe();
+					IObservable<Unit> observable = Owner.TMP_WindowTypeHit.Execute();
+					IDisposable disposable = observable.Subscribe();
                     observable.Wait();
                     disposable.Dispose();
                 }
@@ -65,11 +66,11 @@ namespace GlacierKit.ViewModels
         { get; }
 
         public object? TMP_SelectedWindowType
-        { get; set; } = null;
+        { get; set; }
         public ReactiveCommand<Unit, Unit> TMP_WindowTypeHit
         { get; set; }
 
-		public SingleRootTree<string> TMP_Tree
+		public MenuBarViewModel TMP_Menu
 		{ get; set; }
 
 		// TEMPORARY END
@@ -110,14 +111,14 @@ namespace GlacierKit.ViewModels
                 object? input = TMP_SelectedWindowType;
                 Type? type = input as Type;
                 Trace.WriteLine("Calling TMP_WindowTypeHit with param=" + (type?.ToString() ?? "null"));
-                var observable = Ctx.CreateEditorWindow.Execute(type);
-                var disposable = observable.Subscribe();
-                var result = observable.Wait();
+				IObservable<Type?> observable = Ctx.CreateEditorWindow.Execute(type);
+				IDisposable disposable = observable.Subscribe();
+				Type? result = observable.Wait();
                 Trace.WriteLine("TMP_WindowTypeHit returned " + (result?.ToString() ?? "null"));
                 return Unit.Default;
             });
             
-            foreach (var windowType in Ctx.ModuleLoader.EditorWindowViewModels)
+            foreach (Type windowType in Ctx.ModuleLoader.EditorWindowViewModels)
             {
                TMP_WindowTypes.Add(new TMP_WindowType{
                    Name = (windowType.GetProperty("DisplayName")?.GetValue(null) as string) ?? "<FAILED TO GET PROPERTY VALUE>",
@@ -126,14 +127,24 @@ namespace GlacierKit.ViewModels
                });
             }
 
-            foreach (var command in Ctx.ModuleLoader.GKCommands)
+            foreach (IGKCommand command in Ctx.ModuleLoader.GKCommands)
             {
                 TMP_Commands.Add(command);
             }
 
-			TMP_Tree = new SingleRootTree<string>();
-
-			//var root = TMP_Tree.CreateRootNode.Execute("I'm the root").Wait();
+			TMP_Menu = new();
+			TreeNode<MenuBarItemViewModel> TMP_Menu_File = TMP_Menu.ItemTree.CreateRootNode.Execute(new("File")).Wait();
+				TreeNode<MenuBarItemViewModel> TMP_Menu_File_New = TMP_Menu_File.AddChild.Execute(new("New")).Wait();
+					TMP_Menu_File_New.AddChild.Execute(new("Thing")).Wait();
+					TMP_Menu_File_New.AddChild.Execute(new("Stuff")).Wait();
+				TMP_Menu_File.AddChild.Execute(new("Open")).Wait();
+				TMP_Menu_File.AddChild.Execute(new("Close")).Wait();
+			TreeNode<MenuBarItemViewModel> TMP_Menu_Edit = TMP_Menu.ItemTree.CreateRootNode.Execute(new("Edit")).Wait();
+				TMP_Menu_Edit.AddChild.Execute(new("Copy")).Wait();
+				TMP_Menu_Edit.AddChild.Execute(new("Paste")).Wait();
+				TMP_Menu_Edit.AddChild.Execute(new("Undo")).Wait();
+			TreeNode<MenuBarItemViewModel> TMP_Menu_View = TMP_Menu.ItemTree.CreateRootNode.Execute(new("View")).Wait();
+				TMP_Menu_View.AddChild.Execute(new("Some things")).Wait();
 
 			// TEMPORARY END
 

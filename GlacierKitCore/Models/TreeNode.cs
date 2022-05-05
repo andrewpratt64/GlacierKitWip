@@ -196,15 +196,15 @@ namespace GlacierKitCore.Models
 		/// </summary>
 		[ObservableAsProperty]
 		public IEnumerable<TreeNode<TNodeValue>> PathToRoot { get; }
-			/*List<TreeNode<TNodeValue>> path = new();
-			TreeNode<TNodeValue>? nextNode = this;
-			do
-			{
-				path.Add(nextNode);
-				nextNode = nextNode.Parent;
-			}
-			while (nextNode != null);
-			return path;*/
+		/*List<TreeNode<TNodeValue>> path = new();
+		TreeNode<TNodeValue>? nextNode = this;
+		do
+		{
+			path.Add(nextNode);
+			nextNode = nextNode.Parent;
+		}
+		while (nextNode != null);
+		return path;*/
 
 		#endregion
 
@@ -217,7 +217,9 @@ namespace GlacierKitCore.Models
 		/// <param name="containingTree"><inheritdoc cref="ContainingTree"/></param>
 		/// <param name="nodeValue"><inheritdoc cref="Value"/></param>
 		/// <param name="parent"><inheritdoc cref="Parent"/></param>
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		internal TreeNode(Tree<TNodeValue> containingTree, TNodeValue nodeValue, TreeNode<TNodeValue>? parent)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
 			// Init fields
 			_childNodes = new();

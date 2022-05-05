@@ -23,5 +23,29 @@ namespace Commands
                 return Unit.Default;
             })
         );
-    }
+
+		public static GKCommand<Unit, Unit> UselessCommand1
+		{ get; } = new GKCommand<Unit, Unit>
+		(
+			commandId: "PlaceholderModule_UselessCommand1",
+			displayName: "Useless Command",
+			command: ReactiveCommand.Create<Unit, Unit>(_ => Unit.Default)
+		);
+
+		public static GKCommand<Unit, Unit> UselessCommand2
+		{ get; } = new GKCommand<Unit, Unit>
+		(
+			commandId: "PlaceholderModule_UselessCommand2",
+			displayName: "Yet Another Useless Command",
+			command: ReactiveCommand.Create<Unit, Unit>(_ => Unit.Default)
+		);
+
+		public static GKCommand<Unit, Unit> UselessCommand3
+		{ get; } = new GKCommand<Unit, Unit>
+		(
+			commandId: "PlaceholderModule_UselessCommand3",
+			displayName: "Pretend I do something",
+			command: ReactiveCommand.Create<Unit, Unit>(_ => Unit.Default)
+		);
+	}
 }

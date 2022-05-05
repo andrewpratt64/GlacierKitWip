@@ -30,12 +30,17 @@ namespace GlacierKitCore.ViewModels.Common
 
 		public MenuBarViewModel()
 		{
+			// Bind the tree's root nodes to the RootItems property
 			ItemTree = new();
 			ItemTree.ConnectToRootNodes()
 				.Transform(node => node.Value)
 				.Bind(out _rootItems)
-				.DeferUntilLoaded()
+				.Subscribe();
+
+			// Set the ItemTree property of each menu item whenever a node is added
+			ItemTree.ConnectToNodes()
+				.OnItemAdded(x => x.Value.ItemNode = x)
 				.Subscribe();
 		}
-    }
+	}
 }
