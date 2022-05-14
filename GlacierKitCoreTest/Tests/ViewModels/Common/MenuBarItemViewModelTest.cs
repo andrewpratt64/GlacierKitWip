@@ -1,11 +1,14 @@
 ﻿using DynamicData;
+using GlacierKitCore.Commands;
 using GlacierKitCore.Models;
 using GlacierKitCore.ViewModels.Common;
 using GlacierKitTestShared;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,6 +68,26 @@ namespace GlacierKitCoreTest.Tests.ViewModels.Common
 		{
 			Util.AssertCodeDoesNotThrowException(
 				() => _ = new MenuBarItemViewModel(id: id, title: title)
+			);
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_ctorIdAndTitleParamValues))]
+		[Trait("TestingMember", "Constructor")]
+		public static void MenuBarViewModel_ctor_with_id_title_and_null_command_doesnt_throw(string id, string title)
+		{
+			Util.AssertCodeDoesNotThrowException(
+				() => _ = new MenuBarItemViewModel(id: id, title: title, command: null)
+			);
+		}
+
+		[Theory]
+		[MemberData(nameof(_DATA_ctorIdAndTitleParamValues))]
+		[Trait("TestingMember", "Constructor")]
+		public static void MenuBarViewModel_ctor_with_id_title_and_not_null_command_doesnt_throw(string id, string title)
+		{
+			Util.AssertCodeDoesNotThrowException(
+				() => _ = new MenuBarItemViewModel(id: id, title: title, command: GeneralUseData.StubGKCommand)
 			);
 		}
 
@@ -145,6 +168,103 @@ namespace GlacierKitCoreTest.Tests.ViewModels.Common
 
 			// Assert
 			Assert.Equal(id, actualValue);
+		}
+
+		#endregion
+
+
+		#region Command
+
+		[Fact]
+		[Trait("TestingMember", "Property_Command")]
+		public static void Command_is_null_when_ctor_without_title_and_without_command_is_used()
+		{
+			// Arrange
+			MenuBarItemViewModel viewModel;
+			string id = GeneralUseData.SmallString;
+			IGKCommand? actualValue;
+
+			// Act
+			viewModel = new(id);
+			actualValue = viewModel.Command;
+
+			// Assert
+			Assert.Null(actualValue);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Property_Command")]
+		public static void Command_is_null_when_ctor_with_title_and_without_command_is_used()
+		{
+			// Arrange
+			MenuBarItemViewModel viewModel;
+			string id = GeneralUseData.SmallString;
+			string title = GeneralUseData.TinyString;
+			IGKCommand? actualValue;
+
+			// Act
+			viewModel = new(id, title);
+			actualValue = viewModel.Command;
+
+			// Assert
+			Assert.Null(actualValue);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Property_Command")]
+		public static void Command_is_null_when_ctor_with_title_and_with_null_command_is_used()
+		{
+			// Arrange
+			MenuBarItemViewModel viewModel;
+			string id = GeneralUseData.SmallString;
+			string title = GeneralUseData.TinyString;
+			IGKCommand? command = null;
+			IGKCommand? actualValue;
+
+			// Act
+			viewModel = new(id, title, command);
+			actualValue = viewModel.Command;
+
+			// Assert
+			Assert.Null(actualValue);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Property_Command")]
+		public static void Command_is_not_null_when_ctor_with_title_and_with_non_null_command_is_used()
+		{
+			// Arrange
+			MenuBarItemViewModel viewModel;
+			string id = GeneralUseData.SmallString;
+			string title = GeneralUseData.TinyString;
+			IGKCommand? command = GeneralUseData.StubGKCommand;
+			IGKCommand? actualValue;
+
+			// Act
+			viewModel = new(id, title, command);
+			actualValue = viewModel.Command;
+
+			// Assert
+			Assert.NotNull(actualValue);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Property_Command")]
+		public static void Command_is_set_by_ctor()
+		{
+			// Arrange
+			MenuBarItemViewModel viewModel;
+			string id = GeneralUseData.SmallString;
+			string title = GeneralUseData.TinyString;
+			IGKCommand? command = GeneralUseData.StubGKCommand;
+			IGKCommand? actualValue;
+
+			// Act
+			viewModel = new(id, title, command);
+			actualValue = viewModel.Command;
+
+			// Assert
+			Assert.Same(command, actualValue);
 		}
 
 		#endregion

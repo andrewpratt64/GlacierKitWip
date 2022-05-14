@@ -1,6 +1,9 @@
-﻿using System;
+﻿using GlacierKitCore.Commands;
+using ReactiveUI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,5 +46,13 @@ namespace GlacierKitTestShared
 		public static int LargePositiveInt => LargeInt;
 		public static int SmallNegativeInt => -SmallInt;
 		public static int LargeNegativeInt => -LargeInt;
+
+
+		public static GKCommand<Unit, Unit> StubGKCommand => new
+		(
+			commandId: "TestData_Stub",
+			displayName: "Stub Command for Testing",
+			command: ReactiveCommand.Create<Unit, Unit>(_ => Unit.Default)
+		);
 	}
 }

@@ -16,20 +16,8 @@ namespace GlacierKitCoreTest.Tests.Commands
 {
     public class GKCommandTest
     {
-        private class GKCommandProviders
-        {
-            public class _TYPE_NotAGKCommandProvider
-            { }
-
-            [GKCommandProvider]
-            public static class _TYPE_AGKCommandProvider
-            { }
-        }
-
         private static readonly string _DATA_CommandId = "GKCommandTest_Foo";
         private static readonly string _DATA_CommandDisplayName = "Foo";
-        private static readonly Type _DATA_InvalidTypeForIsTypeAGKCommandProvider = typeof(GKCommandProviders._TYPE_NotAGKCommandProvider);
-        private static readonly Type _DATA_ValidTypeForIsTypeAGKCommandProvider = typeof(GKCommandProviders._TYPE_AGKCommandProvider);
 
 
         private static IGKCommand NewGKCommandWith<TParam, TResult>(
@@ -211,26 +199,6 @@ namespace GlacierKitCoreTest.Tests.Commands
             // Assert
             Assert.Equal(expectedTParamValue, actualTParamValue);
             Assert.Equal(expectedTResultValue, actualTResultValue);
-        }
-
-        [Fact]
-        public static void IsTypeAGKCommandProvider_with_invalid_type_returns_false()
-        {
-            // Arrange
-            Type type = _DATA_InvalidTypeForIsTypeAGKCommandProvider;
-
-            // Assert
-            Assert.False(GKCommand.IsTypeAGKCommandProvider(type));
-        }
-
-        [Fact]
-        public static void IsTypeAGKCommandProvider_with_valid_type_returns_true()
-        {
-            // Arrange
-            Type type = _DATA_ValidTypeForIsTypeAGKCommandProvider;
-
-            // Assert
-            Assert.True(GKCommand.IsTypeAGKCommandProvider(type));
         }
     }
 }

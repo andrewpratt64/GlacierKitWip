@@ -11,24 +11,6 @@ using System.Threading.Tasks;
 
 namespace GlacierKitCore.Commands
 {
-    // TODO: Either implement or delete static class
-    public static class GKCommand
-    {
-        /// <summary>
-        /// Test if a given type is a GKCommand Provider
-        /// </summary>
-        /// <remarks>A type is considered a GKCommand Provider if it is a public static class with the GKCommandProvider attribute</remarks>
-        /// <param name="type">Type to test</param>
-        /// <returns>True if <paramref name="type"/> is a GKCommand Provider, false otherwise</returns>
-        public static bool IsTypeAGKCommandProvider(Type type)
-        {
-            return type.IsAbstract
-                && type.IsSealed
-                && type.IsDefined(typeof(GKCommandProvider), false);
-        }
-    }
-
-
     /// <summary>
     /// Interface for types that wrap a GlacierKit-specific command
     /// </summary>

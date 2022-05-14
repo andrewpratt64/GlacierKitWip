@@ -104,11 +104,11 @@ namespace GlacierKitTestShared.CommonTestData
 			}
 			if (type.IsEnum)
 			{
-				return (IEnumerable)
-				(
+				return
+
 					from object enumValue in Enum.GetValues(type)
 					select enumValue
-				);
+				;
 			}
 			throw new NotImplementedException($"Can't get values of type \"{type.Name}\"");
 		}
@@ -169,93 +169,4 @@ namespace GlacierKitTestShared.CommonTestData
 			return data;
 		}
 	}
-
-
-
-	/*
-	public class CommonTreeTheoryData : TheoryData<CommonTree>
-	{
-		private void CreateWith(Dictionary<string, List<object?>> paramValues, IDictionary<string, object?> withValues)
-		{
-			KeyValuePair<string, List<object?>> thisParam = paramValues.First();
-			bool isMoreRecursionNeeded = paramValues.Count > 1;
-
-			Dictionary<string, List<object?>>? nextLevelParamValues =
-				isMoreRecursionNeeded
-				? paramValues
-					.Where(param => param.Key != thisParam.Key)
-					.ToDictionary(param => param.Key, param => param.Value)
-				: null
-			;
-
-			foreach ( object? value in thisParam.Value )
-			{
-				withValues[thisParam.Key] = value;
-				if (isMoreRecursionNeeded)
-					CreateWith(nextLevelParamValues!, withValues);
-				else
-				{
-					// NOTE: This requires manual editing if CommonTree's constructor changes
-					Add(new CommonTree(
-						reparentableNodes:
-							withValues.ContainsKey(nameof(CommonTree.ReparentableNodes))
-							? (ITree.ENodeSetTypeFlags)withValues[nameof(CommonTree.ReparentableNodes)]!
-							: ITree.ENodeSetTypeFlags.All,
-						deletableNodes:
-							withValues.ContainsKey(nameof(CommonTree.DeletableNodes))
-							? (ITree.ENodeSetTypeFlags)withValues[nameof(CommonTree.DeletableNodes)]!
-							: ITree.ENodeSetTypeFlags.NonRootNodes,
-						isSingleRootOnly:
-							withValues.ContainsKey(nameof(CommonTree.IsSingleRootOnly))
-							? (bool)withValues[nameof(CommonTree.IsSingleRootOnly)]!
-							: true,
-						areCircularDependenciesAllowed:
-							withValues.ContainsKey(nameof(CommonTree.AreCircularDependenciesAllowed))
-							? (bool)withValues[nameof(CommonTree.AreCircularDependenciesAllowed)]!
-							: false,
-						areMultipleParentsAllowed:
-							withValues.ContainsKey(nameof(CommonTree.AreMultipleParentsAllowed))
-							? (bool)withValues[nameof(CommonTree.AreMultipleParentsAllowed)]!
-							: false
-					));
-				}
-			}
-
-		}
-
-
-		CommonTreeTheoryData(IEnumerable<string> propertiesToTest, IDictionary<string, object?> withValues)
-		{
-			Dictionary<string, List<object?>> paramValues = new();
-
-			foreach (string propertyToTest in propertiesToTest)
-			{
-				Debug.Assert(
-					!withValues.ContainsKey(propertyToTest),
-					$"Duplicate property \"{propertyToTest}\" in {nameof(propertiesToTest)} and {nameof(withValues)}"
-				);
-
-				System.Reflection.PropertyInfo? propertyInfo = typeof(CommonTree).GetProperty(propertyToTest);
-
-				Debug.Assert(
-					propertyInfo != null,
-					$"CommonTree has no property \"{propertiesToTest}\""
-				);
-
-				Type propertyType = propertyInfo.PropertyType;
-
-				if (propertyType == typeof(bool))
-					paramValues[propertyToTest] = new List<object?> { true, false };
-				else if (propertyType == typeof(ITree.ENodeSetTypeFlags))
-				{
-					paramValues[propertyToTest] = new List<object?>();
-					foreach (object enumValue in Enum.GetValues(propertyType))
-						paramValues[propertyToTest].Add(enumValue);
-				}
-			}
-
-			CreateWith(paramValues, withValues);
-		}
-	}
-	*/
 }

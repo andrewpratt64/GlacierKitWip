@@ -1,11 +1,16 @@
-﻿using GlacierKitCore.Commands;
+﻿using DynamicData;
+using GlacierKitCore.Commands;
 using GlacierKitCore.Models;
 using GlacierKitCore.Services;
+using GlacierKitCore.ViewModels.Common;
 using GlacierKitTestShared;
+using Microsoft.Reactive.Testing;
 using PlaceholderModule.ViewModels;
 using ReactiveUI;
+using ReactiveUI.Testing;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -17,21 +22,33 @@ namespace GlacierKitCoreTest.Tests.Models
 {
     public class EditorContextTest
     {
-        private static readonly Type? _DATA_ValidInputForCreateEditorWindow = typeof(FooViewModel);
+		#region Theory_data
+
+		private static readonly Type? _DATA_ValidInputForCreateEditorWindow = typeof(FooViewModel);
         private static readonly Type? _DATA_InvalidInputForCreateEditorWindow = typeof(BarViewModel);
         private static readonly string _DATA_ValidIdForGetCommand = "PlaceholderModule_PrintHi";
         private static readonly string _DATA_InvalidIdForGetCommand = "IDontExist";
 
+		#endregion
 
 
-        [Fact]
-        public static void Default_ctor_works()
+		#region Constructor
+
+		[Fact]
+		[Trait("TestingMember", "Constructor")]
+		public static void Default_ctor_works()
         {
             Util.AssertDefaultCtorWorks<EditorContext>();
         }
 
-        [Fact]
-        public static void ModuleLoader_not_null()
+		#endregion
+
+		
+		#region ModuleLoader
+
+		[Fact]
+		[Trait("TestingMember", "Property_ModuleLoader")]
+		public static void ModuleLoader_not_null()
         {
             // Arrange
             EditorContext? ctx;
@@ -45,8 +62,91 @@ namespace GlacierKitCoreTest.Tests.Models
             Assert.NotNull(actualValue);
         }
 
-        [Fact]
-        public static void CreateEditorWindow_not_null()
+		#endregion
+
+
+		#region MainMenuBar
+
+		[Fact]
+		[Trait("TestingMember", "Property_MainMenuBar")]
+		public static void MainMenuBar_not_null()
+		{
+			// Arrange
+			EditorContext? ctx;
+			MenuBarViewModel? actualValue;
+
+			// Act
+			ctx = new();
+			actualValue = ctx.MainMenuBar;
+
+			// Assert
+			Assert.NotNull(actualValue);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Property_MainMenuBar")]
+		public static void MainMenuBar_initially_has_no_nodes()
+		{
+			// Arrange
+			EditorContext? ctx;
+#pragma warning disable IDE0018 // Inline variable declaration
+			ReadOnlyObservableCollection<TreeNode<MenuBarItemViewModel>> actualValue;
+#pragma warning restore IDE0018 // Inline variable declaration
+			IDisposable disposable;
+
+			// Act
+			ctx = new();
+			disposable = ctx.MainMenuBar.ItemTree
+				.ConnectToNodes()
+				.Bind(out actualValue)
+				.Subscribe();
+
+			// Assert
+			Assert.Empty(actualValue);
+
+			// Cleanup
+			disposable.Dispose();
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Property_MainMenuBar")]
+		public static void MainMenuBar_has_nodes_after_loading_modules()
+		{
+			new TestScheduler().With(scheduler =>
+			{
+				// Arrange
+				EditorContext? ctx;
+#pragma warning disable IDE0018 // Inline variable declaration
+				ReadOnlyObservableCollection<TreeNode<MenuBarItemViewModel>> actualValue;
+#pragma warning restore IDE0018 // Inline variable declaration
+				IDisposable disposable;
+
+				// Act
+				ctx = new();
+				disposable = ctx.MainMenuBar.ItemTree
+					.ConnectToNodes()
+					.Bind(out actualValue)
+					.Subscribe();
+				ctx.ModuleLoader.LoadModules();
+
+				scheduler.AdvanceBy(2);
+
+				// Assert
+				Assert.NotEmpty(actualValue);
+
+				// Cleanup
+				disposable.Dispose();
+			});
+		}
+
+		#endregion
+
+
+		#region CreateEditorWindow
+
+		[Fact]
+		[Trait("TestingMember", "Command_CreateEditorWindow")]
+		public static void CreateEditorWindow_not_null()
         {
             // Arrange
             EditorContext? ctx;
@@ -61,7 +161,8 @@ namespace GlacierKitCoreTest.Tests.Models
         }
 
         [Fact]
-        public static void CreateEditorWindow_with_invalid_type_does_not_throw()
+		[Trait("TestingMember", "Command_CreateEditorWindow")]
+		public static void CreateEditorWindow_with_invalid_type_does_not_throw()
         {
             // Arrange
             EditorContext? ctx;
@@ -81,7 +182,8 @@ namespace GlacierKitCoreTest.Tests.Models
         }
 
         [Fact]
-        public static void CreateEditorWindow_with_invalid_type_returns_null()
+		[Trait("TestingMember", "Command_CreateEditorWindow")]
+		public static void CreateEditorWindow_with_invalid_type_returns_null()
         {
             // Arrange
             EditorContext? ctx;
@@ -104,7 +206,8 @@ namespace GlacierKitCoreTest.Tests.Models
         }
 
         [Fact]
-        public static void CreateEditorWindow_with_null_type_does_not_throw()
+		[Trait("TestingMember", "Command_CreateEditorWindow")]
+		public static void CreateEditorWindow_with_null_type_does_not_throw()
         {
             // Arrange
             EditorContext? ctx;
@@ -124,7 +227,8 @@ namespace GlacierKitCoreTest.Tests.Models
         }
 
         [Fact]
-        public static void CreateEditorWindow_with_null_type_returns_null()
+		[Trait("TestingMember", "Command_CreateEditorWindow")]
+		public static void CreateEditorWindow_with_null_type_returns_null()
         {
             // Arrange
             EditorContext? ctx;
@@ -147,7 +251,8 @@ namespace GlacierKitCoreTest.Tests.Models
         }
 
         [Fact]
-        public static void CreateEditorWindow_with_valid_type_does_not_throw()
+		[Trait("TestingMember", "Command_CreateEditorWindow")]
+		public static void CreateEditorWindow_with_valid_type_does_not_throw()
         {
             // Arrange
             EditorContext? ctx;
@@ -167,7 +272,8 @@ namespace GlacierKitCoreTest.Tests.Models
         }
 
         [Fact]
-        public static void CreateEditorWindow_with_valid_type_returns_same_type_as_input()
+		[Trait("TestingMember", "Command_CreateEditorWindow")]
+		public static void CreateEditorWindow_with_valid_type_returns_same_type_as_input()
         {
             // Arrange
             EditorContext? ctx;
@@ -189,8 +295,14 @@ namespace GlacierKitCoreTest.Tests.Models
             commandDisposable.Dispose();
         }
 
-        [Fact]
-        public static void GetCommand_with_valid_id_before_loading_returns_null()
+		#endregion
+
+
+		#region GetCommand
+
+		[Fact]
+		[Trait("TestingMember", "Method_CreateEditorWindow")]
+		public static void GetCommand_with_valid_id_before_loading_returns_null()
         {
             // Arrange
             EditorContext? ctx;
@@ -206,7 +318,8 @@ namespace GlacierKitCoreTest.Tests.Models
         }
 
         [Fact]
-        public static void GetCommand_with_invalid_id_before_loading_returns_null()
+		[Trait("TestingMember", "Method_CreateEditorWindow")]
+		public static void GetCommand_with_invalid_id_before_loading_returns_null()
         {
             // Arrange
             EditorContext? ctx;
@@ -222,7 +335,8 @@ namespace GlacierKitCoreTest.Tests.Models
         }
 
         [Fact]
-        public static void GetCommand_with_valid_id_after_loading_dosent_return_null()
+		[Trait("TestingMember", "Method_CreateEditorWindow")]
+		public static void GetCommand_with_valid_id_after_loading_dosent_return_null()
         {
             // Arrange
             EditorContext? ctx;
@@ -239,7 +353,8 @@ namespace GlacierKitCoreTest.Tests.Models
         }
 
         [Fact]
-        public static void GetCommand_with_invalid_id_after_loading_returns_null()
+		[Trait("TestingMember", "Method_CreateEditorWindow")]
+		public static void GetCommand_with_invalid_id_after_loading_returns_null()
         {
             // Arrange
             EditorContext? ctx;
@@ -256,7 +371,8 @@ namespace GlacierKitCoreTest.Tests.Models
         }
 
         [Fact]
-        public static void Executing_command_with_assumed_value_from_GetCommand_does_not_throw()
+		[Trait("TestingMember", "Method_CreateEditorWindow")]
+		public static void Executing_command_with_assumed_value_from_GetCommand_does_not_throw()
         {
             // Arrange
             EditorContext? ctx;
@@ -274,5 +390,7 @@ namespace GlacierKitCoreTest.Tests.Models
                 returnValue!.Command.Execute().Subscribe();
             });
         }
-    }
+
+		#endregion
+	}
 }

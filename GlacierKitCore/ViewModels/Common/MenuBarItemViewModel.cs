@@ -1,5 +1,6 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
+using GlacierKitCore.Commands;
 using GlacierKitCore.Models;
 using GlacierKitCore.ViewModels;
 using ReactiveUI;
@@ -37,6 +38,12 @@ namespace GlacierKitCore.ViewModels.Common
 		public string Title { get; }
 
 		/// <summary>
+		/// The command to execute when the menu item is clicked, or
+		/// null if the menu item should be a group
+		/// </summary>
+		public IGKCommand? Command { get; }
+
+		/// <summary>
 		/// The tree node corresponding to this menu item
 		/// </summary>
 		[Reactive]
@@ -58,26 +65,22 @@ namespace GlacierKitCore.ViewModels.Common
 		/// <param name="parentItemNode">The tree node of the parent menu item</param>
 		/// <param name="id">The unique identifier of this item</param>
 		/// <param name="title">The print-friendly name of this item</param>
-		public MenuBarItemViewModel(string id, string title)
+		public MenuBarItemViewModel(string id, string title, IGKCommand? command = null)
 		{
 			Id = id;
 			Title = title;
+			Command = command;
 
 			// Bind the child nodes of ItemNode to ChildItems, when possible
 			this.WhenAnyValue(x => x.ItemNode)
-				  .Do(x => Trace.WriteLine("ItemNode changed"))
 				.WhereNotNull()
-				  .Do(x => Trace.WriteLine("  ItemNode not null"))
 				.Subscribe
 				(x =>
 					x.ConnectToChildNodes()
 					.ObserveOn(RxApp.MainThreadScheduler)
-						.Do(x => Trace.WriteLine("  Connected" ))
 					.Transform(x => x.Value)
-						.Do(x => Trace.WriteLine("  Transformed to " + x.ToString()))
 					.ObserveOn(RxApp.MainThreadScheduler)
 					.Bind(out _childItems)
-						.Do(x => Trace.WriteLine("  Bound"))
 					.Subscribe()
 				);
 		}

@@ -12,11 +12,41 @@ using System.Threading.Tasks;
 
 namespace GlacierKitCore.Models
 {
+	#region Tree
+
+	/// <summary>
+	/// Describes a read-only view of a hierarchy of data
+	/// </summary>
+	/// <typeparam name="TNodeValue"></typeparam>
+	public interface IReadOnlyTree<TNodeValue>
+	{
+		/// <summary>
+		/// True if a new root node may be created, false otherwise
+		/// </summary>
+		public abstract bool CanAddRootNode { get; }
+
+		/// <summary>
+		/// When true, each time a node reparents to another node all of it's indirect children will be notified. When false, children are not notified.
+		/// </summary>
+		/// <remarks>Useful for when <see cref="TreeNode{TNodeValue}.PathToRoot"/> needs to be accessed.</remarks>
+		public abstract bool ShouldRecursivelyNotifyNodesOfReparenting { get; }
+
+
+		/// <summary>
+		/// Connect to and observe changes of a flat view of all of the tree's nodes
+		/// </summary>
+		/// <returns>An observable that emits the change set of nodes</returns>
+		public abstract IObservable<IChangeSet<TreeNode<TNodeValue>>> ConnectToNodes();
+	}
+
+
 	/// <summary>
 	/// Describes a hierarchy of data
 	/// </summary>
-	/// <typeparam name="TNodeValue">The type of data each node represents</typeparam>
-	public abstract class Tree<TNodeValue> : ReactiveObject
+	/// <typeparam name="TNodeValue"><inheritdoc cref="IReadOnlyTree{TNodeValue}"/></typeparam>
+	public abstract class Tree<TNodeValue> :
+		ReactiveObject,
+		IReadOnlyTree<TNodeValue>
 	{
 		#region Non_public_fields_and_properties
 
@@ -28,15 +58,11 @@ namespace GlacierKitCore.Models
 
 		#region Public_properties
 
-		/// <summary>
-		/// True if a new root node may be created, false otherwise
-		/// </summary>
+
+		/// <inheritdoc cref="IReadOnlyTree{TNodeValue}.CanAddRootNode"/>
 		public abstract bool CanAddRootNode { get; }
 
-		/// <summary>
-		/// When true, each time a node reparents to another node all of it's indirect children will be notified. When false, children are not notified.
-		/// </summary>
-		/// <remarks>Useful for when <see cref="TreeNode{TNodeValue}.PathToRoot"/> needs to be accessed.</remarks>
+		/// <inheritdoc cref="IReadOnlyTree{TNodeValue}.ShouldRecursivelyNotifyNodesOfReparenting"/>
 		public abstract bool ShouldRecursivelyNotifyNodesOfReparenting { get; set; }
 
 		#endregion
@@ -44,10 +70,7 @@ namespace GlacierKitCore.Models
 
 		#region Public_methods
 
-		/// <summary>
-		/// Connect to and observe changes of a flat view of all of the tree's nodes
-		/// </summary>
-		/// <returns>An observable that emits the change set of nodes</returns>
+		/// <inheritdoc cref="IReadOnlyTree{TNodeValue}.ConnectToNodes"/>
 		public IObservable<IChangeSet<TreeNode<TNodeValue>>> ConnectToNodes()
 		{
 			return _nodes.Connect();
@@ -91,12 +114,32 @@ namespace GlacierKitCore.Models
 		#endregion
 	}
 
+	#endregion
 
+
+	#region Single_root_tree
+
+	/// <summary>
+	/// Describes a read-only view of a <see cref="Tree{TNodeValue}"/> that dosen't support more than one root node
+	/// </summary>
+	/// <typeparam name="TNodeValue"><inheritdoc cref="Tree{TNodeValue}"/></typeparam>
+	public interface IReadOnlySingleRootTree<TNodeValue> :
+		IReadOnlyTree<TNodeValue>
+	{
+		/// <summary>
+		/// The root node of the tree, or null if the tree is empty
+		/// </summary>
+		public abstract TreeNode<TNodeValue>? RootNode { get; }
+	}
+	
+	
 	/// <summary>
 	/// Describes a <see cref="Tree{TNodeValue}"/> that dosen't support more than one root node
 	/// </summary>
 	/// <typeparam name="TNodeValue"><inheritdoc cref="Tree{TNodeValue}"/></typeparam>
-	public class SingleRootTree<TNodeValue> : Tree<TNodeValue>
+	public class SingleRootTree<TNodeValue> :
+		Tree<TNodeValue>,
+		IReadOnlySingleRootTree<TNodeValue>
 	{
 		#region Private_fields
 
@@ -110,9 +153,7 @@ namespace GlacierKitCore.Models
 
 		#region Public_properties
 
-		/// <summary>
-		/// The root node of the tree, or null if the tree is empty
-		/// </summary>
+		/// <inheritdoc cref="IReadOnlySingleRootTree{TNodeValue}.RootNode"/>
 		[Reactive]
 		public TreeNode<TNodeValue>? RootNode { get; internal set; }
 
@@ -206,12 +247,32 @@ namespace GlacierKitCore.Models
 		#endregion
 	}
 
+	#endregion
+
+
+	#region Multi_root_tree
+
+	/// <summary>
+	/// Describes a read-only view of a <see cref="Tree{TNodeValue}"/> that supports any number of root nodes
+	/// </summary>
+	/// <typeparam name="TNodeValue"><inheritdoc cref="Tree{TNodeValue}"/></typeparam>
+	public interface IReadOnlyMultiRootTree<TNodeValue> :
+		IReadOnlyTree<TNodeValue>
+	{
+		/// <summary>
+		/// Connect to and observe changes of all of the tree's root nodes
+		/// </summary>
+		/// <returns>An observable that emits the change set of root nodes</returns>
+		public abstract IObservable<IChangeSet<TreeNode<TNodeValue>>> ConnectToRootNodes();
+	}
 
 	/// <summary>
 	/// Describes a <see cref="Tree{TNodeValue}"/> that supports any number of root nodes
 	/// </summary>
 	/// <typeparam name="TNodeValue"><inheritdoc cref="Tree{TNodeValue}"/></typeparam>
-	public class MultiRootTree<TNodeValue> : Tree<TNodeValue>
+	public class MultiRootTree<TNodeValue> :
+		Tree<TNodeValue>,
+		IReadOnlyMultiRootTree<TNodeValue>
 	{
 		#region Non_public_fields
 
@@ -245,10 +306,7 @@ namespace GlacierKitCore.Models
 
 		#region Public_methods
 
-		/// <summary>
-		/// Connect to and observe changes of all of the tree's root nodes
-		/// </summary>
-		/// <returns>An observable that emits the change set of root nodes</returns>
+		/// <inheritdoc cref="IReadOnlyMultiRootTree{TNodeValue}.ConnectToRootNodes"/>
 		public IObservable<IChangeSet<TreeNode<TNodeValue>>> ConnectToRootNodes()
 		{
 			return _rootNodes.Connect();
@@ -321,4 +379,6 @@ namespace GlacierKitCore.Models
 
 		#endregion
 	}
+
+	#endregion
 }
