@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,7 +42,7 @@ namespace GlacierKitCore.ViewModels.Common
 		/// The command to execute when the menu item is clicked, or
 		/// null if the menu item should be a group
 		/// </summary>
-		public IGKCommand? Command { get; }
+		public GKCommand<Unit, Unit>? ItemCommand { get; }
 
 		/// <summary>
 		/// The tree node corresponding to this menu item
@@ -57,6 +58,16 @@ namespace GlacierKitCore.ViewModels.Common
 		#endregion
 
 
+		#region Public_commands
+
+		/// <summary>
+		/// Clicks the menu item, which may execute <see cref="ItemCommand"/> if it's set
+		/// </summary>
+		public ReactiveCommand<Unit, Unit> Click { get; }
+
+		#endregion
+
+
 		#region Constructor
 
 		/// <summary>
@@ -65,11 +76,11 @@ namespace GlacierKitCore.ViewModels.Common
 		/// <param name="parentItemNode">The tree node of the parent menu item</param>
 		/// <param name="id">The unique identifier of this item</param>
 		/// <param name="title">The print-friendly name of this item</param>
-		public MenuBarItemViewModel(string id, string title, IGKCommand? command = null)
+		public MenuBarItemViewModel(string id, string title, GKCommand<Unit, Unit>? itemCommand = null)
 		{
 			Id = id;
 			Title = title;
-			Command = command;
+			ItemCommand = itemCommand;
 
 			// Bind the child nodes of ItemNode to ChildItems, when possible
 			this.WhenAnyValue(x => x.ItemNode)
@@ -83,6 +94,13 @@ namespace GlacierKitCore.ViewModels.Common
 					.Bind(out _childItems)
 					.Subscribe()
 				);
+
+			Click = ReactiveCommand.Create(() =>
+			{
+				_ = ItemCommand?.Command.Execute().Subscribe();
+				return Unit.Default;
+			});
+			
 		}
 
 		/// <summary>

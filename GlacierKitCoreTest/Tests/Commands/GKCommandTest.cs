@@ -20,71 +20,42 @@ namespace GlacierKitCoreTest.Tests.Commands
         private static readonly string _DATA_CommandDisplayName = "Foo";
 
 
-        private static IGKCommand NewGKCommandWith<TParam, TResult>(
-            TParam? TParamValue,
-            TResult? TResultValue,
-            string commandId,
-            string? displayName)
-        {
-            if (TParamValue == null)
-            {
-                if (TResultValue == null)
-                {
-                    return new GKCommand<Unit, Unit>(
-                        commandId,
-                        displayName,
-                        ReactiveCommand.Create<Unit, Unit>(_ =>
-                        {
-                            return Unit.Default;
-                        })
-                    );
-                }
-                else
-                {
-                    return new GKCommand<Unit, TResult>(
-                        commandId,
-                        displayName,
-                        ReactiveCommand.Create<Unit, TResult>(_ =>
-                        {
-                            return TResultValue;
-                        })
-                    );
-                }
-            }
-            else if (TResultValue == null)
-            {
-                return new GKCommand<TParam, Unit>(
-                    commandId,
-                    displayName,
-                    ReactiveCommand.Create<TParam, Unit>(_ =>
-                    {
-                        return Unit.Default;
-                    })
-                );
-            }
-            else
-            {
-                return new GKCommand<TParam, TResult>(
-                    commandId,
-                    displayName,
-                    ReactiveCommand.Create<TParam, TResult>(_ =>
-                    {
-                        return TResultValue;
-                    })
-                );
-            }
-        }
+		private static GKCommand<TParam, TResult> NewGKCommandWith<TParam, TResult>(
+#pragma warning disable IDE0060 // Remove unused parameter
+			TParam TParamValue,
+#pragma warning restore IDE0060 // Remove unused parameter
+			TResult TResultValue,
+			string commandId,
+			string? displayName
+		)
+		{
+			return new GKCommand<TParam, TResult>(
+				commandId,
+				displayName,
+				ReactiveCommand.Create<TParam, TResult>(_ =>
+				{
+					return TResultValue;
+				})
+			);
+		}
+
+		public static readonly List<object[]> _DATA_ParamAndResultValues = new()
+		{
+			new object[]{Unit.Default, Unit.Default},
+			new object[]{Unit.Default, "Return this"},
+			new object[]{"Use this", Unit.Default},
+			new object[]{"Use this", "Return this"}
+		};
+
+
 
 
         [Theory]
-        [InlineData(null, null)]
-        [InlineData(null, "Return this")]
-        [InlineData("Use this", null)]
-        [InlineData("Use this", "Return this")]
-        public static void Ctor_with_type_args_does_not_throw<TParam, TResult>(TParam? TParamValue, TResult? TResultValue)
+        [MemberData(nameof(_DATA_ParamAndResultValues))]
+        public static void Ctor_with_type_args_does_not_throw<TParam, TResult>(TParam TParamValue, TResult TResultValue)
         {
             // Arrange
-            IGKCommand cmd;
+            GKCommand<TParam, TResult> cmd;
 
             // Act/Assert
             Util.AssertCodeDoesNotThrowException(() =>
@@ -101,8 +72,8 @@ namespace GlacierKitCoreTest.Tests.Commands
         [Fact]
         public static void Ctor_with_blank_id_throws()
         {
-            // Arrange
-            GKCommand<Unit, Unit> gkCommand;
+			// Arrange
+			GKCommand<Unit, Unit> gkCommand;
             string commandId = "";
             ReactiveCommand<Unit, Unit> cmd;
 
@@ -126,8 +97,8 @@ namespace GlacierKitCoreTest.Tests.Commands
         [Fact]
         public static void Ctor_with_null_display_name_does_not_throw()
         {
-            // Arrange
-            GKCommand<Unit, Unit> gkCommand;
+			// Arrange
+			GKCommand<Unit, Unit> gkCommand;
             string? displayName = null;
 
             // Assert
@@ -162,17 +133,14 @@ namespace GlacierKitCoreTest.Tests.Commands
         }
 
         [Theory]
-        [InlineData(null, null)]
-        [InlineData(null, "Return this")]
-        [InlineData("Use this", null)]
-        [InlineData("Use this", "Return this")]
-        public static void TParamValue_and_TResultValue_have_correct_values<TParam, TResult>(TParam? TParamValue, TResult? TResultValue)
+		[MemberData(nameof(_DATA_ParamAndResultValues))]
+		public static void TParamValue_and_TResultValue_have_correct_values<TParam, TResult>(TParam TParamValue, TResult TResultValue)
         {
             // Arrange
-            IGKCommand cmd;
-            Type expectedTParamValue;
+            GKCommand<TParam, TResult> cmd;
+            Type expectedTParamValue = typeof(TParam);
             Type actualTParamValue;
-            Type expectedTResultValue;
+            Type expectedTResultValue = typeof(TResult);
             Type actualTResultValue;
 
             // Act
@@ -182,16 +150,6 @@ namespace GlacierKitCoreTest.Tests.Commands
                 _DATA_CommandId,
                 _DATA_CommandDisplayName
             );
-
-            if (TParamValue == null)
-                expectedTParamValue = typeof(Unit);
-            else
-                expectedTParamValue= typeof(TParam);
-            
-            if (TResultValue == null)
-                expectedTResultValue = typeof(Unit);
-            else
-                expectedTResultValue = typeof(TParam);
 
             actualTParamValue = cmd.TParamValue;
             actualTResultValue = cmd.TResultValue;

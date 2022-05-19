@@ -95,6 +95,24 @@ namespace GlacierKitCoreTest.Tests.Services
 			Assert.Equal(expected, service.State);
 		}
 
+		[Fact]
+		[Trait("TestingMember", "Property_State")]
+		public static void State_raises_change_notifications_when_running_LoadModules()
+		{
+			// Arrange
+			GKModuleLoaderService service;
+
+			// Act
+			service = new GKModuleLoaderService();
+
+			// Act/Assert
+			Assert.PropertyChanged(
+				@object: service,
+				propertyName: nameof(service.State),
+				testCode: new Action(() => service.LoadModules())
+			);
+		}
+
 		#endregion
 
 

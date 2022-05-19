@@ -21,7 +21,9 @@ namespace GlacierKit
 
         public override void OnFrameworkInitializationCompleted()
         {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+			Ctx.ModuleLoader.LoadModules();
+
+			if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 desktop.MainWindow = new MainWindowView
                 {

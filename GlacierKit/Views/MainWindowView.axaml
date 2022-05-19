@@ -15,53 +15,8 @@
     </Design.DataContext>
 
 	<DockPanel LastChildFill="True">
-		<!--Menu DockPanel.Dock="Top">
-			<MenuItem Header="(TEMPORARY)">
-				
-				<MenuItem
-					Header="View Names (READ-ONLY)"
-					Name="PART_TMP_WindowTypes_ReadOnly"
-					Items="{Binding TMP_WindowTypes}"
-				>
-					<MenuItem.Styles>
-						<Style Selector="MenuItem MenuItem">
-							<Setter Property="Header" Value="{Binding Name, FallbackValue=ERROR}"/>
-						</Style>
-					</MenuItem.Styles>
-				</MenuItem>
-				
-				<MenuItem
-					Header="Create View"
-					Name="PART_TMP_WindowTypes_CreateView"
-					Items="{Binding TMP_WindowTypes, Mode=OneWay}"
-				>
-					<MenuItem.Styles>
-						<Style Selector="#PART_TMP_WindowTypes_CreateView MenuItem">
-							<Setter Property="Header" Value="{Binding Name, FallbackValue=ERROR}"/>
-							<Setter Property="Command" Value="{Binding OnHit}"/>
-						</Style>
-					</MenuItem.Styles>
-				</MenuItem>
-
-				<MenuItem
-					Header="Commands"
-					Name="PART_TMP_Commands"
-					Items="{Binding TMP_Commands, Mode=OneWay}">
-					<MenuItem.Styles>
-						<Style Selector="#PART_TMP_Commands MenuItem">
-							<Setter Property="Header" Value="{Binding DisplayName, FallbackValue=ERROR}"/>
-							<Setter Property="Command" Value="{Binding Command}"/>
-						</Style>
-					</MenuItem.Styles>
-				</MenuItem>
-				
-			</MenuItem>
-		</Menu-->
-		<!--idc:DockControl Layout="{Binding DockLayout}"/-->
-		<ContentControl DockPanel.Dock="Top" Content="{Binding TMP_Menu}"/>
-		<StackPanel Orientation="Vertical">
-			<Button Command="{Binding TMP_Menu.ItemTree.CreateRootNode}" CommandParameter="hi">Add Root</Button>
-		</StackPanel>
+		<ContentControl DockPanel.Dock="Top" Content="{Binding MainMenuBar}"/>
+		<idc:DockControl Layout="{Binding DockLayout}"/>
 	</DockPanel>
 
 </Window>

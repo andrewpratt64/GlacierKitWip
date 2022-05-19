@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,9 +37,9 @@ namespace GlacierKitCore.Attributes.DataProviders
 		/// The command to execute when the menu item is clicked, or
 		/// null if the menu item should be a group
 		/// </summary>
-		public IGKCommand? Command { get; }
+		public GKCommand<Unit, Unit>? Command { get; }
 
-		public MainMenuItemSetupInfo(string title, IEnumerable<string> path, IGKCommand? command)
+		public MainMenuItemSetupInfo(string title, IEnumerable<string> path, GKCommand<Unit, Unit>? command)
 		{
 			Debug.Assert(path.Any(), $"Parameter {nameof(path)} must have at least one id");
 

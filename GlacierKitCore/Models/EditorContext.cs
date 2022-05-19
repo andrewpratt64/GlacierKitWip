@@ -213,6 +213,9 @@ namespace GlacierKitCore.Models
 							return null;
 						}
 					}
+
+					// Remeber this node for the next iteration
+					previousNode = node;
 				}
 
 				// If the node already exists, throw an error
@@ -242,13 +245,13 @@ namespace GlacierKitCore.Models
 			if (parentNode == null)
 			{
 				node = MainMenuBar.ItemTree.CreateRootNode
-					.Execute(new(fullId, setupInfo.Title, setupInfo.Command))
+					.Execute(new(setupInfo.Path.Last(), setupInfo.Title, setupInfo.Command))
 					.Wait();
 			}
 			else
 			{
 				node = parentNode.AddChild
-					.Execute(new(fullId, setupInfo.Title, setupInfo.Command))
+					.Execute(new(setupInfo.Path.Last(), setupInfo.Title, setupInfo.Command))
 					.Wait();
 			}
 
@@ -280,7 +283,7 @@ namespace GlacierKitCore.Models
 		/// <param name="setupInfo">Info for the item to delay creation</param>
 		/// <param name="awaitingId">The full id of the parent the item is waiting on</param>
 		/// <param name="setupInfosAwaitingCreation"></param>
-		private void DelayMainMenuItemNodeCreation(
+		private static void DelayMainMenuItemNodeCreation(
 			MainMenuItemSetupInfo setupInfo,
 			string awaitingId,
 			IDictionary<string, ICollection<MainMenuItemSetupInfo>> setupInfosAwaitingCreation

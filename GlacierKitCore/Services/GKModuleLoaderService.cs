@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace GlacierKitCore.Services
 {
-    public class GKModuleLoaderService
+    public class GKModuleLoaderService : ReactiveObject
     {
 		#region Public enums
 
@@ -62,6 +62,7 @@ namespace GlacierKitCore.Services
 		/// <summary>
 		/// Current state of this loader
 		/// </summary>
+		[Reactive]
 		public ELoaderState State
         { get; private set; } = ELoaderState.NotLoaded;
 
