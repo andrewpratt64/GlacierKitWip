@@ -22,7 +22,7 @@
 			<Style Selector="MenuItem">
 				<Setter Property="Header" Value="{Binding Title, Mode=OneWay}"/>
 				<Setter Property="Items" Value="{Binding ChildItems, Mode=OneWay}"/>
-				<Setter Property="Command" Value="{Binding Command, Mode=OneWay}"/>
+				<Setter Property="Command" Value="{Binding Click, Mode=OneWay}"/>
 			</Style>
 		</Menu.Styles>
 	</Menu>
