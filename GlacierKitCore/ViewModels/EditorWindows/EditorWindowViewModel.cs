@@ -20,7 +20,6 @@ namespace GlacierKitCore.ViewModels.EditorWindows
         public static string DisplayName => "Editor Window";
 
 
-        // TODO: Shorter name?
         /// <summary>
         /// Determines whether or not a given type is a concrete subclass of EditorWindowViewModel
         /// </summary>

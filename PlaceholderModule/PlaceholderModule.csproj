@@ -13,8 +13,8 @@
 		<Folder Include="Assets\" />
 		<Folder Include="Attributes\" />
 		<Folder Include="Controls\" />
+		<Folder Include="Models\" />
 		<Folder Include="MSBuildFiles\" />
-		<Folder Include="Services\" />
 		<Folder Include="Themes\GKFluent\" />
 	</ItemGroup>
 

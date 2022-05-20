@@ -1,7 +1,6 @@
 ﻿using GlacierKitCore.Attributes.DataProviders;
 using GlacierKitCore.Commands;
 using GlacierKitCore.Models;
-using GlacierKitCore.ViewModels.Common;
 using GlacierKitCore.ViewModels.EditorWindows;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -9,14 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GlacierKitCore.Services
 {
-    public class GKModuleLoaderService : ReactiveObject
+	public class GKModuleLoaderService : ReactiveObject
     {
 		#region Public enums
 
@@ -58,6 +54,11 @@ namespace GlacierKitCore.Services
 
 
 		#region Public_properties
+
+		/// <summary>
+		/// The editor context instance
+		/// </summary>
+		public EditorContext Ctx { get; }
 
 		/// <summary>
 		/// Current state of this loader
@@ -106,6 +107,17 @@ namespace GlacierKitCore.Services
 				// Return the cached filepath
 				return _gkModulesDir;
 			}
+		}
+
+		#endregion
+
+
+		#region Constructor
+
+		public GKModuleLoaderService(EditorContext ctx) :
+			base()
+		{
+			Ctx = ctx;
 		}
 
 		#endregion
@@ -166,7 +178,7 @@ namespace GlacierKitCore.Services
 					if (EditorWindowViewModel.IsTypeAnInstantiableEditorWindow(type))
 						_editorWindowViewModels.Add(type);
 					// Load data from this type if it's a data provider
-					else if (GKDataProviderAttribute.IsTypeAGKDataProvider(type))
+					else if (GKDataProviderService.IsTypeAnInstantiableGKDataProviderService(type))
 						LoadDataFromProvider(type);
 				}
 			}
@@ -182,11 +194,15 @@ namespace GlacierKitCore.Services
 
 		private void LoadDataFromProvider(Type providerType)
         {
+			// Create an instance of the data provider
+			GKDataProviderService dataProvider = (GKDataProviderService)Activator
+				.CreateInstance(providerType, Ctx)!;
+
             // Iterate over all of the properties in providerType
             foreach (PropertyInfo property in providerType.GetProperties())
             {
-				// Skip any members that aren't static and read-only
-				if (!property.IsStatic() || property.CanWrite)
+				// Skip any members that aren't read-only or static
+				if (property.IsStatic() || property.CanWrite)
 					continue;
 
 				// Iterate over the attributes of the property
@@ -195,15 +211,15 @@ namespace GlacierKitCore.Services
 					// Remember gk commands
 					if (attr.AttributeType == typeof(ExposeAsGKCommandAttribute))
 					{
-						IGKCommand? command = property.GetValue(null) as IGKCommand;
-						Debug.Assert(command != null, $"Only instances of {nameof(IGKCommand)} may be exported as a GK command");
+						if (property.GetValue(dataProvider) is not IGKCommand command)
+							throw new Exception($"Only instances of {nameof(IGKCommand)} may be exported as a GK command");
 						_gkCommands.Add(command);
 					}
 					// Remember main menu items
 					else if (attr.AttributeType == typeof(ExposeAsMainMenuItemAttribute))
 					{
-						MainMenuItemSetupInfo? setupInfo = property.GetValue(null) as MainMenuItemSetupInfo;
-						Debug.Assert(setupInfo != null, $"Only instances of {nameof(MainMenuItemSetupInfo)} may be exported as a main menu item");
+						if (property.GetValue(dataProvider) is not MainMenuItemSetupInfo setupInfo)
+							throw new Exception($"Only instances of {nameof(MainMenuItemSetupInfo)} may be exported as a main menu item");
 						_mainMenuItemsSetupInfo.Add(setupInfo);
 					}
 				}

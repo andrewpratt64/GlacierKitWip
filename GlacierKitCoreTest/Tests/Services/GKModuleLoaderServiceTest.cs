@@ -6,45 +6,46 @@ using System.IO;
 using System.Reflection;
 using System.Diagnostics;
 using GlacierKitCore.ViewModels.EditorWindows;
+using GlacierKitCore.Models;
 
 namespace GlacierKitCoreTest.Tests.Services
 {
-    public class GKModuleLoaderServiceTest
-    {
+	public class GKModuleLoaderServiceTest
+	{
 		#region Misc
 
 		[Fact]
 		[Trait("TestingMember", "Misc")]
 		public static void Assembly_path_has_expected_values()
-        {
-            // Arrange
-            string? assemblyDir;
-            string projectName = "GlacierKitCoreTest";
+		{
+			// Arrange
+			string? assemblyDir;
+			string projectName = "GlacierKitCoreTest";
 #if DEBUG
-            string buildConfig = "Debug";
+			string buildConfig = "Debug";
 #else
             string buildConfig = "Release";
 #endif
-            string? environmentVersion = null;
-            string? assemblyDirExpectedSuffix = null;
-            string? modulesDir = null;
+			string? environmentVersion = null;
+			string? assemblyDirExpectedSuffix = null;
+			string? modulesDir = null;
 
-            // Act
-            assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			// Act
+			assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            if (assemblyDir != null)
-            {
-                environmentVersion = $"net{Environment.Version.Major}.{Environment.Version.Minor}";
-                assemblyDirExpectedSuffix = Path.Combine(projectName, "bin", buildConfig, environmentVersion);
-                modulesDir = Path.Combine(assemblyDir, "gkmodules");
-            }
+			if (assemblyDir != null)
+			{
+				environmentVersion = $"net{Environment.Version.Major}.{Environment.Version.Minor}";
+				assemblyDirExpectedSuffix = Path.Combine(projectName, "bin", buildConfig, environmentVersion);
+				modulesDir = Path.Combine(assemblyDir, "gkmodules");
+			}
 
-            // Assert
-            Assert.NotNull(environmentVersion);
-            Assert.NotNull(assemblyDirExpectedSuffix);
-            Assert.False(assemblyDir == null || modulesDir == null, "Failed to determine the gkmodules filepath");
-            Assert.EndsWith(assemblyDirExpectedSuffix, assemblyDir);
-        }
+			// Assert
+			Assert.NotNull(environmentVersion);
+			Assert.NotNull(assemblyDirExpectedSuffix);
+			Assert.False(assemblyDir == null || modulesDir == null, "Failed to determine the gkmodules filepath");
+			Assert.EndsWith(assemblyDirExpectedSuffix, assemblyDir);
+		}
 
 		#endregion
 
@@ -53,10 +54,16 @@ namespace GlacierKitCoreTest.Tests.Services
 
 		[Fact]
 		[Trait("TestingMember", "Constructor")]
-		public static void Default_ctor_works()
-        {
-            Util.AssertDefaultCtorWorks<GKModuleLoaderService>();
-        }
+		public static void Constructor_doesnt_throw()
+		{
+			// Arrange
+			EditorContext ctx = new();
+
+			// Act/Assert
+			Util.AssertCodeDoesNotThrowException(
+				() => _ = new GKModuleLoaderService(ctx)
+			);
+		}
 
 		#endregion
 
@@ -66,29 +73,31 @@ namespace GlacierKitCoreTest.Tests.Services
 		[Fact]
 		[Trait("TestingMember", "Property_State")]
 		public static void Initial_state_is_unloaded()
-        {
-            // Arrange
-            GKModuleLoaderService? service;
-            GKModuleLoaderService.ELoaderState expected = GKModuleLoaderService.ELoaderState.NotLoaded;
+		{
+			// Arrange
+			EditorContext ctx = new();
+			GKModuleLoaderService? service;
+			GKModuleLoaderService.ELoaderState expected = GKModuleLoaderService.ELoaderState.NotLoaded;
 
-            // Act
-            service = new GKModuleLoaderService();
+			// Act
+			service = new GKModuleLoaderService(ctx);
 
-            // Assert
-            Assert.Equal(expected, service.State);
-        }
+			// Assert
+			Assert.Equal(expected, service.State);
+		}
 
 		[Fact]
 		[Trait("TestingMember", "Property_State")]
 		public static void State_is_loaded_after_running_LoadModules()
 		{
 			// Arrange
+			EditorContext ctx = new();
 			GKModuleLoaderService? service;
 			GKModuleLoaderService.ELoaderState expected = GKModuleLoaderService.ELoaderState.Loaded;
 
 			// Act
 
-			service = new GKModuleLoaderService();
+			service = new GKModuleLoaderService(ctx);
 			service.LoadModules();
 
 			// Assert
@@ -100,10 +109,11 @@ namespace GlacierKitCoreTest.Tests.Services
 		public static void State_raises_change_notifications_when_running_LoadModules()
 		{
 			// Arrange
+			EditorContext ctx = new();
 			GKModuleLoaderService service;
 
 			// Act
-			service = new GKModuleLoaderService();
+			service = new GKModuleLoaderService(ctx);
 
 			// Act/Assert
 			Assert.PropertyChanged(
@@ -123,10 +133,11 @@ namespace GlacierKitCoreTest.Tests.Services
 		public static void ModuleAssemblies_starts_empty()
 		{
 			// Arrange
+			EditorContext ctx = new();
 			GKModuleLoaderService? service;
 
 			// Act
-			service = new GKModuleLoaderService();
+			service = new GKModuleLoaderService(ctx);
 
 			// Assert
 			Assert.Empty(service.ModuleAssemblies);
@@ -137,11 +148,12 @@ namespace GlacierKitCoreTest.Tests.Services
 		public static void ModuleAssemblies_has_correct_size_after_running_LoadModules()
 		{
 			// Arrange
+			EditorContext ctx = new();
 			GKModuleLoaderService? service;
 			int expected = MiscData.ExpectedModules;
 
 			// Act
-			service = new GKModuleLoaderService();
+			service = new GKModuleLoaderService(ctx);
 			service.LoadModules();
 
 			// Assert
@@ -158,10 +170,11 @@ namespace GlacierKitCoreTest.Tests.Services
 		public static void EditorWindowViewModels_starts_empty()
 		{
 			// Arrange
+			EditorContext ctx = new();
 			GKModuleLoaderService? service;
 
 			// Act
-			service = new GKModuleLoaderService();
+			service = new GKModuleLoaderService(ctx);
 
 			// Assert
 			Assert.Empty(service.EditorWindowViewModels);
@@ -172,10 +185,11 @@ namespace GlacierKitCoreTest.Tests.Services
 		public static void EditorWindowViewModels_not_empty_after_running_LoadModules()
 		{
 			// Arrange
+			EditorContext ctx = new();
 			GKModuleLoaderService? service;
 
 			// Act
-			service = new GKModuleLoaderService();
+			service = new GKModuleLoaderService(ctx);
 			service.LoadModules();
 
 			// Assert
@@ -187,6 +201,7 @@ namespace GlacierKitCoreTest.Tests.Services
 		public static void EditorWindowViewModels_contains_only_valid_types_after_running_LoadModules()
 		{
 			// Arrange
+			EditorContext ctx = new();
 			GKModuleLoaderService? service;
 #pragma warning disable IDE0039 // Use local function
 			Action<Type?> AssertTypeIsValid = (type) =>
@@ -196,7 +211,7 @@ namespace GlacierKitCoreTest.Tests.Services
 #pragma warning restore IDE0039 // Use local function
 
 			// Act
-			service = new GKModuleLoaderService();
+			service = new GKModuleLoaderService(ctx);
 			service.LoadModules();
 
 			// Assert
@@ -213,10 +228,11 @@ namespace GlacierKitCoreTest.Tests.Services
 		public static void GKCommands_starts_empty()
 		{
 			// Arrange
+			EditorContext ctx = new();
 			GKModuleLoaderService? service;
 
 			// Act
-			service = new GKModuleLoaderService();
+			service = new GKModuleLoaderService(ctx);
 
 			// Assert
 			Assert.Empty(service.GKCommands);
@@ -227,10 +243,11 @@ namespace GlacierKitCoreTest.Tests.Services
 		public static void GKCommands_not_empty_after_running_LoadModules()
 		{
 			// Arrange
+			EditorContext ctx = new();
 			GKModuleLoaderService? service;
 
 			// Act
-			service = new GKModuleLoaderService();
+			service = new GKModuleLoaderService(ctx);
 			service.LoadModules();
 
 			// Assert
@@ -247,10 +264,11 @@ namespace GlacierKitCoreTest.Tests.Services
 		public static void MainMenuBarItemsSetupInfo_starts_empty()
 		{
 			// Arrange
+			EditorContext ctx = new();
 			GKModuleLoaderService? service;
 
 			// Act
-			service = new GKModuleLoaderService();
+			service = new GKModuleLoaderService(ctx);
 
 			// Assert
 			Assert.Empty(service.MainMenuBarItemsSetupInfo);
@@ -261,10 +279,11 @@ namespace GlacierKitCoreTest.Tests.Services
 		public static void MainMenuBarItemsSetupInfo_not_empty_after_running_LoadModules()
 		{
 			// Arrange
+			EditorContext ctx = new();
 			GKModuleLoaderService? service;
 
 			// Act
-			service = new GKModuleLoaderService();
+			service = new GKModuleLoaderService(ctx);
 			service.LoadModules();
 
 			// Assert
@@ -281,12 +300,13 @@ namespace GlacierKitCoreTest.Tests.Services
 		public static void GKModulesDirectory_has_expected_prefix()
 		{
 			// Arrange
+			EditorContext ctx = new();
 			GKModuleLoaderService? service;
 			string expected = "gkmodules";
 			string? actualDir;
 
 			// Act
-			service = new GKModuleLoaderService();
+			service = new GKModuleLoaderService(ctx);
 			actualDir = service.GKModulesDirectory;
 
 			// Assert
@@ -296,5 +316,5 @@ namespace GlacierKitCoreTest.Tests.Services
 		}
 
 		#endregion
-    }
+	}
 }

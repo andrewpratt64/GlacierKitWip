@@ -100,7 +100,7 @@ namespace GlacierKitCore.Utility
 				return ECollectionSizeFlags.Null;
 			}
 
-			var size = collection.Count;
+			int size = collection.Count;
 			if (size > 1)
 				return ECollectionSizeFlags.SeveralItems;
 			else if (size > 0)

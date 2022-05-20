@@ -29,6 +29,11 @@ namespace GlacierKitCore.ViewModels.Common
 		#region Public_properties
 
 		/// <summary>
+		/// The editor context instance
+		/// </summary>
+		public EditorContext Ctx { get; }
+
+		/// <summary>
 		/// The unique identifier of this item
 		/// </summary>
 		public string Id { get; }
@@ -76,11 +81,17 @@ namespace GlacierKitCore.ViewModels.Common
 		/// <param name="parentItemNode">The tree node of the parent menu item</param>
 		/// <param name="id">The unique identifier of this item</param>
 		/// <param name="title">The print-friendly name of this item</param>
-		public MenuBarItemViewModel(string id, string title, GKCommand<Unit, Unit>? itemCommand = null)
+		public MenuBarItemViewModel(
+			string id,
+			string title,
+			GKCommand<Unit, Unit>? itemCommand = null,
+			EditorContext? ctx = null
+		)
 		{
 			Id = id;
 			Title = title;
 			ItemCommand = itemCommand;
+			Ctx = ctx ?? new();
 
 			// Bind the child nodes of ItemNode to ChildItems, when possible
 			this.WhenAnyValue(x => x.ItemNode)

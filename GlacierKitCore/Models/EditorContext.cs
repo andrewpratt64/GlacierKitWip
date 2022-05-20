@@ -49,7 +49,7 @@ namespace GlacierKitCore.Models
 
 		public EditorContext()
         {
-            ModuleLoader = new();
+            ModuleLoader = new(this);
 			MainMenuBar = new();
 
 			// Load the main menu items into the editor context after modules have finished loading
