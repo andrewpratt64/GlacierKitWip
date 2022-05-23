@@ -68,14 +68,38 @@ namespace PlaceholderModule.Services
 				return Unit.Default;
 			})
 		);
+
+		[ExposeAsGKCommand]
+		public GKCommand<Unit, Unit> OpenHelloWorldView => new
+		(
+			commandId: "PlaceholderModule_OpenHelloWorldView",
+			displayName: "Open Hello World view",
+			command: ReactiveCommand.Create<Unit, Unit>(_ =>
+			{
+				Ctx.CreateEditorWindow.Execute(typeof(HelloWorldViewModel)).Subscribe();
+				return Unit.Default;
+			})
+		);
+
+		[ExposeAsGKCommand]
+		public GKCommand<Unit, Unit> OpenPushyButtonsView => new
+		(
+			commandId: "PlaceholderModule_OpenPushyButtonsView",
+			displayName: "Open Pushy Buttons view",
+			command: ReactiveCommand.Create<Unit, Unit>(_ =>
+			{
+				Ctx.CreateEditorWindow.Execute(typeof(PushyButtonsViewModel)).Subscribe();
+				return Unit.Default;
+			})
+		);
 #pragma warning restore CA1822 // Mark members as static
 
 		#endregion
 
 
 		#region Menu_items
-
 #pragma warning disable CA1822 // Mark members as static
+
 		[ExposeAsMainMenuItem]
 		public MainMenuItemSetupInfo Placeholder_MenuItemGroupInfo => new
 		(
@@ -101,30 +125,30 @@ namespace PlaceholderModule.Services
 		);
 
 		[ExposeAsMainMenuItem]
-		public MainMenuItemSetupInfo View_MenuItemGroupInfo => new
-		(
-			title: "View",
-			path: new string[] { "view" },
-			command: null
-		);
-
-		[ExposeAsMainMenuItem]
-		public MainMenuItemSetupInfo View_OpenWindow_MenuItemGroupInfo => new
-		(
-			title: "Open Window...",
-			path: new string[] { "view", "open_window" },
-			command: null
-		);
-
-		[ExposeAsMainMenuItem]
-		public MainMenuItemSetupInfo View_OpenWindow_OpenFooView_MenuItemInfo => new
+		public MainMenuItemSetupInfo View_EditorWindows_OpenFooView_MenuItemInfo => new
 		(
 			title: "Foo",
-			path: new string[] { "view", "open_window", "PlaceholderModule_openFooView" },
+			path: new string[] { "view", "editorWindows", "PlaceholderModule_openFooView" },
 			command: OpenFooView
 		);
-#pragma warning restore CA1822 // Mark members as static
 
+		[ExposeAsMainMenuItem]
+		public MainMenuItemSetupInfo View_EditorWindows_OpenHelloWorldView_MenuItemInfo => new
+		(
+			title: "Hello World",
+			path: new string[] { "view", "editorWindows", "PlaceholderModule_openHelloWorldView" },
+			command: OpenHelloWorldView
+		);
+
+		[ExposeAsMainMenuItem]
+		public MainMenuItemSetupInfo View_EditorWindows_OpenPushyButtonsView_MenuItemInfo => new
+		(
+			title: "Pushy Buttons",
+			path: new string[] { "view", "editorWindows", "PlaceholderModule_openPushyButtonsView" },
+			command: OpenPushyButtonsView
+		);
+
+#pragma warning restore CA1822 // Mark members as static
 		#endregion
 
 

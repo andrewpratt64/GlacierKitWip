@@ -170,7 +170,7 @@ namespace GlacierKitCore.Services
 
 				// Remember this module's assembly
 				_moduleAssemblies.Add(moduleAssembly);
-
+				
 				// Iterate over all exported types assembly
 				foreach (Type type in moduleAssembly.GetExportedTypes())
 				{
