@@ -13,7 +13,7 @@ using System.Diagnostics;
 using System.Reactive;
 using System.Text;
 
-namespace Models
+namespace PlaceholderModule.Services
 {
     public class PlaceholderDataProviderService : GKDataProviderService
 	{

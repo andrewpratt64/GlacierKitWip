@@ -1,4 +1,5 @@
 ﻿using DynamicData;
+using DynamicData.Binding;
 using GlacierKitCore.Models;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -34,6 +35,7 @@ namespace GlacierKitCore.ViewModels.Common
 			ItemTree = new();
 			ItemTree.ConnectToRootNodes()
 				.Transform(node => node.Value)
+				.Sort(SortExpressionComparer<MenuBarItemViewModel>.Ascending(x => x.Order))
 				.Bind(out _rootItems)
 				.Subscribe();
 

@@ -16,17 +16,21 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 		#region Theory_data
 
 #pragma warning disable IDE1006 // Naming Styles
-		public class _TYPE_MainMenuItemSetupInfoTestConstructorParams : TheoryData<string, IEnumerable<string>, GKCommand<Unit, Unit>?>
+		public class _TYPE_MainMenuItemSetupInfoTestConstructorParams :
+			TheoryData<string, IEnumerable<string>, GKCommand<Unit, Unit>?, int>
 #pragma warning restore IDE1006 // Naming Styles
 		{
 			public _TYPE_MainMenuItemSetupInfoTestConstructorParams()
 			{
 				string[] pathValues = new string[] { "One", "Two", "Three" };
 				GKCommand<Unit, Unit>?[] commandValues = new GKCommand<Unit, Unit>?[] { null, GeneralUseData.StubGKCommand };
+				int[] orderValues = new int[] { -5, 0, 5 };
+
 				for (int i = 0; i < pathValues.Length; i++)
 				{
 					foreach (GKCommand<Unit, Unit>? commandValue in commandValues)
-						Add("Foo", pathValues.SkipLast(i), commandValue);
+						foreach (int orderValue in orderValues)
+							Add("Foo", pathValues.SkipLast(i), commandValue, orderValue);
 				}
 			}
 		}
@@ -41,10 +45,15 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 		[Theory]
 		[MemberData(nameof(_DATA_MainMenuItemSetupInfoTestConstructorParams))]
 		[Trait("TestingMember", "Constructor")]
-		public static void MainMenuItemSetupInfo_constructor_doesnt_throw(string title, IEnumerable<string> path, GKCommand<Unit, Unit>? command)
+		public static void MainMenuItemSetupInfo_constructor_doesnt_throw(
+			string title,
+			IEnumerable<string> path,
+			GKCommand<Unit, Unit>? command,
+			int order
+		)
 		{
 			Util.AssertCodeDoesNotThrowException(
-				() => _ = new MainMenuItemSetupInfo(title, path, command)
+				() => _ = new MainMenuItemSetupInfo(title, path, command, order)
 			);
 		}
 
@@ -56,14 +65,19 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 		[Theory]
 		[MemberData(nameof(_DATA_MainMenuItemSetupInfoTestConstructorParams))]
 		[Trait("TestingMember", "Property_Title")]
-		public static void Title_is_set_by_constructor(string title, IEnumerable<string> path, GKCommand<Unit, Unit>? command)
+		public static void Title_is_set_by_constructor(
+			string title,
+			IEnumerable<string> path,
+			GKCommand<Unit, Unit>? command,
+			int order
+		)
 		{
 			// Arrange
 			MainMenuItemSetupInfo setupInfo;
 			string actualValue;
 
 			// Act
-			setupInfo = new(title, path, command);
+			setupInfo = new(title, path, command, order);
 			actualValue = setupInfo.Title;
 
 			// Assert
@@ -78,14 +92,19 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 		[Theory]
 		[MemberData(nameof(_DATA_MainMenuItemSetupInfoTestConstructorParams))]
 		[Trait("TestingMember", "Property_Path")]
-		public static void Path_is_set_by_constructor(string title, IEnumerable<string> path, GKCommand<Unit, Unit>? command)
+		public static void Path_is_set_by_constructor(
+			string title,
+			IEnumerable<string> path,
+			GKCommand<Unit, Unit>? command,
+			int order
+		)
 		{
 			// Arrange
 			MainMenuItemSetupInfo setupInfo;
 			IEnumerable<string> actualValue;
 
 			// Act
-			setupInfo = new(title, path, command);
+			setupInfo = new(title, path, command, order);
 			actualValue = setupInfo.Path;
 
 			// Assert
@@ -98,7 +117,12 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 #pragma warning disable IDE0079 // Remove unnecessary suppression
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters
 #pragma warning disable IDE0060 // Remove unused parameter
-		public static void Path_with_empty_value_throws(string title, IEnumerable<string> path, GKCommand<Unit, Unit>? command)
+		public static void Path_with_empty_value_throws(
+			string title,
+			IEnumerable<string> path,
+			GKCommand<Unit, Unit>? command,
+			int order
+		)
 #pragma warning restore IDE0060 // Remove unused parameter
 #pragma warning restore xUnit1026 // Theory methods should use all of their parameters
 #pragma warning restore IDE0079 // Remove unnecessary suppression
@@ -116,18 +140,50 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 		[Theory]
 		[MemberData(nameof(_DATA_MainMenuItemSetupInfoTestConstructorParams))]
 		[Trait("TestingMember", "Property_Command")]
-		public static void Command_is_set_by_constructor(string title, IEnumerable<string> path, GKCommand<Unit, Unit>? command)
+		public static void Command_is_set_by_constructor(
+			string title,
+			IEnumerable<string> path,
+			GKCommand<Unit, Unit>? command,
+			int order
+		)
 		{
 			// Arrange
 			MainMenuItemSetupInfo setupInfo;
 			GKCommand<Unit, Unit>? actualValue;
 
 			// Act
-			setupInfo = new(title, path, command);
+			setupInfo = new(title, path, command, order);
 			actualValue = setupInfo.Command;
 
 			// Assert
 			Assert.Equal(command, actualValue);
+		}
+
+		#endregion
+
+
+		#region Order
+
+		[Theory]
+		[MemberData(nameof(_DATA_MainMenuItemSetupInfoTestConstructorParams))]
+		[Trait("TestingMember", "Property_Order")]
+		public static void Order_is_set_by_constructor(
+			string title,
+			IEnumerable<string> path,
+			GKCommand<Unit, Unit>? command,
+			int order
+		)
+		{
+			// Arrange
+			MainMenuItemSetupInfo setupInfo;
+			int actualValue;
+
+			// Act
+			setupInfo = new(title, path, command, order);
+			actualValue = setupInfo.Order;
+
+			// Assert
+			Assert.Equal(order, actualValue);
 		}
 
 		#endregion

@@ -3,7 +3,9 @@ using GlacierKitCore.Commands;
 using GlacierKitCore.Models;
 using GlacierKitCore.ViewModels.Common;
 using GlacierKitTestShared;
+using Microsoft.Reactive.Testing;
 using ReactiveUI;
+using ReactiveUI.Testing;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -437,6 +439,56 @@ namespace GlacierKitCoreTest.Tests.ViewModels.Common
 
 			// Assert
 			Util.AssertCollectionsHaveSameItems(expectedValue, actualValue);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Property_ChildItems")]
+		public static void ChildItems_follows_order()
+		{
+			new TestScheduler().With(scheduler =>
+			{
+				// Arrange
+				MenuBarItemViewModel viewModel;
+				MenuBarViewModel menuBarViewModel;
+				string id = GeneralUseData.SmallString;
+				string title = GeneralUseData.TinyString;
+				ReadOnlyObservableCollection<MenuBarItemViewModel> actualValue;
+				List<MenuBarItemViewModel> childItems = new()
+				{
+					new("a", "Node A", GeneralUseData.StubGKCommand, null, 0),
+					new("b", "Node B", GeneralUseData.StubGKCommand, null, 0),
+					new("c", "Node C", GeneralUseData.StubGKCommand, null, 0),
+					new("d", "Node D", GeneralUseData.StubGKCommand, null, 1),
+					new("e", "Node E", GeneralUseData.StubGKCommand, null, -10),
+					new("f", "Node F", GeneralUseData.StubGKCommand, null, 12345),
+					new("g", "Node G", GeneralUseData.StubGKCommand, null, -2),
+					new("h", "Node H", GeneralUseData.StubGKCommand, null, -10),
+					new("i", "Node I", GeneralUseData.StubGKCommand, null, 0),
+					new("j", "Node J", GeneralUseData.StubGKCommand, null, 56)
+				};
+
+				// Act
+				menuBarViewModel = new();
+				viewModel = new(id, title);
+
+				menuBarViewModel.ItemTree
+					.CreateRootNode.Execute(new("root")).Wait()
+					.AddChild.Execute(viewModel).Wait();
+
+				actualValue = viewModel.ChildItems!;
+
+				foreach (MenuBarItemViewModel childItem in childItems)
+					viewModel.ItemNode!.AddChild.Execute(childItem).Wait();
+				scheduler.AdvanceBy(2);
+
+				// Assert
+				int? previousOrderValue = null;
+				foreach (MenuBarItemViewModel childItem in actualValue)
+				{
+					Assert.True(previousOrderValue == null || previousOrderValue <= childItem.Order);
+					previousOrderValue = childItem.Order;
+				}
+			});
 		}
 
 		#endregion

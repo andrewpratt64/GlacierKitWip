@@ -39,13 +39,24 @@ namespace GlacierKitCore.Attributes.DataProviders
 		/// </summary>
 		public GKCommand<Unit, Unit>? Command { get; }
 
-		public MainMenuItemSetupInfo(string title, IEnumerable<string> path, GKCommand<Unit, Unit>? command)
+		/// <summary>
+		/// Determines the order of the menu item with it's sibling items, lower numbers appear first
+		/// </summary>
+		public int Order { get; }
+
+		public MainMenuItemSetupInfo(
+			string title,
+			IEnumerable<string> path,
+			GKCommand<Unit, Unit>? command,
+			int order = 0
+		)
 		{
 			Debug.Assert(path.Any(), $"Parameter {nameof(path)} must have at least one id");
 
 			Title = title;
 			Path = path;
 			Command = command;
+			Order = order;
 		}
 
 	}

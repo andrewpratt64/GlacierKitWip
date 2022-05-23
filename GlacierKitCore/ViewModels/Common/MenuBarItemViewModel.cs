@@ -50,6 +50,11 @@ namespace GlacierKitCore.ViewModels.Common
 		public GKCommand<Unit, Unit>? ItemCommand { get; }
 
 		/// <summary>
+		/// Determines the order of sibling menu items, where lower numbers appear first
+		/// </summary>
+		public int Order { get; }
+
+		/// <summary>
 		/// The tree node corresponding to this menu item
 		/// </summary>
 		[Reactive]
@@ -81,17 +86,20 @@ namespace GlacierKitCore.ViewModels.Common
 		/// <param name="parentItemNode">The tree node of the parent menu item</param>
 		/// <param name="id">The unique identifier of this item</param>
 		/// <param name="title">The print-friendly name of this item</param>
+		/// <param name="order">The order this item with it's sibling items</param>
 		public MenuBarItemViewModel(
 			string id,
 			string title,
 			GKCommand<Unit, Unit>? itemCommand = null,
-			EditorContext? ctx = null
+			EditorContext? ctx = null,
+			int order = 0
 		)
 		{
 			Id = id;
 			Title = title;
 			ItemCommand = itemCommand;
 			Ctx = ctx ?? new();
+			Order = order;
 
 			// Bind the child nodes of ItemNode to ChildItems, when possible
 			this.WhenAnyValue(x => x.ItemNode)
@@ -99,8 +107,8 @@ namespace GlacierKitCore.ViewModels.Common
 				.Subscribe
 				(x =>
 					x.ConnectToChildNodes()
-					.ObserveOn(RxApp.MainThreadScheduler)
 					.Transform(x => x.Value)
+					.Sort(SortExpressionComparer<MenuBarItemViewModel>.Ascending(x => x.Order))
 					.ObserveOn(RxApp.MainThreadScheduler)
 					.Bind(out _childItems)
 					.Subscribe()
