@@ -6,6 +6,7 @@ using GlacierKitCore.Services;
 using GlacierKitCore.ViewModels.Common;
 using GlacierKitCore.ViewModels.EditorWindows;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,6 +21,14 @@ namespace GlacierKitCore.Models
 {
     public class EditorContext : ReactiveObject
     {
+		#region Private_fields
+
+		private readonly SourceList<IContextualItem> _itemsSource;
+		private readonly ReadOnlyObservableCollection<IContextualItem> _items;
+
+		#endregion
+
+
 		#region Public_properties
 
 		/// <summary>
@@ -32,6 +41,17 @@ namespace GlacierKitCore.Models
 		/// </summary>
 		public MenuBarViewModel MainMenuBar { get; }
 
+		/// <summary>
+		/// The items currently relative to this context
+		/// </summary>
+		public ReadOnlyObservableCollection<IContextualItem> Items => _items;
+		
+		/// <summary>
+		/// The item currently focused by the user
+		/// </summary>
+		[Reactive]
+		public IContextualItem? FocusedItem { get; set; }
+
 		#endregion
 
 
@@ -40,7 +60,17 @@ namespace GlacierKitCore.Models
 		/// <summary>
 		/// Creates a new editor window of a given type
 		/// </summary>
-		public ReactiveCommand<Type?, Type?> CreateEditorWindow;
+		public ReactiveCommand<Type?, Type?> CreateEditorWindow { get; }
+
+		/// <summary>
+		/// Adds a new item to the context
+		/// </summary>
+		public ReactiveCommand<IContextualItem, bool> AddItem { get; }
+
+		/// <summary>
+		/// Removes an item from the context
+		/// </summary>
+		public ReactiveCommand<IContextualItem, bool> RemoveItem { get; }
 
 		#endregion
 
@@ -49,7 +79,10 @@ namespace GlacierKitCore.Models
 
 		public EditorContext()
         {
-            ModuleLoader = new(this);
+			_itemsSource = new();
+			_itemsSource.Connect().Bind(out _items).Subscribe();
+
+			ModuleLoader = new(this);
 			MainMenuBar = new();
 
 			// Load the main menu items into the editor context after modules have finished loading
@@ -64,7 +97,24 @@ namespace GlacierKitCore.Models
                     return windowType;
                 return null;
             });
-        }
+
+			AddItem = ReactiveCommand.Create((IContextualItem item) =>
+			{
+				if (_itemsSource.Items.Contains(item))
+					return false;
+
+				_itemsSource.Add(item);
+				return true;
+			});
+
+			RemoveItem = ReactiveCommand.Create((IContextualItem item) =>
+			{
+				if (FocusedItem == item)
+					FocusedItem = null;
+				
+				return _itemsSource.Remove(item);
+			});
+		}
 
 		#endregion
 

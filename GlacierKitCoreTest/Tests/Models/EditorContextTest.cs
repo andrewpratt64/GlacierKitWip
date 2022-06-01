@@ -11,6 +11,7 @@ using ReactiveUI.Testing;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -28,6 +29,20 @@ namespace GlacierKitCoreTest.Tests.Models
         private static readonly Type? _DATA_InvalidInputForCreateEditorWindow = typeof(BarViewModel);
         private static readonly string _DATA_ValidIdForGetCommand = "PlaceholderModule_PrintHi";
         private static readonly string _DATA_InvalidIdForGetCommand = "IDontExist";
+
+#pragma warning disable IDE1006 // Naming Styles
+		private class _TYPE_ContextualItem : IContextualItem
+#pragma warning restore IDE1006 // Naming Styles
+		{
+			public EditorContext Ctx { get; }
+			public string Name { get; set; }
+
+			public _TYPE_ContextualItem(EditorContext ctx, string name)
+			{
+				Ctx = ctx;
+				Name = name;
+			}
+		}
 
 		#endregion
 
@@ -142,11 +157,48 @@ namespace GlacierKitCoreTest.Tests.Models
 		#endregion
 
 
+		#region Items
+
+		[Fact]
+		[Trait("TestingMember", "Property_Items")]
+		public static void Items_starts_empty()
+		{
+			// Arrange
+			EditorContext ctx = new();
+
+			// Assert
+			Assert.Empty(ctx.Items);
+		}
+
+		#endregion
+
+
+		#region FocusedItem
+
+		[Fact]
+		[Trait("TestingMember", "Property_FocusedItem")]
+		public static void FocusedItem_is_initially_null ()
+		{
+			// Arrange
+			EditorContext ctx;
+			object? actualValue;
+
+			// Act
+			ctx = new();
+			actualValue = ctx.FocusedItem;
+
+			// Assert
+			Assert.Null(actualValue);
+		}
+
+		#endregion
+
+
 		#region CreateEditorWindow
 
 		[Fact]
 		[Trait("TestingMember", "Command_CreateEditorWindow")]
-		public static void CreateEditorWindow_not_null()
+		public static void CreateEditorWindow_isnt_null()
         {
             // Arrange
             EditorContext? ctx;
@@ -294,6 +346,513 @@ namespace GlacierKitCoreTest.Tests.Models
             Assert.Equal(expectedValue, actualValue);
             commandDisposable.Dispose();
         }
+
+		#endregion
+
+
+		#region AddItem
+
+		[Fact]
+		[Trait("TestingMember", "Command_AddItem")]
+		public static void AddItem_isnt_null()
+		{
+			// Arrange
+			EditorContext? ctx;
+			object? actualValue;
+
+			// Act
+			ctx = new();
+			actualValue = ctx.AddItem;
+
+			// Assert
+			Assert.NotNull(actualValue);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_AddItem")]
+		public static void First_execution_of_AddItem_doesnt_throw()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+
+			// Assert
+			Util.AssertCodeDoesNotThrowException(
+				() =>
+				_ = ctx.AddItem
+				.Execute(firstItem)
+				.Wait()
+			);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_AddItem")]
+		public static void First_execution_of_AddItem_returns_true()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem;
+			bool returnValue;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			returnValue = ctx.AddItem.Execute(firstItem).Wait();
+
+			// Assert
+			Assert.True(returnValue);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_AddItem")]
+		public static void AddItem_with_unique_item_when_other_items_exist_doesnt_throw()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem, secondItem;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			Debug.Assert(
+				firstItem != secondItem,
+				$"Can't finish unit test; {nameof(firstItem)} and {nameof(secondItem)} are supposed to be two seperate instances."
+			);
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+
+			// Assert
+			Util.AssertCodeDoesNotThrowException(
+				() =>
+				_ = ctx.AddItem
+				.Execute(secondItem)
+				.Wait()
+			);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_AddItem")]
+		public static void Items_has_one_item_after_first_execution_of_AddItem()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem;
+			int expectedSize = 1;
+			int actualSize;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+			actualSize = ctx.Items.Count;
+
+			// Assert
+			Assert.Equal(expectedSize, actualSize);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_AddItem")]
+		public static void Correct_instance_is_added_to_Items_after_first_execution_of_AddItem()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem;
+			IContextualItem? expected;
+			IContextualItem? actual;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			expected = firstItem;
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+			actual = ctx.Items.FirstOrDefault();
+
+			// Assert
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_AddItem")]
+		public static void AddItem_with_unique_item_when_other_items_exist_returns_true()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem, secondItem;
+			bool returnValue;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			Debug.Assert(
+				firstItem != secondItem,
+				$"Can't finish unit test; {nameof(firstItem)} and {nameof(secondItem)} are supposed to be two seperate instances."
+			);
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+			returnValue = ctx.AddItem.Execute(secondItem).Wait();
+
+			// Assert
+			Assert.True(returnValue);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_AddItem")]
+		public static void Size_of_Items_increments_after_executing_AddItem_with_unique_item_when_other_items_exist()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem, secondItem;
+			int expected;
+			int actual;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			Debug.Assert(
+				firstItem != secondItem,
+				$"Can't finish unit test; {nameof(firstItem)} and {nameof(secondItem)} are supposed to be two seperate instances."
+			);
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+
+			expected = ctx.Items.Count + 1;
+			_ = ctx.AddItem.Execute(secondItem).Wait();
+			actual = ctx.Items.Count;
+
+			// Assert
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_AddItem")]
+		public static void Expected_item_exists_in_Items_after_executing_AddItem_with_unique_item_when_other_items_exist()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem, secondItem;
+			IContextualItem expected;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			Debug.Assert(
+				firstItem != secondItem,
+				$"Can't finish unit test; {nameof(firstItem)} and {nameof(secondItem)} are supposed to be two seperate instances."
+			);
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+
+			expected = secondItem;
+			_ = ctx.AddItem.Execute(secondItem).Wait();
+
+			// Assert
+			Assert.Contains(expected, ctx.Items);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_AddItem")]
+		public static void AddItem_with_already_existing_item_doesnt_throw()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem, secondItem;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			Debug.Assert(
+				firstItem != secondItem,
+				$"Can't finish unit test; {nameof(firstItem)} and {nameof(secondItem)} are supposed to be two seperate instances."
+			);
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+			_ = ctx.AddItem.Execute(secondItem).Wait();
+
+			// Assert
+			Util.AssertCodeDoesNotThrowException(
+				() =>
+				_ = ctx.AddItem
+				.Execute(secondItem)
+				.Wait()
+			);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_AddItem")]
+		public static void AddItem_with_already_existing_item_returns_false()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem, secondItem;
+			bool returnValue;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			Debug.Assert(
+				firstItem != secondItem,
+				$"Can't finish unit test; {nameof(firstItem)} and {nameof(secondItem)} are supposed to be two seperate instances."
+			);
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+			_ = ctx.AddItem.Execute(secondItem).Wait();
+			returnValue = ctx.AddItem.Execute(secondItem).Wait();
+
+			// Assert
+			Assert.False(returnValue);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_AddItem")]
+		public static void Size_of_Items_is_unchanged_after_executing_AddItem_with_already_existing_item()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem, secondItem;
+			int expected;
+			int actual;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			Debug.Assert(
+				firstItem != secondItem,
+				$"Can't finish unit test; {nameof(firstItem)} and {nameof(secondItem)} are supposed to be two seperate instances."
+			);
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+			_ = ctx.AddItem.Execute(secondItem).Wait();
+
+			expected = ctx.Items.Count;
+			_ = ctx.AddItem.Execute(secondItem).Wait();
+			actual = ctx.Items.Count;
+
+			// Assert
+			Assert.Equal(expected, actual);
+		}
+
+		#endregion
+
+
+		#region RemoveItem
+
+		[Fact]
+		[Trait("TestingMember", "Command_RemoveItem")]
+		public static void RemoveItem_isnt_null()
+		{
+			// Arrange
+			EditorContext? ctx;
+			object? actualValue;
+
+			// Act
+			ctx = new();
+			actualValue = ctx.RemoveItem;
+
+			// Assert
+			Assert.NotNull(actualValue);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_RemoveItem")]
+		public static void RemoveItem_with_missing_item_doesnt_throw()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem, secondItem, itemToRemove;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			itemToRemove = new _TYPE_ContextualItem(ctx, "Missing");
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+			_ = ctx.AddItem.Execute(secondItem).Wait();
+
+			// Assert
+			Util.AssertCodeDoesNotThrowException(
+				() =>
+				_ = ctx.RemoveItem
+				.Execute(itemToRemove)
+				.Wait()
+			);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_RemoveItem")]
+		public static void RemoveItem_with_missing_item_returns_false()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem, secondItem, itemToRemove;
+			bool returnValue;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			itemToRemove = new _TYPE_ContextualItem(ctx, "Missing");
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+			_ = ctx.AddItem.Execute(secondItem).Wait();
+			returnValue = ctx.RemoveItem.Execute(itemToRemove).Wait();
+
+			// Assert
+			Assert.False(returnValue);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_RemoveItem")]
+		public static void Size_of_Items_is_unchanged_after_executing_RemoveItem_with_missing_item()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem, secondItem, itemToRemove;
+			int expected;
+			int actual;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			itemToRemove = new _TYPE_ContextualItem(ctx, "Missing");
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+			_ = ctx.AddItem.Execute(secondItem).Wait();
+
+			expected = ctx.Items.Count;
+			_ = ctx.RemoveItem.Execute(itemToRemove).Wait();
+			actual = ctx.Items.Count;
+
+			// Assert
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_RemoveItem")]
+		public static void RemoveItem_with_existing_item_doesnt_throw()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem, secondItem, itemToRemove;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			itemToRemove = secondItem;
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+			_ = ctx.AddItem.Execute(secondItem).Wait();
+
+			// Assert
+			Util.AssertCodeDoesNotThrowException(
+				() =>
+				_ = ctx.RemoveItem
+				.Execute(itemToRemove)
+				.Wait()
+			);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_RemoveItem")]
+		public static void RemoveItem_with_existing_item_returns_true()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem, secondItem, itemToRemove;
+			bool returnValue;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			itemToRemove = secondItem;
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+			_ = ctx.AddItem.Execute(secondItem).Wait();
+			returnValue = ctx.RemoveItem.Execute(itemToRemove).Wait();
+
+			// Assert
+			Assert.True(returnValue);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_RemoveItem")]
+		public static void Size_of_Items_decrements_after_executing_RemoveItem_with_existing_item()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem, secondItem, itemToRemove;
+			int expected;
+			int actual;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			itemToRemove = secondItem;
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+			_ = ctx.AddItem.Execute(secondItem).Wait();
+
+			expected = ctx.Items.Count - 1;
+			_ = ctx.RemoveItem.Execute(itemToRemove).Wait();
+			actual = ctx.Items.Count;
+
+			// Assert
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_RemoveItem")]
+		public static void RemoveItem_with_existing_unfocused_item_doesnt_affect_FocusedItem()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem, secondItem, itemToRemove;
+			IContextualItem? expected;
+			IContextualItem? actual;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			itemToRemove = secondItem;
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+			_ = ctx.AddItem.Execute(secondItem).Wait();
+			ctx.FocusedItem = firstItem;
+
+			expected = ctx.FocusedItem;
+			_ = ctx.RemoveItem.Execute(itemToRemove).Wait();
+			actual = ctx.FocusedItem;
+
+			// Assert
+			Assert.Equal(expected, actual);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Command_RemoveItem")]
+		public static void FocusedItem_is_null_after_executing_RemoveItem_with_existing_focused_item()
+		{
+			// Arrange
+			EditorContext? ctx;
+			IContextualItem firstItem, secondItem, itemToRemove;
+			IContextualItem? result;
+
+			// Act
+			ctx = new();
+			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			itemToRemove = secondItem;
+			_ = ctx.AddItem.Execute(firstItem).Wait();
+			_ = ctx.AddItem.Execute(secondItem).Wait();
+			ctx.FocusedItem = itemToRemove;
+
+			_ = ctx.RemoveItem.Execute(itemToRemove).Wait();
+			result = ctx.FocusedItem;
+
+			// Assert
+			Assert.Null(result);
+		}
 
 		#endregion
 

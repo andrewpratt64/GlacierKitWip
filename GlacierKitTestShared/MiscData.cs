@@ -17,7 +17,7 @@ namespace GlacierKitTestShared
         /// <summary>
         /// The amount of modules in the gkmodules directory (one .dll = one module)
         /// </summary>
-        public static readonly int ExpectedModules = 1;
+        public static readonly int ExpectedModules = 2;
     }
 
 

@@ -219,7 +219,7 @@ namespace GlacierKitCoreTest.Tests.Services
 		}
 
 		#endregion
-
+		
 
 		#region GKCommands
 
