@@ -23,8 +23,7 @@ namespace GlacierKitCore.Models
     {
 		#region Private_fields
 
-		private readonly SourceList<IContextualItem> _itemsSource;
-		private readonly ReadOnlyObservableCollection<IContextualItem> _items;
+		private readonly SourceList<IContextualItem> _items;
 
 		#endregion
 
@@ -40,11 +39,6 @@ namespace GlacierKitCore.Models
 		/// The main menu bar of the editor
 		/// </summary>
 		public MenuBarViewModel MainMenuBar { get; }
-
-		/// <summary>
-		/// The items currently relative to this context
-		/// </summary>
-		public ReadOnlyObservableCollection<IContextualItem> Items => _items;
 		
 		/// <summary>
 		/// The item currently focused by the user
@@ -79,8 +73,7 @@ namespace GlacierKitCore.Models
 
 		public EditorContext()
         {
-			_itemsSource = new();
-			_itemsSource.Connect().Bind(out _items).Subscribe();
+			_items = new();
 
 			ModuleLoader = new(this);
 			MainMenuBar = new();
@@ -100,10 +93,10 @@ namespace GlacierKitCore.Models
 
 			AddItem = ReactiveCommand.Create((IContextualItem item) =>
 			{
-				if (_itemsSource.Items.Contains(item))
+				if (_items.Items.Contains(item))
 					return false;
 
-				_itemsSource.Add(item);
+				_items.Add(item);
 				return true;
 			});
 
@@ -112,7 +105,7 @@ namespace GlacierKitCore.Models
 				if (FocusedItem == item)
 					FocusedItem = null;
 				
-				return _itemsSource.Remove(item);
+				return _items.Remove(item);
 			});
 		}
 
@@ -120,6 +113,16 @@ namespace GlacierKitCore.Models
 
 
 		#region Public_methods
+
+
+		/// <summary>
+		/// Connect to and observe changes of the items currently relative to this context
+		/// </summary>
+		/// <returns>An observable that emits the change set of contextual items</returns>
+		public IObservable<IChangeSet<IContextualItem>> ConnectToItems()
+		{
+			return _items.Connect();
+		}
 
 		public GKCommand<TParam, TResult>? GetCommand<TParam, TResult>(string id)
         {

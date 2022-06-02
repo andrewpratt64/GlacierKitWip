@@ -157,22 +157,6 @@ namespace GlacierKitCoreTest.Tests.Models
 		#endregion
 
 
-		#region Items
-
-		[Fact]
-		[Trait("TestingMember", "Property_Items")]
-		public static void Items_starts_empty()
-		{
-			// Arrange
-			EditorContext ctx = new();
-
-			// Assert
-			Assert.Empty(ctx.Items);
-		}
-
-		#endregion
-
-
 		#region FocusedItem
 
 		[Fact]
@@ -440,18 +424,26 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
+#pragma warning disable IDE0018 // Inline variable declaration
+			ReadOnlyObservableCollection<IContextualItem> items;
+#pragma warning restore IDE0018 // Inline variable declaration
+			IDisposable ctxItemsSubscription;
 			IContextualItem firstItem;
 			int expectedSize = 1;
 			int actualSize;
 
 			// Act
 			ctx = new();
+			ctxItemsSubscription = ctx.ConnectToItems().Bind(out items).Subscribe();
 			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
 			_ = ctx.AddItem.Execute(firstItem).Wait();
-			actualSize = ctx.Items.Count;
+			actualSize = items.Count;
 
 			// Assert
 			Assert.Equal(expectedSize, actualSize);
+
+			// Cleanup
+			ctxItemsSubscription.Dispose();
 		}
 
 		[Fact]
@@ -460,19 +452,27 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
+#pragma warning disable IDE0018 // Inline variable declaration
+			ReadOnlyObservableCollection<IContextualItem> items;
+#pragma warning restore IDE0018 // Inline variable declaration
+			IDisposable ctxItemsSubscription;
 			IContextualItem firstItem;
 			IContextualItem? expected;
 			IContextualItem? actual;
 
 			// Act
 			ctx = new();
+			ctxItemsSubscription = ctx.ConnectToItems().Bind(out items).Subscribe();
 			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
 			expected = firstItem;
 			_ = ctx.AddItem.Execute(firstItem).Wait();
-			actual = ctx.Items.FirstOrDefault();
+			actual = items.FirstOrDefault();
 
 			// Assert
 			Assert.Equal(expected, actual);
+
+			// Cleanup
+			ctxItemsSubscription.Dispose();
 		}
 
 		[Fact]
@@ -505,12 +505,17 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
+#pragma warning disable IDE0018 // Inline variable declaration
+			ReadOnlyObservableCollection<IContextualItem> items;
+#pragma warning restore IDE0018 // Inline variable declaration
+			IDisposable ctxItemsSubscription;
 			IContextualItem firstItem, secondItem;
 			int expected;
 			int actual;
 
 			// Act
 			ctx = new();
+			ctxItemsSubscription = ctx.ConnectToItems().Bind(out items).Subscribe();
 			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
 			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
 			Debug.Assert(
@@ -519,12 +524,15 @@ namespace GlacierKitCoreTest.Tests.Models
 			);
 			_ = ctx.AddItem.Execute(firstItem).Wait();
 
-			expected = ctx.Items.Count + 1;
+			expected = items.Count + 1;
 			_ = ctx.AddItem.Execute(secondItem).Wait();
-			actual = ctx.Items.Count;
+			actual = items.Count;
 
 			// Assert
 			Assert.Equal(expected, actual);
+
+			// Cleanup
+			ctxItemsSubscription.Dispose();
 		}
 
 		[Fact]
@@ -533,11 +541,16 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
+#pragma warning disable IDE0018 // Inline variable declaration
+			ReadOnlyObservableCollection<IContextualItem> items;
+#pragma warning restore IDE0018 // Inline variable declaration
+			IDisposable ctxItemsSubscription;
 			IContextualItem firstItem, secondItem;
 			IContextualItem expected;
 
 			// Act
 			ctx = new();
+			ctxItemsSubscription = ctx.ConnectToItems().Bind(out items).Subscribe();
 			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
 			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
 			Debug.Assert(
@@ -550,7 +563,10 @@ namespace GlacierKitCoreTest.Tests.Models
 			_ = ctx.AddItem.Execute(secondItem).Wait();
 
 			// Assert
-			Assert.Contains(expected, ctx.Items);
+			Assert.Contains(expected, items);
+
+			// Cleanup
+			ctxItemsSubscription.Dispose();
 		}
 
 		[Fact]
@@ -612,12 +628,17 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
+#pragma warning disable IDE0018 // Inline variable declaration
+			ReadOnlyObservableCollection<IContextualItem> items;
+#pragma warning restore IDE0018 // Inline variable declaration
+			IDisposable ctxItemsSubscription;
 			IContextualItem firstItem, secondItem;
 			int expected;
 			int actual;
 
 			// Act
 			ctx = new();
+			ctxItemsSubscription = ctx.ConnectToItems().Bind(out items).Subscribe();
 			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
 			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
 			Debug.Assert(
@@ -627,12 +648,15 @@ namespace GlacierKitCoreTest.Tests.Models
 			_ = ctx.AddItem.Execute(firstItem).Wait();
 			_ = ctx.AddItem.Execute(secondItem).Wait();
 
-			expected = ctx.Items.Count;
+			expected = items.Count;
 			_ = ctx.AddItem.Execute(secondItem).Wait();
-			actual = ctx.Items.Count;
+			actual = items.Count;
 
 			// Assert
 			Assert.Equal(expected, actual);
+
+			// Cleanup
+			ctxItemsSubscription.Dispose();
 		}
 
 		#endregion
@@ -709,24 +733,32 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
+#pragma warning disable IDE0018 // Inline variable declaration
+			ReadOnlyObservableCollection<IContextualItem> items;
+#pragma warning restore IDE0018 // Inline variable declaration
+			IDisposable ctxItemsSubscription;
 			IContextualItem firstItem, secondItem, itemToRemove;
 			int expected;
 			int actual;
 
 			// Act
 			ctx = new();
+			ctxItemsSubscription = ctx.ConnectToItems().Bind(out items).Subscribe();
 			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
 			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
 			itemToRemove = new _TYPE_ContextualItem(ctx, "Missing");
 			_ = ctx.AddItem.Execute(firstItem).Wait();
 			_ = ctx.AddItem.Execute(secondItem).Wait();
 
-			expected = ctx.Items.Count;
+			expected = items.Count;
 			_ = ctx.RemoveItem.Execute(itemToRemove).Wait();
-			actual = ctx.Items.Count;
+			actual = items.Count;
 
 			// Assert
 			Assert.Equal(expected, actual);
+
+			// Cleanup
+			ctxItemsSubscription.Dispose();
 		}
 
 		[Fact]
@@ -782,24 +814,32 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
+#pragma warning disable IDE0018 // Inline variable declaration
+			ReadOnlyObservableCollection<IContextualItem> items;
+#pragma warning restore IDE0018 // Inline variable declaration
+			IDisposable ctxItemsSubscription;
 			IContextualItem firstItem, secondItem, itemToRemove;
 			int expected;
 			int actual;
 
 			// Act
 			ctx = new();
+			ctxItemsSubscription = ctx.ConnectToItems().Bind(out items).Subscribe();
 			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
 			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
 			itemToRemove = secondItem;
 			_ = ctx.AddItem.Execute(firstItem).Wait();
 			_ = ctx.AddItem.Execute(secondItem).Wait();
 
-			expected = ctx.Items.Count - 1;
+			expected = items.Count - 1;
 			_ = ctx.RemoveItem.Execute(itemToRemove).Wait();
-			actual = ctx.Items.Count;
+			actual = items.Count;
 
 			// Assert
 			Assert.Equal(expected, actual);
+
+			// Cleanup
+			ctxItemsSubscription.Dispose();
 		}
 
 		[Fact]
@@ -852,6 +892,40 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Assert
 			Assert.Null(result);
+		}
+
+		#endregion
+
+
+		#region Items
+
+		[Fact]
+		[Trait("TestingMember", "Method_ConnectToItems")]
+		public static void Calling_ConnectToItems_doesnt_throw()
+		{
+			// Arrange
+			EditorContext ctx = new();
+
+			// Act / Assert
+			Util.AssertCodeDoesNotThrowException(
+				() => _ = ctx.ConnectToItems()
+			);
+		}
+
+		[Fact]
+		[Trait("TestingMember", "Method_ConnectToItems")]
+		public static void Calling_ConnectToItems_doesnt_return_null()
+		{
+			// Arrange
+			EditorContext ctx;
+			object? actual;
+
+			// Act
+			ctx = new();
+			actual = ctx.ConnectToItems();
+
+			// Assert
+			Assert.NotNull(actual);
 		}
 
 		#endregion

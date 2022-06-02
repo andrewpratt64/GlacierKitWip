@@ -22,7 +22,7 @@ namespace PlaceholderModule.ViewModels
 			Title = DisplayName;
 			Ctx = ctx ?? new();
 			
-			Ctx.Items.
+			//Ctx.Items.
 		}
 	}
 }
