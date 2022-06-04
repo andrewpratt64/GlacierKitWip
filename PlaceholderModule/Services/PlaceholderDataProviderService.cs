@@ -92,6 +92,18 @@ namespace PlaceholderModule.Services
 				return Unit.Default;
 			})
 		);
+
+		[ExposeAsGKCommand]
+		public GKCommand<Unit, Unit> TMP_OpenTreeEditorAView => new
+		(
+			commandId: "PlaceholderModule_OpenTreeEditorAView",
+			displayName: "Open Tree Editor A view",
+			command: ReactiveCommand.Create<Unit, Unit>(_ =>
+			{
+				Ctx.CreateEditorWindow.Execute(typeof(TreeEditorAViewModel)).Subscribe();
+				return Unit.Default;
+			})
+		);
 #pragma warning restore CA1822 // Mark members as static
 
 		#endregion
@@ -146,6 +158,14 @@ namespace PlaceholderModule.Services
 			title: "Pushy Buttons",
 			path: new string[] { "view", "editorWindows", "PlaceholderModule_openPushyButtonsView" },
 			command: OpenPushyButtonsView
+		);
+
+		[ExposeAsMainMenuItem]
+		public MainMenuItemSetupInfo TMP_View_EditorWindows_OpenTreeEditorAView_MenuItemInfo => new
+		(
+			title: "Tree Editor A",
+			path: new string[] { "view", "editorWindows", "PlaceholderModule_OpenTreeEditorAView" },
+			command: TMP_OpenTreeEditorAView
 		);
 
 #pragma warning restore CA1822 // Mark members as static

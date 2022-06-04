@@ -1,7 +1,8 @@
 ﻿using DynamicData;
 using GlacierKitCore.Models;
-using Models;
+using PlaceholderModule.Models;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,19 +18,21 @@ namespace PlaceholderModule.Services
 
 
 		public EditorContext Ctx { get; }
-		
 		public ReadOnlyObservableCollection<TreeModel> Trees => _viewOfTrees;
 
+		[Reactive]
+		public string Name { get; set; }
 
 		public ReactiveCommand<ETreeType, TreeModel> PlantTree { get; }
 		public ReactiveCommand<TreeModel, Unit> ChopTree { get; }
 
 
-		public Forest(EditorContext? ctx)
+		public Forest(EditorContext? ctx, string name)
 		{
 			_trees = new();
 
 			Ctx = ctx ?? new();
+			Name = name;
 
 			PlantTree = ReactiveCommand.Create<ETreeType, TreeModel>(
 				treeType =>

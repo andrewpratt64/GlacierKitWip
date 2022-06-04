@@ -6,14 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Models
+namespace PlaceholderModule.Models
 {
 	public enum ETreeType
 	{
 		Oak,
 		Spruce,
-		Birch,
-		Chestnut
+		Palm,
+		Broccoli
 	}
 
 
@@ -22,12 +22,15 @@ namespace Models
 		IContextualItem
 	{
 		private static readonly Random _rng = new();
+		private static ulong _nextId = 1U;
 
 
 		/// <summary>
 		/// The forest containing the tree
 		/// </summary>
 		public Forest ContainingForest { get; }
+
+		public ulong TreeId { get; }
 
 		/// <summary>
 		/// The type of the tree
@@ -39,7 +42,7 @@ namespace Models
 		/// The tree's current height in decimeters
 		/// </summary>
 		[Reactive]
-		public float Height { get; set; }
+		public double Height { get; set; }
 
 		/// <summary>
 		/// The moment in time the tree was planted
@@ -51,9 +54,23 @@ namespace Models
 		public TreeModel(Forest forest, ETreeType treeType)
 		{
 			ContainingForest = forest;
+			TreeId = _nextId++;
 			TreeType = treeType;
-			Height = _rng.Next(1, 4) + (0.5f * (float)_rng.NextDouble() - 0.5f);
+			Height = _rng.Next(1, 4) + (0.5d * (float)_rng.NextDouble() - 0.5d);
 			PlantedTime = DateTime.Now;
+		}
+
+
+		public static string GetEmojiForTreeType(ETreeType treeType)
+		{
+			return treeType switch
+			{
+				ETreeType.Oak => "🌳",
+				ETreeType.Spruce => "🌲",
+				ETreeType.Palm => "🌴",
+				ETreeType.Broccoli => "🥦",
+				_ => "?",
+			};
 		}
 	}
 }

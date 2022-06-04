@@ -14,8 +14,18 @@
 		<Folder Include="Assets\" />
 		<Folder Include="Attributes\" />
 		<Folder Include="Controls\" />
+		<Folder Include="Converters\" />
 		<Folder Include="MSBuildFiles\" />
 		<Folder Include="Themes\GKFluent\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Avalonia" Version="0.10.13" />
+	  <PackageReference Include="Avalonia.Diagnostics" Version="0.10.13" />
+	  <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.13" />
+	  <PackageReference Include="Dock.Avalonia" Version="0.10.12" />
+	  <PackageReference Include="Dock.Model.ReactiveUI" Version="0.10.12" />
+	  <PackageReference Include="ReactiveUI.Fody" Version="18.0.7" />
 	</ItemGroup>
 
 	<ItemGroup>
