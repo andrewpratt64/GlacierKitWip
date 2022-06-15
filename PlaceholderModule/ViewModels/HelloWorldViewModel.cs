@@ -1,4 +1,5 @@
-﻿using GlacierKitCore.ViewModels;
+﻿using GlacierKitCore.Models;
+using GlacierKitCore.ViewModels;
 using GlacierKitCore.ViewModels.EditorWindows;
 using System;
 
@@ -9,7 +10,8 @@ namespace PlaceholderModule.ViewModels
     {
         public static new string DisplayName => "Welcomer of Worlds";
 
-        public HelloWorldViewModel()
+        public HelloWorldViewModel(EditorContext ctx) :
+			base(ctx)
         {
             Title = DisplayName;
         }

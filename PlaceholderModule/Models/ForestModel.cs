@@ -9,9 +9,11 @@ using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Text;
 
-namespace PlaceholderModule.Services
+namespace PlaceholderModule.Models
 {
-	public class Forest : IContextualItem
+	public class ForestModel :
+		ReactiveObject,
+		IContextualItem
 	{
 		private readonly SourceList<TreeModel> _trees;
 		private readonly ReadOnlyObservableCollection<TreeModel> _viewOfTrees;
@@ -27,7 +29,7 @@ namespace PlaceholderModule.Services
 		public ReactiveCommand<TreeModel, Unit> ChopTree { get; }
 
 
-		public Forest(EditorContext? ctx, string name)
+		public ForestModel(EditorContext? ctx, string name)
 		{
 			_trees = new();
 
@@ -54,7 +56,9 @@ namespace PlaceholderModule.Services
 				}
 			);
 
-			_trees.Connect().Bind(out _viewOfTrees);
+			_trees.Connect()
+				.Bind(out _viewOfTrees)
+				.Subscribe();
 		}
 	}
 }

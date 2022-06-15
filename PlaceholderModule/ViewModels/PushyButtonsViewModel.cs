@@ -10,6 +10,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Avalonia.Media;
 using Avalonia;
+using GlacierKitCore.Models;
 
 namespace PlaceholderModule.ViewModels
 {
@@ -18,7 +19,8 @@ namespace PlaceholderModule.ViewModels
         public static new string DisplayName => "Pushy Buttons";
 
 
-        public PushyButtonsViewModel()
+        public PushyButtonsViewModel(EditorContext ctx) :
+			base(ctx)
         {
             Title = DisplayName;
         }

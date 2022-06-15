@@ -20,10 +20,17 @@ namespace GlacierKitCoreTest.Tests.ViewModels
         private class _TYPE_RELATED_CONCRETE_CLASS : EditorWindowViewModel
         {
             public static new string DisplayName => "Related Concrete Class";
-        }
+
+			public _TYPE_RELATED_CONCRETE_CLASS() :
+				base(new GlacierKitCore.Models.EditorContext())
+			{ }
+		}
         private abstract class _TYPE_RELATED_ABSTRACT_CLASS : EditorWindowViewModel
         {
-        }
+			public _TYPE_RELATED_ABSTRACT_CLASS() :
+				base(new GlacierKitCore.Models.EditorContext())
+			{ }
+		}
 #pragma warning restore IDE1006 // Naming Styles
 
 

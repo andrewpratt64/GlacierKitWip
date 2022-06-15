@@ -33,7 +33,7 @@ namespace GlacierKit
 
         public override IRootDock CreateLayout()
         {
-            MainDockable = new MainViewModel(this);
+            MainDockable = new MainViewModel(_context, this);
 
             IRootDock root = CreateRootDock();
 
@@ -59,7 +59,7 @@ namespace GlacierKit
             {
                 [nameof(IDockWindow)] = () =>
                 {
-                    var hostWindow = new HostWindow()
+					HostWindow? hostWindow = new()
                     {
                         [!Avalonia.Controls.Window.TitleProperty] = new Binding("ActiveDockable.Title")
                     };

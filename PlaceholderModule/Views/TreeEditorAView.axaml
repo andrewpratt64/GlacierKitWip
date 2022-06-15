@@ -67,6 +67,7 @@
 			RowDefinitions="*,4*,5*"
 		>
 			<!--Title-->
+			<TextBlock Foreground="Red" Text="{Binding SelectedTree.ContainingForest.Name}"/>
 			<TextBlock
 				Text="{Binding TreeEditorTitle}"
 				Grid.Column="1"
@@ -117,7 +118,6 @@
 					/>
 					<!--Tree height value-->
 					<NumericUpDown
-						Name="PART_TreeHeightEditor"
 						Grid.Column="1"
 						Value="{Binding TreeEditorHeightValue, Mode=TwoWay, Priority=LocalValue}"
 						AllowSpin="True"
@@ -133,7 +133,48 @@
 					<ComboBox
 						Grid.Column="2"
 						Items="{Binding TreeHeightUnits}"
-						SelectedItem="{Binding SelectedUnit, Mode=TwoWay}"
+						SelectedItem="{Binding SelectedHeightUnit, Mode=TwoWay}"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+					>
+						<ComboBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Name}"/>
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
+				</Grid>
+
+				<!--Tree age-->
+				<Grid
+					ColumnDefinitions="0.5*,2.5*,*"
+					RowDefinitions="*"
+				>
+					<!--Tree age label-->
+					<TextBlock
+						Text="Age"
+						Grid.Column="0"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"
+					/>
+					<!--Tree age value-->
+					<NumericUpDown
+						Grid.Column="1"
+						Value="{Binding TreeEditorAgeValue, Mode=TwoWay, Priority=LocalValue}"
+						AllowSpin="True"
+						ShowButtonSpinner="True"
+						Minimum="0"
+						Increment="1"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						IsReadOnly="False"
+						FormatString="N3"
+					/>
+					<!--Tree age unit-->
+					<ComboBox
+						Grid.Column="2"
+						Items="{Binding TreeAgeUnits}"
+						SelectedItem="{Binding SelectedAgeUnit, Mode=TwoWay}"
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
 					>
@@ -146,8 +187,6 @@
 				</Grid>
 			</StackPanel>
 		</Grid>
-
-
 
 	</SplitView>
 

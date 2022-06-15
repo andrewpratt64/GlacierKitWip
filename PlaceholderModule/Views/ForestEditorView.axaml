@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:m="using:PlaceholderModule.Models"
+			 xmlns:vm="using:PlaceholderModule.ViewModels"
+			 xmlns:gkvm="using:GlacierKitCore.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:dd="clr-namespace:PlaceholderModule.DesignTime;assembly=PlaceholderModule"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 d:DataContext="{x:Static dd:PlaceholderModuleDesignTimeData.ExampleForestEditorViewModel}"
+             x:Class="PlaceholderModule.Views.ForestEditorView">
+	<DockPanel LastChildFill="True">
+
+		<!--Top bar-->
+		<StackPanel
+			DockPanel.Dock="Top"
+			Orientation="Horizontal"
+		>
+			
+			<!--Create forest button-->
+			<Button
+				Command="{Binding ClickAddForestButton}"
+			>Create New Forest</Button>
+			<!--Delete forest button-->
+			<Button
+				Command="{Binding ClickDestroyForestButton}"
+			>Destroy Forest</Button>
+			
+			<TextBlock Text="{Binding Ctx.FocusedItem, TargetNullValue=NULL, FallbackValue=FALLBACK}"/>
+		</StackPanel>
+
+		<!--Forest tree view-->
+		<ScrollViewer>
+			<TreeView
+				x:Name="PART_TreeView"
+				SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+			>
+				<TreeView.DataTemplates>
+				
+					<TreeDataTemplate DataType="m:ForestModel" ItemsSource="{Binding Trees}">
+						<TextBox
+							AcceptsReturn="False"
+							AcceptsTab="False"
+							Text="{Binding Name, Mode=TwoWay}"
+							HorizontalAlignment="Left"
+							VerticalAlignment="Center"
+						/>
+					</TreeDataTemplate>
+
+					<TreeDataTemplate DataType="m:TreeModel">
+						<TextBlock Text="{Binding TreeId, StringFormat=Tree Num. {0}}}"/>
+					</TreeDataTemplate>
+				
+				</TreeView.DataTemplates>
+			</TreeView>	
+		</ScrollViewer>
+
+	</DockPanel>
+</UserControl>

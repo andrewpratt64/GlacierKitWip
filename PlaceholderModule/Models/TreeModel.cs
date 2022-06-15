@@ -1,4 +1,5 @@
 ﻿using GlacierKitCore.Models;
+using PlaceholderModule.Models;
 using PlaceholderModule.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -28,7 +29,7 @@ namespace PlaceholderModule.Models
 		/// <summary>
 		/// The forest containing the tree
 		/// </summary>
-		public Forest ContainingForest { get; }
+		public ForestModel ContainingForest { get; }
 
 		public ulong TreeId { get; }
 
@@ -51,7 +52,7 @@ namespace PlaceholderModule.Models
 		public DateTime PlantedTime { get; set; }
 
 
-		public TreeModel(Forest forest, ETreeType treeType)
+		public TreeModel(ForestModel forest, ETreeType treeType)
 		{
 			ContainingForest = forest;
 			TreeId = _nextId++;

@@ -1,6 +1,7 @@
 ﻿using Dock.Model.Core;
 using Dock.Model.ReactiveUI.Controls;
 using GlacierKitCore.Attributes;
+using GlacierKitCore.Models;
 using GlacierKitCore.ViewModels;
 using GlacierKitCore.ViewModels.EditorWindows;
 using ReactiveUI;
@@ -30,7 +31,12 @@ namespace GlacierKit.ViewModels
         }
 
 
-        [Reactive]
+		/// <summary>
+		/// The editor context instance
+		/// </summary>
+        public EditorContext Ctx { get; }
+		
+		[Reactive]
         public Type? NewDocumentType
         { get; set; }
 
@@ -40,12 +46,13 @@ namespace GlacierKit.ViewModels
         { get; private set; }
 
 
-        public MainViewModel() : this(new MainDockFactory(new()), null) { }
+        public MainViewModel() : this(new(), new MainDockFactory(new()), null) { }
         
-        public MainViewModel(IFactory? initialFactory, IDockable? initialDockable = null)
+        public MainViewModel(EditorContext ctx, IFactory? initialFactory, IDockable? initialDockable = null)
            : base()
         {
             // Do basic initialization
+			Ctx = ctx;
             NewDocumentType = null;
             IsNewDocumentTypeValid = false;
 
@@ -84,8 +91,8 @@ namespace GlacierKit.ViewModels
 
                     Debug.Assert(Factory != null);
 
-                    var index = VisibleDockables?.Count + 1;
-                    if (Activator.CreateInstance(NewDocumentType!) is not IDockable document)
+					int? index = VisibleDockables?.Count + 1;
+                    if (Activator.CreateInstance(NewDocumentType!, Ctx) is not IDockable document)
                     {
                         Trace.TraceWarning($"Failed to create an editor window of type, \"{NewDocumentType!.AssemblyQualifiedName}\"");
                     }

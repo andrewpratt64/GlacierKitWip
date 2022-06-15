@@ -35,23 +35,25 @@ namespace GlacierKitTest.Tests.ViewModels
         public static void Ctor_with_null_dockable_does_not_throw()
         {
             // Arrange
+			EditorContext ctx = new();
             IFactory factory = new MainDockFactory(new());
             IDockable? dockable = null;
 
             // Assert
-            Util.AssertCodeDoesNotThrowException(() => new MainViewModel(factory, dockable));
+            Util.AssertCodeDoesNotThrowException(() => new MainViewModel(ctx, factory, dockable));
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "Method return value is not tested")]
         [Fact]
         public static void Ctor_with_not_null_dockable_does_not_throw()
         {
-            // Arrange
-            IFactory factory = new MainDockFactory(new());
+			// Arrange
+			EditorContext ctx = new();
+			IFactory factory = new MainDockFactory(new());
             IDockable dockable = factory.CreateLayout()!;
 
             // Assert
-            Util.AssertCodeDoesNotThrowException(() => new MainViewModel(factory, dockable));
+            Util.AssertCodeDoesNotThrowException(() => new MainViewModel(ctx, factory, dockable));
         }
 
         #endregion
@@ -262,7 +264,7 @@ namespace GlacierKitTest.Tests.ViewModels
             initialDockable = initialFactory.CreateLayout()!;
             initialFactory.InitLayout(initialDockable);
 
-            vm = new(initialFactory, initialDockable);
+            vm = new(initialCtx, initialFactory, initialDockable);
             actualValue = vm.VisibleDockables;
 
             // Assert
@@ -407,7 +409,7 @@ namespace GlacierKitTest.Tests.ViewModels
             initialDockable = initialFactory.CreateLayout()!;
             initialFactory.InitLayout(initialDockable);
 
-            vm = new(initialFactory, initialDockable);
+            vm = new(initialCtx, initialFactory, initialDockable);
             countBefore = vm.VisibleDockables?.Count;
             vm.NewDocumentType = newDocumentType;
             vm.CreateDocument!.Execute(null);

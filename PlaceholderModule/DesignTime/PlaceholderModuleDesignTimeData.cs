@@ -12,14 +12,27 @@ namespace PlaceholderModule.DesignTime
 {
 	public static class PlaceholderModuleDesignTimeData
 	{
-		public static int NumberOfExtraExampleTreesToMake => 25;
+		private static readonly ETreeType[] _treeTypes = Enum.GetValues<ETreeType>();
+
+
+		public static int NumberOfExtraTreesInExampleForest { get; } = 25;
+		public static IEnumerable<string> ExtraForestNames { get; } = new List<string>()
+		{
+			"Fuchsia ForestModel",
+			"Jade Jungle",
+			"Red Redwoods",
+			"White Woods"
+		};
+		public static int TreesPerExtraForest { get; } = 7;
 
 
 		public static EditorContext ExampleEditorContext { get; }
 
-		public static Forest ExampleForest { get; }
+		public static ForestModel ExampleForest { get; }
 
 		public static TreeModel ExampleTreeModel { get; }
+
+		public static ForestEditorViewModel ExampleForestEditorViewModel { get; }
 
 		public static TreeEditorAViewModel ExampleTreeEditorAViewModel { get; }
 
@@ -27,7 +40,11 @@ namespace PlaceholderModule.DesignTime
 		static PlaceholderModuleDesignTimeData()
 		{
 			ExampleEditorContext = new();
-			ExampleForest = new(ExampleEditorContext, "The Woods");
+
+			ExampleEditorContext.ModuleLoader.LoadModules();
+
+			ExampleForest = new(ExampleEditorContext, "Example ForestModel Instance");
+			ExampleForestEditorViewModel = new(ExampleEditorContext);
 			ExampleTreeEditorAViewModel = new(ExampleEditorContext);
 
 			ExampleEditorContext.AddItem
@@ -38,13 +55,31 @@ namespace PlaceholderModule.DesignTime
 				.Execute(ETreeType.Oak)
 				.Wait();
 
-			for (int i = 0; i < NumberOfExtraExampleTreesToMake; i++)
+			for (int i = 0; i < NumberOfExtraTreesInExampleForest; i++)
 			{
-				ETreeType[] treeTypes = Enum.GetValues<ETreeType>();
-				_ = ExampleForest.PlantTree
-					.Execute(treeTypes[(i + 1) % treeTypes.Length])
-					.Wait();
+				PlantNextExampleTree(ExampleForest, i + 1);
 			}
+
+			int treeTypeOffset = 2;
+			foreach (string forestName in ExtraForestNames)
+			{
+				ForestModel forest = new(ExampleEditorContext, forestName);
+				
+				ExampleEditorContext.AddItem
+					.Execute(forest)
+					.Subscribe();
+
+				for (int treeNum = 0; treeNum < TreesPerExtraForest; treeNum++)
+					PlantNextExampleTree(forest, ++treeTypeOffset);
+			}
+		}
+
+
+		private static void PlantNextExampleTree(ForestModel forest, int type)
+		{
+			_ = forest.PlantTree
+				.Execute(_treeTypes[type % _treeTypes.Length])
+				.Wait();
 		}
 	}
 }
