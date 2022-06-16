@@ -15,6 +15,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 
 namespace PlaceholderModule.ViewModels
@@ -24,7 +25,7 @@ namespace PlaceholderModule.ViewModels
 		IActivatableViewModel
 	{
 		private ReadOnlyObservableCollection<ForestModel>? _forests;
-		private ObservableAsPropertyHelper<int> _totalForestCount;
+		private ReadOnlyObservableCollection<TreeModel>? _trees;
 
 
 		public static new string DisplayName => "ForestModel Editor";
@@ -39,11 +40,10 @@ namespace PlaceholderModule.ViewModels
 		public IContextualItem? SelectedItem { get; set; }
 
 
-		//[ObservableAsProperty]
-		public int TotalForestCount => _totalForestCount.Value;
-
-		[ObservableAsProperty]
-		public int TotalTreeCount { get; }
+		[Reactive]
+		public int? TotalForestCount { get; private set; }
+		[Reactive]
+		public int? TotalTreeCount { get; private set; }
 
 
 		[ObservableAsProperty]
@@ -62,8 +62,6 @@ namespace PlaceholderModule.ViewModels
 		public ForestEditorViewModel(EditorContext ctx) :
 			base(ctx)
 		{
-			_totalForestCount = null!;
-
 			Title = DisplayName;
 
 			Activator = new();
@@ -91,6 +89,18 @@ namespace PlaceholderModule.ViewModels
 				.ToPropertyEx(this, x => x.ClickDestroyTreeButton);
 
 
+			this.WhenAnyValue(x => x.TotalForestCount)
+				.Do(x => Trace.WriteLine($"TotalForestCount is now {x}"))
+				.Subscribe();
+
+			/*TotalForestCount = this
+				.WhenAnyValue(
+					x => x.Forests,
+					x => x.Forests!.Count,
+					(forests, forestsCount) => forests?.Count ?? 0
+				);*/
+
+
 			this.WhenActivated(disposables =>
 			{
 				HandleActivation(disposables);
@@ -101,29 +111,41 @@ namespace PlaceholderModule.ViewModels
 
 		private void HandleActivation(CompositeDisposable disposables)
 		{
-			// Bind TotalForestCount
-			this.WhenAnyValue(x => x.Forests, x => x.Forests!.Count, (forests, forestsCount) => forests?.Count ?? 0)
-				.ToProperty(
-					source: this,
-					property: x => x.TotalForestCount,
-					deferSubscription: true
-				);
+			IConnectableObservable<IChangeSet<IContextualItem>> ctxItems = Ctx
+				.ConnectToItems()
+				.Publish();
 
-			// Setup TotalTreeCount
-			Ctx.ConnectToItems()
-				.Do(_ => Trace.WriteLine("AAAAAAAA"))
-				.Filter(item => item is TreeModel)
-				.Count()
-				.ToPropertyEx(this, x => x.TotalTreeCount);
-
-			// Bind Forests property
-			Ctx.ConnectToItems()
+			// Bind _forests
+			ctxItems
 				.Filter(item => item is ForestModel)
 				.Transform(item => (ForestModel)item)
-				.ObserveOn(RxApp.MainThreadScheduler)
 				.Bind(out _forests)
 				.Subscribe()
 				.DisposeWith(disposables);
+
+			// Bind _trees
+			ctxItems
+				.Filter(item => item is TreeModel)
+				.Transform(item => (TreeModel)item)
+				.Bind(out _trees)
+				.Subscribe()
+				.DisposeWith(disposables);
+
+			// Setup TotalForestCount
+			ctxItems
+				.CountChanged()
+				.StartWithEmpty()
+				.Subscribe(_ => TotalForestCount = _forests.Count)
+				.DisposeWith(disposables);
+
+			// Setup TotalTreeCount
+			ctxItems
+				.CountChanged()
+				.StartWithEmpty()
+				.Subscribe(_ => TotalTreeCount = _trees.Count)
+				.DisposeWith(disposables);
+
+			ctxItems.Connect().DisposeWith(disposables);
 
 			// Observable for changes to the current context's FocusedItem
 			IObservable<IContextualItem?> whenFocusedItemChangesObservable = this

@@ -9,30 +9,23 @@ namespace PlaceholderModule.Views
 {
 	public partial class ForestEditorView : ReactiveUserControl<ForestEditorViewModel>
 	{
-		private readonly TreeView? _treeView;
+		private TreeView? TreeView => this.FindControl<TreeView>("PART_TreeView");
 
 
 		public ForestEditorView()
 		{
-			InitializeComponent();
-
-			_treeView = this.FindControl<TreeView>("PART_TreeView");
-
 			this.WhenActivated(disposables =>
 			{
-				if (_treeView != null)
+				if (TreeView != null)
 				{
 					this.OneWayBind(
 						viewModel: ViewModel,
 						vmProperty: vm => vm.Forests,
-						viewProperty: v => v._treeView!.Items
+						viewProperty: v => v.TreeView!.Items
 					);
 				}
 			});
-		}
 
-		private void InitializeComponent()
-		{
 			AvaloniaXamlLoader.Load(this);
 		}
 	}
