@@ -24,6 +24,7 @@ namespace PlaceholderModule.ViewModels
 		IActivatableViewModel
 	{
 		private ReadOnlyObservableCollection<ForestModel>? _forests;
+		private ObservableAsPropertyHelper<int> _totalForestCount;
 
 
 		public static new string DisplayName => "ForestModel Editor";
@@ -38,10 +39,21 @@ namespace PlaceholderModule.ViewModels
 		public IContextualItem? SelectedItem { get; set; }
 
 
+		//[ObservableAsProperty]
+		public int TotalForestCount => _totalForestCount.Value;
+
+		[ObservableAsProperty]
+		public int TotalTreeCount { get; }
+
+
 		[ObservableAsProperty]
 		public ReactiveCommand<Unit, Unit>? ClickAddForestButton { get; }
 		[ObservableAsProperty]
 		public ReactiveCommand<Unit, Unit>? ClickDestroyForestButton { get; }
+		[ObservableAsProperty]
+		public ReactiveCommand<Unit, Unit>? ClickAddTreeButton { get; }
+		[ObservableAsProperty]
+		public ReactiveCommand<Unit, Unit>? ClickDestroyTreeButton { get; }
 
 		public ForestEditorViewModel() :
 			this(new())
@@ -50,6 +62,8 @@ namespace PlaceholderModule.ViewModels
 		public ForestEditorViewModel(EditorContext ctx) :
 			base(ctx)
 		{
+			_totalForestCount = null!;
+
 			Title = DisplayName;
 
 			Activator = new();
@@ -67,8 +81,16 @@ namespace PlaceholderModule.ViewModels
 			whenModulesLoadedObservable
 				.Select(_ => Ctx.GetCommand<Unit, Unit>("PlaceholderModule_DestroyForest")?.Command)
 				.ToPropertyEx(this, x => x.ClickDestroyForestButton);
+			// Bind ClickAddForestButton when modules are loaded
+			whenModulesLoadedObservable
+				.Select(_ => Ctx.GetCommand<Unit, Unit>("PlaceholderModule_CreateNewTreeInForest")?.Command)
+				.ToPropertyEx(this, x => x.ClickAddTreeButton);
+			// Bind ClickDestroyForestButton when modules are loaded
+			whenModulesLoadedObservable
+				.Select(_ => Ctx.GetCommand<Unit, Unit>("PlaceholderModule_DestroyTreeInForestForest")?.Command)
+				.ToPropertyEx(this, x => x.ClickDestroyTreeButton);
 
-			
+
 			this.WhenActivated(disposables =>
 			{
 				HandleActivation(disposables);
@@ -79,6 +101,21 @@ namespace PlaceholderModule.ViewModels
 
 		private void HandleActivation(CompositeDisposable disposables)
 		{
+			// Bind TotalForestCount
+			this.WhenAnyValue(x => x.Forests, x => x.Forests!.Count, (forests, forestsCount) => forests?.Count ?? 0)
+				.ToProperty(
+					source: this,
+					property: x => x.TotalForestCount,
+					deferSubscription: true
+				);
+
+			// Setup TotalTreeCount
+			Ctx.ConnectToItems()
+				.Do(_ => Trace.WriteLine("AAAAAAAA"))
+				.Filter(item => item is TreeModel)
+				.Count()
+				.ToPropertyEx(this, x => x.TotalTreeCount);
+
 			// Bind Forests property
 			Ctx.ConnectToItems()
 				.Filter(item => item is ForestModel)

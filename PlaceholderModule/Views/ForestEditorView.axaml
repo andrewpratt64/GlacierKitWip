@@ -15,18 +15,55 @@
 		<StackPanel
 			DockPanel.Dock="Top"
 			Orientation="Horizontal"
+			Margin="5"
+			Spacing="10"
 		>
-			
-			<!--Create forest button-->
-			<Button
-				Command="{Binding ClickAddForestButton}"
-			>Create New Forest</Button>
-			<!--Delete forest button-->
-			<Button
-				Command="{Binding ClickDestroyForestButton}"
-			>Destroy Forest</Button>
-			
-			<TextBlock Text="{Binding Ctx.FocusedItem, TargetNullValue=NULL, FallbackValue=FALLBACK}"/>
+			<!--Command grid-->
+			<Grid
+				ColumnDefinitions="*,*"
+				RowDefinitions="*,*"
+				ShowGridLines="False"
+			>
+				<Grid.Styles>
+					<Style Selector="Button">
+						<Setter Property="HorizontalAlignment" Value="Stretch"/>
+						<Setter Property="HorizontalContentAlignment" Value="Center"/>
+					</Style>
+				</Grid.Styles>
+				
+				<!--Create forest button-->
+				<Button
+					Command="{Binding ClickAddForestButton}"
+					Grid.Column="0"
+					Grid.Row="0"
+				>Create New Forest</Button>
+				<!--Delete forest button-->
+				<Button
+					Command="{Binding ClickDestroyForestButton}"
+					Grid.Column="1"
+					Grid.Row="0"
+				>Destroy Forest</Button>
+				<!--Plant tree button-->
+				<Button
+					Command="{Binding ClickAddTreeButton}"
+					Grid.Column="0"
+					Grid.Row="1"
+				>Plant New Tree</Button>
+				<!--Chop tree button-->
+				<Button
+					Command="{Binding ClickDestroyTreeButton}"
+					Grid.Column="1"
+					Grid.Row="1"
+				>Chop Tree</Button>
+			</Grid>
+
+			<!--Forest info-->
+			<StackPanel Orientation="Vertical">
+				<!--Forests counter-->
+				<TextBlock Text="{Binding TotalForestCount, Mode=OneWay, StringFormat=\{0\} forests}"/>
+				<!--Trees counter-->
+				<TextBlock Text="{Binding TotalTreeCount, Mode=OneWay, StringFormat=\{0\} trees}"/>
+			</StackPanel>
 		</StackPanel>
 
 		<!--Forest tree view-->
@@ -48,7 +85,7 @@
 					</TreeDataTemplate>
 
 					<TreeDataTemplate DataType="m:TreeModel">
-						<TextBlock Text="{Binding TreeId, StringFormat=Tree Num. {0}}}"/>
+						<TextBlock Text="{Binding TreeId, StringFormat=Tree Num. \{0\}}"/>
 					</TreeDataTemplate>
 				
 				</TreeView.DataTemplates>

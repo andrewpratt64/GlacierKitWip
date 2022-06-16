@@ -29,6 +29,20 @@ namespace PlaceholderModule.Models
 		public ReactiveCommand<TreeModel, Unit> ChopTree { get; }
 
 
+		public static bool IsItemIndirectlyAForest(IContextualItem? item)
+		{
+			return item is ForestModel || item is TreeModel;
+		}
+
+		public static ForestModel GetFocusedForest(EditorContext ctx)
+		{
+			if (ctx.FocusedItem is ForestModel forest)
+				return forest;
+			else
+				return ((TreeModel)ctx.FocusedItem!).ContainingForest;
+		}
+
+
 		public ForestModel(EditorContext? ctx, string name)
 		{
 			_trees = new();

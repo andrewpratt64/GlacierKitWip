@@ -21,6 +21,9 @@ namespace PlaceholderModule.Services
 	{
 		#region Commands
 
+
+		#region Generic_commands
+		
 		[ExposeAsGKCommand]
 		public GKCommand<Unit, Unit> PrintHi { get; }
 
@@ -33,6 +36,10 @@ namespace PlaceholderModule.Services
 		[ExposeAsGKCommand]
 		public GKCommand<Unit, Unit> UselessCommand3 { get; }
 
+		#endregion
+
+
+		#region Open_editor_window_commands
 
 		[ExposeAsGKCommand]
 		public GKCommand<Unit, Unit> OpenFooView { get; }
@@ -49,12 +56,25 @@ namespace PlaceholderModule.Services
 		[ExposeAsGKCommand]
 		public GKCommand<Unit, Unit> OpenForestEditorView { get; }
 
+		#endregion
+
+
+		#region Forest_commands
 
 		[ExposeAsGKCommand]
 		public GKCommand<Unit, Unit> CreateNewForest { get; }
 
 		[ExposeAsGKCommand]
 		public GKCommand<Unit, Unit> DestroyForest { get; }
+
+		[ExposeAsGKCommand]
+		public GKCommand<Unit, Unit> CreateNewTreeInForest { get; }
+
+		[ExposeAsGKCommand]
+		public GKCommand<Unit, Unit> DestroyTreeInForestForest { get; }
+
+		#endregion
+
 
 		#endregion
 
@@ -216,12 +236,48 @@ namespace PlaceholderModule.Services
 				(
 					execute: _ =>
 					{
-						ForestModel forest = (ForestModel)Ctx.FocusedItem!;
+						ForestModel forest = ForestModel.GetFocusedForest(Ctx);
 						Ctx.RemoveItem.Execute(forest).Subscribe();
 						return Unit.Default;
 					},
 					canExecute: this.WhenAnyValue(x => x.Ctx.FocusedItem)
-						.Select(item => item is ForestModel)
+						.Select(item => ForestModel.IsItemIndirectlyAForest(item))
+				)
+			);
+
+			CreateNewTreeInForest = new
+			(
+				commandId: "PlaceholderModule_CreateNewTreeInForest",
+				displayName: "Plant tree",
+				command: ReactiveCommand.Create<Unit, Unit>
+				(
+					execute: _ =>
+					{
+						ForestModel.GetFocusedForest(Ctx).PlantTree
+							.Execute().Subscribe();
+						return Unit.Default;
+					},
+					canExecute: this.WhenAnyValue(x => x.Ctx.FocusedItem)
+						.Select(item => ForestModel.IsItemIndirectlyAForest(item))
+				)
+			);
+
+			DestroyTreeInForestForest = new
+			(
+				commandId: "PlaceholderModule_DestroyTreeInForestForest",
+				displayName: "Chop tree",
+				command: ReactiveCommand.Create<Unit, Unit>
+				(
+					execute: _ =>
+					{
+						TreeModel tree = (TreeModel)Ctx.FocusedItem!;
+						tree.ContainingForest.ChopTree
+							.Execute(tree).Subscribe();
+						
+						return Unit.Default;
+					},
+					canExecute: this.WhenAnyValue(x => x.Ctx.FocusedItem)
+						.Select(item => item is TreeModel)
 				)
 			);
 
