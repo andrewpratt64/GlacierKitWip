@@ -15,9 +15,11 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
 
+[assembly: CLSCompliant(false)]
+
 namespace PlaceholderModule.Services
 {
-    public class PlaceholderDataProviderService : GKDataProviderService
+	public class PlaceholderDataProviderService : GKDataProviderService
 	{
 		#region Commands
 
@@ -119,6 +121,7 @@ namespace PlaceholderModule.Services
 			base(ctx)
 		{
 			#region Init_commands
+#pragma warning disable CA2000 // Dispose objects before losing scope
 
 			#region Generic_commands
 
@@ -283,6 +286,7 @@ namespace PlaceholderModule.Services
 
 			#endregion
 
+#pragma warning restore CA2000 // Dispose objects before losing scope
 			#endregion
 
 

@@ -1,8 +1,9 @@
-﻿using GlacierKitCore.Models;
+﻿using Avalonia.Markup.Xaml;
+using GlacierKitCore.Models;
 using GlacierKitCore.ViewModels;
 using GlacierKitCore.ViewModels.EditorWindows;
 using System;
-
+using System.Reactive.Disposables;
 
 namespace PlaceholderModule.ViewModels
 {
@@ -10,10 +11,24 @@ namespace PlaceholderModule.ViewModels
     {
         public static new string DisplayName => "Welcomer of Worlds";
 
-        public HelloWorldViewModel(EditorContext ctx) :
+        
+		public HelloWorldViewModel() :
+			this(new())
+		{ }
+		
+		public HelloWorldViewModel(EditorContext ctx) :
 			base(ctx)
         {
-            Title = DisplayName;
-        }
-    }
+			Title = DisplayName;
+
+			FinishSetup();
+		}
+
+
+		public override void HandleActivation(CompositeDisposable disposables)
+		{}
+
+		public override void HandleDeactivation()
+		{}
+	}
 }

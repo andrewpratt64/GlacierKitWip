@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -23,7 +24,15 @@ namespace GlacierKitCoreTest.Tests.ViewModels
 
 			public _TYPE_RELATED_CONCRETE_CLASS() :
 				base(new GlacierKitCore.Models.EditorContext())
-			{ }
+			{
+				FinishSetup();
+			}
+
+			public override void HandleActivation(CompositeDisposable disposables)
+			{}
+
+			public override void HandleDeactivation()
+			{}
 		}
         private abstract class _TYPE_RELATED_ABSTRACT_CLASS : EditorWindowViewModel
         {

@@ -42,11 +42,11 @@ namespace PlaceholderModule.DesignTime
 			ExampleEditorContext = new();
 
 			ExampleEditorContext.ModuleLoader.LoadModules();
-
+			
 			ExampleForest = new(ExampleEditorContext, "Example ForestModel Instance");
 			ExampleForestEditorViewModel = new(ExampleEditorContext);
 			ExampleTreeEditorAViewModel = new(ExampleEditorContext);
-
+			
 			ExampleEditorContext.AddItem
 				.Execute(ExampleForest)
 				.Subscribe();

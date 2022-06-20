@@ -30,9 +30,6 @@ namespace PlaceholderModule.ViewModels
 
 		public static new string DisplayName => "ForestModel Editor";
 
-
-		public ViewModelActivator Activator { get; }
-
 		public ReadOnlyObservableCollection<ForestModel>? Forests => _forests;
 
 
@@ -64,8 +61,6 @@ namespace PlaceholderModule.ViewModels
 		{
 			Title = DisplayName;
 
-			Activator = new();
-
 			// Observable for when modules are loaded
 			IObservable<GKModuleLoaderService.ELoaderState> whenModulesLoadedObservable = this
 				.WhenAnyValue(x => x.Ctx.ModuleLoader.State)
@@ -89,27 +84,11 @@ namespace PlaceholderModule.ViewModels
 				.ToPropertyEx(this, x => x.ClickDestroyTreeButton);
 
 
-			this.WhenAnyValue(x => x.TotalForestCount)
-				.Do(x => Trace.WriteLine($"TotalForestCount is now {x}"))
-				.Subscribe();
-
-			/*TotalForestCount = this
-				.WhenAnyValue(
-					x => x.Forests,
-					x => x.Forests!.Count,
-					(forests, forestsCount) => forests?.Count ?? 0
-				);*/
-
-
-			this.WhenActivated(disposables =>
-			{
-				HandleActivation(disposables);
-				Disposable.Create(() => HandleDeactivation()).DisposeWith(disposables);
-			});
+			FinishSetup();
 		}
 
 
-		private void HandleActivation(CompositeDisposable disposables)
+		public override void HandleActivation(CompositeDisposable disposables)
 		{
 			IConnectableObservable<IChangeSet<IContextualItem>> ctxItems = Ctx
 				.ConnectToItems()
@@ -172,10 +151,7 @@ namespace PlaceholderModule.ViewModels
 		}
 
 
-#pragma warning disable CA1822 // Mark members as static
-		private void HandleDeactivation()
-#pragma warning restore CA1822 // Mark members as static
-		{
-		}
+		public override void HandleDeactivation()
+		{}
 	}
 }

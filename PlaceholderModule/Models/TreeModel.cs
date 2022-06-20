@@ -51,7 +51,11 @@ namespace PlaceholderModule.Models
 		[Reactive]
 		public DateTime PlantedTime { get; set; }
 
-
+		[System.Diagnostics.CodeAnalysis.SuppressMessage(
+			"Security",
+			"CA5394:Do not use insecure randomness",
+			Justification = "Randomness is not used for security features"
+		)]
 		public TreeModel(ForestModel forest, ETreeType treeType)
 		{
 			ContainingForest = forest;

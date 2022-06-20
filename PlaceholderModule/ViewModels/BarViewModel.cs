@@ -8,7 +8,7 @@ namespace PlaceholderModule.ViewModels
 {
 	public abstract class BarViewModel : EditorWindowViewModel
 	{
-		public BarViewModel(EditorContext ctx) : base(ctx)
+		protected BarViewModel(EditorContext ctx) : base(ctx)
 		{}
 	}
 }

@@ -1,20 +1,26 @@
 ﻿using Dock.Model.ReactiveUI.Controls;
 using GlacierKitCore.Attributes;
+using GlacierKitCore.Misc;
 using GlacierKitCore.Models;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GlacierKitCore.ViewModels.EditorWindows
 {
     /// <summary>
-    /// Base class for an individual editor window
+    /// Base class for an individual editor window's view model
     /// </summary>
     [GKViewModel]
-    public abstract class EditorWindowViewModel : Tool
-    {
+    public abstract class EditorWindowViewModel :
+		Tool,
+		IActivatableViewModel,
+		IActivationHandler
+	{
 		/// <summary>
 		/// The editor context instance
 		/// </summary>
@@ -26,11 +32,32 @@ namespace GlacierKitCore.ViewModels.EditorWindows
 		/// </summary>
 		public static string DisplayName => "Editor Window";
 
+
+		public ViewModelActivator Activator { get; }
+
+
 		protected EditorWindowViewModel(EditorContext ctx)
 		{
 			Ctx = ctx;
+			Activator = new();
 		}
+
 		
+		public abstract void HandleActivation(CompositeDisposable disposables);
+		public abstract void HandleDeactivation();
+
+
+		/// <summary>
+		/// Performs the final steps for initializing the window, intended to be called at the end of a constructor
+		/// </summary>
+		protected void FinishSetup()
+		{
+			this.WhenActivated(disposables =>
+			{
+				HandleActivation(disposables);
+				Disposable.Create(() => HandleDeactivation()).DisposeWith(disposables);
+			});
+		}
 
 
 		/// <summary>

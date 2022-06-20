@@ -36,6 +36,9 @@ namespace PlaceholderModule.Models
 
 		public static ForestModel GetFocusedForest(EditorContext ctx)
 		{
+			if (ctx == null)
+				throw new ArgumentNullException(nameof(ctx));
+
 			if (ctx.FocusedItem is ForestModel forest)
 				return forest;
 			else

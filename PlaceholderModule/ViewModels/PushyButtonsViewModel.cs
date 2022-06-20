@@ -11,6 +11,7 @@ using System.Reactive.Linq;
 using Avalonia.Media;
 using Avalonia;
 using GlacierKitCore.Models;
+using Avalonia.Markup.Xaml;
 
 namespace PlaceholderModule.ViewModels
 {
@@ -19,10 +20,23 @@ namespace PlaceholderModule.ViewModels
         public static new string DisplayName => "Pushy Buttons";
 
 
-        public PushyButtonsViewModel(EditorContext ctx) :
+		public PushyButtonsViewModel() :
+			this(new())
+		{ }
+		
+		public PushyButtonsViewModel(EditorContext ctx) :
 			base(ctx)
         {
             Title = DisplayName;
+
+			FinishSetup();
         }
-    }
+
+
+		public override void HandleActivation(CompositeDisposable disposables)
+		{}
+
+		public override void HandleDeactivation()
+		{}
+	}
 }
