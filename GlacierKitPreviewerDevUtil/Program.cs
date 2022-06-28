@@ -24,7 +24,7 @@ namespace GlacierKitPreviewerDevUtil
 		{
 			return AppBuilder.Configure<App>()
 						   .UsePlatformDetect()
-						   .LogToTrace(LogEventLevel.Debug)
+						   .LogToTrace(LogEventLevel.Information)
 						   .UseReactiveUI();
 		}
 	}

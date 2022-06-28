@@ -43,7 +43,11 @@ namespace GlacierKitTest.Tests.ViewModels
             Util.AssertCodeDoesNotThrowException(() => new MainViewModel(ctx, factory, dockable));
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "Method return value is not tested")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+			"Performance",
+			"CA1806:Do not ignore method results",
+			Justification = "Method return value is not tested"
+		)]
         [Fact]
         public static void Ctor_with_not_null_dockable_does_not_throw()
         {

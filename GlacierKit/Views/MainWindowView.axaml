@@ -1,21 +1,33 @@
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:GlacierKit.ViewModels"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:vm="using:GlacierKit.ViewModels"
+		xmlns:gkc="using:GlacierKitCore.Controls"
 		xmlns:gkvm="using:GlacierKitCore.ViewModels"
 		xmlns:idc="clr-namespace:Dock.Avalonia.Controls;assembly=Dock.Avalonia"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="GlacierKit.Views.MainWindowView"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="GlacierKit">
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		x:Class="GlacierKit.Views.MainWindowView"
+		Icon="/Assets/avalonia-logo.ico"
+		Title="GlacierKit">
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
 
 	<DockPanel LastChildFill="True">
 		<ContentControl DockPanel.Dock="Top" Content="{Binding MainMenuBar}"/>
+
+		<CheckBox IsChecked="{Binding #Foo.IsReversed}" DockPanel.Dock="Top">yeah</CheckBox>
+		<gkc:ContentPair x:Name="Foo" DockPanel.Dock="Top">
+			<gkc:ContentPair.FirstControl>
+				<TextBlock>First</TextBlock>
+			</gkc:ContentPair.FirstControl>
+			<gkc:ContentPair.LastControl>
+				<TextBlock>Last</TextBlock>
+			</gkc:ContentPair.LastControl>
+		</gkc:ContentPair>
+		
 		<idc:DockControl Layout="{Binding DockLayout}"/>
 	</DockPanel>
 

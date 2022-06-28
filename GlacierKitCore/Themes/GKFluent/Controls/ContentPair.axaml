@@ -1,0 +1,155 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:controls="using:GlacierKitCore.Controls">
+	
+	<Design.PreviewWith>
+		<Border
+			Padding="5"
+			MinWidth="128"
+			MinHeight="64"
+		>
+			<StackPanel Orientation="Vertical" Spacing="5">
+			
+				<!--Top level design-time preview resources-->
+				<StackPanel.Resources>
+					<Color x:Key="ContentPairFgColor">White</Color>
+					<Color x:Key="ContentPairBgColor">DarkGreen</Color>
+					<Color x:Key="FirstControlFgColor">Black</Color>
+					<Color x:Key="FirstControlBgColor">Pink</Color>
+					<Color x:Key="LastControlFgColor">Black</Color>
+					<Color x:Key="LastControlBgColor">LightCyan</Color>
+				</StackPanel.Resources>
+
+				<!--Top level design-time preview styles-->
+				<StackPanel.Styles>
+					<Style Selector="StackPanel.PreviewInfoGroup">
+						<Setter Property="Spacing" Value="5"/>
+					</Style>
+
+					<Style Selector="Separator">
+						<Setter Property="Background" Value="Gray"/>
+						<Setter Property="Margin" Value="3"/>
+					</Style>
+
+					<Style Selector="TextBlock.ColorPreviewListItem">
+						<Setter Property="Padding" Value="3"/>
+					</Style>
+
+					<Style Selector="controls|ContentPair">
+						<Setter Property="Foreground" Value="{StaticResource ResourceKey=ContentPairFgColor}"/>
+						<Setter Property="Background" Value="{StaticResource ResourceKey=ContentPairBgColor}"/>
+						<Setter Property="HorizontalAlignment" Value="Stretch"/>
+						<Setter Property="VerticalAlignment" Value="Center"/>
+						<Setter Property="IsReversed" Value="{Binding #PART_IsReversedTogglerButton.IsChecked, Mode=TwoWay}"/>
+					</Style>
+					<Style Selector="TextBlock.FirstControl">
+						<Setter Property="Background" Value="{StaticResource ResourceKey=FirstControlBgColor}"/>
+						<Setter Property="Foreground" Value="{StaticResource ResourceKey=FirstControlFgColor}"/>
+					</Style>
+					<Style Selector="TextBlock.LastControl">
+						<Setter Property="Background" Value="{StaticResource ResourceKey=LastControlBgColor}"/>
+						<Setter Property="Foreground" Value="{StaticResource ResourceKey=LastControlFgColor}"/>
+					</Style>
+				</StackPanel.Styles>
+
+				<!--Design-time preview color list-->
+				<Border Background="LightGray" Padding="5">
+					<StackPanel Classes="PreviewInfoGroup" Orientation="Vertical">
+						<TextBlock
+							Text="ContentPair color"
+							Classes="ColorPreviewListItem"
+							Foreground="{StaticResource ResourceKey=ContentPairFgColor}"
+							Background="{StaticResource ResourceKey=ContentPairBgColor}"
+							/>
+						<TextBlock
+							Text="First control color"
+							Classes="ColorPreviewListItem"
+							Foreground="{StaticResource ResourceKey=FirstControlFgColor}"
+							Background="{StaticResource ResourceKey=FirstControlBgColor}"
+							/>
+						<TextBlock
+							Text="Last control color"
+							Classes="ColorPreviewListItem"
+							Foreground="{StaticResource ResourceKey=LastControlFgColor}"
+							Background="{StaticResource ResourceKey=LastControlBgColor}"
+							/>
+					</StackPanel>
+				</Border>
+				
+				<CheckBox x:Name="PART_IsReversedTogglerButton">IsReversed</CheckBox>
+
+				<Separator/>
+
+
+				<!--Default ContentPair-->
+				<Label
+					Target="{Binding #PART_PreviewContentPair_default}"
+					Content="Default"
+					FontStyle="Italic"
+					/>
+				<controls:ContentPair x:Name="PART_PreviewContentPair_default">
+					<controls:ContentPair.FirstControl>
+						<TextBlock Text="First Control" Classes="FirstControl"/>
+					</controls:ContentPair.FirstControl>
+
+					<controls:ContentPair.LastControl>
+						<TextBlock Text="Last Control" Classes="LastControl"/>
+					</controls:ContentPair.LastControl>
+				</controls:ContentPair>
+
+
+				<!--basicHoriz style class-->
+				<!--Label
+					Target="{Binding #PART_PreviewContentPair_basicHoriz}"
+					Content="basicHoriz"
+					/>
+				<controls:ContentPair
+					x:Name="PART_PreviewContentPair_basicHoriz"
+					Classes="basicHoriz"
+					>
+					<controls:ContentPair.FirstControl>
+						<TextBlock Text="[First Control]"/>
+					</controls:ContentPair.FirstControl>
+
+					<controls:ContentPair.LastControl>
+						<TextBlock Text="[Last Control]"/>
+					</controls:ContentPair.LastControl>
+				</controls:ContentPair-->
+			</StackPanel>
+		</Border>
+	</Design.PreviewWith>
+	
+	
+	<!--Default style-->
+	<Style Selector="controls|ContentPair">
+		<Setter Property="Template">
+			<ControlTemplate>
+
+				<ItemsControl
+					x:Name="PART_Container"
+					Items="{TemplateBinding ChildControls}"
+				/>
+				
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+
+	<!--Pair displayed horizontally, in order-->
+	<!--Style Selector="controls|ContentPair.basicHoriz">
+		<Setter Property="Template">
+			<ControlTemplate>
+
+				<ReversibleStackPanel
+					Name="PART_Container"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch"
+				>
+					<Border x:Name="PART_FirstControl" />
+					<Border Name="PART_LastControl" />
+				</ReversibleStackPanel>
+
+			</ControlTemplate>
+		</Setter>
+	</Style-->
+</Styles>

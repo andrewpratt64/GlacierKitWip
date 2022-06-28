@@ -16,8 +16,9 @@ namespace GlacierKitTest.Tests
 {
     public class ViewLocatorTest
     {
-        private class _DATA_BadViewModel : ReactiveObject
-        {
+#pragma warning disable IDE1006 // Naming Styles
+		private class _DATA_BadViewModel : ReactiveObject
+		{
             public static string Words = "I\'m not a valid Glacier Kit ViewModel";
         }
 
@@ -32,9 +33,10 @@ namespace GlacierKitTest.Tests
                 return returnedView != null;
             return returnedView == null;
         }
+#pragma warning restore IDE1006 // Naming Styles
 
 
-        [Fact]
+		[Fact]
         public static void Default_ctor_works()
         {
             Util.AssertDefaultCtorWorks<GlacierKit.ViewLocator>();
