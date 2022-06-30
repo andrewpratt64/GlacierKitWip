@@ -17,16 +17,6 @@
 
 	<DockPanel LastChildFill="True">
 		<ContentControl DockPanel.Dock="Top" Content="{Binding MainMenuBar}"/>
-
-		<CheckBox IsChecked="{Binding #Foo.IsReversed}" DockPanel.Dock="Top">yeah</CheckBox>
-		<gkc:ContentPair x:Name="Foo" DockPanel.Dock="Top">
-			<gkc:ContentPair.FirstControl>
-				<TextBlock>First</TextBlock>
-			</gkc:ContentPair.FirstControl>
-			<gkc:ContentPair.LastControl>
-				<TextBlock>Last</TextBlock>
-			</gkc:ContentPair.LastControl>
-		</gkc:ContentPair>
 		
 		<idc:DockControl Layout="{Binding DockLayout}"/>
 	</DockPanel>

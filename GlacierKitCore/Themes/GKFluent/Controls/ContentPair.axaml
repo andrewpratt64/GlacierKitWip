@@ -1,12 +1,12 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:controls="using:GlacierKitCore.Controls">
-	
+
 	<Design.PreviewWith>
 		<Border
+			x:Name="PART_PreviewRoot"
 			Padding="5"
-			MinWidth="128"
-			MinHeight="64"
+			Width="512"
 		>
 			<StackPanel Orientation="Vertical" Spacing="5">
 			
@@ -53,8 +53,20 @@
 				</StackPanel.Styles>
 
 				<!--Design-time preview color list-->
-				<Border Background="LightGray" Padding="5">
-					<StackPanel Classes="PreviewInfoGroup" Orientation="Vertical">
+				<Expander
+					Background="LightGray"
+					Padding="5"
+					IsExpanded="True"
+					Header="Preview Colors"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+				>
+					<StackPanel
+						Classes="PreviewInfoGroup"
+						Orientation="Vertical"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Stretch"
+					>
 						<TextBlock
 							Text="ContentPair color"
 							Classes="ColorPreviewListItem"
@@ -74,47 +86,123 @@
 							Background="{StaticResource ResourceKey=LastControlBgColor}"
 							/>
 					</StackPanel>
-				</Border>
+				</Expander>
+
+				<!--Design-time preview settings controls-->
+				<Expander
+					Background="LightGray"
+					Padding="5"
+					IsExpanded="True"
+					Header="Preview Settings"
+					HorizontalContentAlignment="Stretch"
+					VerticalContentAlignment="Center"
+				>
+					<StackPanel Orientation="Vertical">
+						<CheckBox x:Name="PART_IsReversedTogglerButton">IsReversed</CheckBox>
+						<DockPanel LastChildFill="True">
+							<TextBlock
+								Text="Preview Width"
+								DockPanel.Dock="Left"
+								VerticalAlignment="Center"
+								Margin="3"
+							/>
+							<Slider
+								x:Name="PART_PreviewWidthSlider"
+								Orientation="Horizontal"
+								Minimum="16"
+								Maximum="512"
+								Ticks="25"
+								Value="{Binding #PART_ContentPairPreviewsRoot.Width}"
+							/>
+						</DockPanel>
+					</StackPanel>
+				</Expander>
 				
-				<CheckBox x:Name="PART_IsReversedTogglerButton">IsReversed</CheckBox>
-
+				
 				<Separator/>
-
-
-				<!--Default ContentPair-->
-				<Label
-					Target="{Binding #PART_PreviewContentPair_default}"
-					Content="Default"
-					FontStyle="Italic"
+				
+				
+				<!--ContentPair Previews-->
+				<StackPanel
+					x:Name="PART_ContentPairPreviewsRoot"
+					Orientation="Vertical"
+					Spacing="5"
+				>
+					<!--Default ContentPair-->
+					<Label
+						Target="{Binding #PART_PreviewContentPair_default}"
+						Content="Default"
+						FontStyle="Italic"
 					/>
-				<controls:ContentPair x:Name="PART_PreviewContentPair_default">
-					<controls:ContentPair.FirstControl>
-						<TextBlock Text="First Control" Classes="FirstControl"/>
-					</controls:ContentPair.FirstControl>
+					<controls:ContentPair x:Name="PART_PreviewContentPair_default">
+						<controls:ContentPair.FirstControl>
+							<TextBlock Text="First Control" Classes="FirstControl"/>
+						</controls:ContentPair.FirstControl>
 
-					<controls:ContentPair.LastControl>
-						<TextBlock Text="Last Control" Classes="LastControl"/>
-					</controls:ContentPair.LastControl>
-				</controls:ContentPair>
+						<controls:ContentPair.LastControl>
+							<TextBlock Text="Last Control" Classes="LastControl"/>
+						</controls:ContentPair.LastControl>
+					</controls:ContentPair>
 
 
-				<!--basicHoriz style class-->
-				<!--Label
-					Target="{Binding #PART_PreviewContentPair_basicHoriz}"
-					Content="basicHoriz"
+					<!--basicHoriz style class-->
+					<Label
+						Target="{Binding #PART_PreviewContentPair_basicHoriz}"
+						Content="basicHoriz"
 					/>
-				<controls:ContentPair
-					x:Name="PART_PreviewContentPair_basicHoriz"
-					Classes="basicHoriz"
+					<controls:ContentPair
+						x:Name="PART_PreviewContentPair_basicHoriz"
+						Classes="basicHoriz"
 					>
-					<controls:ContentPair.FirstControl>
-						<TextBlock Text="[First Control]"/>
-					</controls:ContentPair.FirstControl>
+						<controls:ContentPair.FirstControl>
+							<TextBlock Text="First Control" Classes="FirstControl"/>
+						</controls:ContentPair.FirstControl>
 
-					<controls:ContentPair.LastControl>
-						<TextBlock Text="[Last Control]"/>
-					</controls:ContentPair.LastControl>
-				</controls:ContentPair-->
+						<controls:ContentPair.LastControl>
+							<TextBlock Text="Last Control" Classes="LastControl"/>
+						</controls:ContentPair.LastControl>
+					</controls:ContentPair>
+
+
+					<!--basicVert style class-->
+					<Label
+						Target="{Binding #PART_PreviewContentPair_basicVert}"
+						Content="basicVert"
+					/>
+					<controls:ContentPair
+						x:Name="PART_PreviewContentPair_basicVert"
+						Classes="basicVert"
+					>
+						<controls:ContentPair.FirstControl>
+							<TextBlock Text="First Control" Classes="FirstControl"/>
+						</controls:ContentPair.FirstControl>
+
+						<controls:ContentPair.LastControl>
+							<TextBlock Text="Last Control" Classes="LastControl"/>
+						</controls:ContentPair.LastControl>
+					</controls:ContentPair>
+
+
+					<!--oneToTwoRatio style class-->
+					<Label
+						Target="{Binding #PART_PreviewContentPair_oneToTwoRatio}"
+						Content="oneToTwoRatio"
+					/>
+					<controls:ContentPair
+						x:Name="PART_PreviewContentPair_oneToTwoRatio"
+						Classes="oneToTwoRatio"
+					>
+						<controls:ContentPair.FirstControl>
+							<TextBlock Text="First Control" Classes="FirstControl"/>
+						</controls:ContentPair.FirstControl>
+
+						<controls:ContentPair.LastControl>
+							<TextBlock Text="Last Control" Classes="LastControl"/>
+						</controls:ContentPair.LastControl>
+					</controls:ContentPair>
+					
+				</StackPanel>
+				
 			</StackPanel>
 		</Border>
 	</Design.PreviewWith>
@@ -135,21 +223,87 @@
 	</Style>
 
 
-	<!--Pair displayed horizontally, in order-->
-	<!--Style Selector="controls|ContentPair.basicHoriz">
+	<!--class: basicHoriz-->
+	<!--summary: Pair displayed in order horizontally-->
+	<Style Selector="controls|ContentPair.basicHoriz">
 		<Setter Property="Template">
 			<ControlTemplate>
 
-				<ReversibleStackPanel
-					Name="PART_Container"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Stretch"
+				<ItemsControl
+					x:Name="PART_Container"
+					Items="{TemplateBinding ChildControls}"
 				>
-					<Border x:Name="PART_FirstControl" />
-					<Border Name="PART_LastControl" />
-				</ReversibleStackPanel>
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+				</ItemsControl>
 
 			</ControlTemplate>
 		</Setter>
-	</Style-->
+	</Style>
+
+
+	<!--class: basicVert-->
+	<!--summary: Pair displayed in order vertically-->
+	<Style Selector="controls|ContentPair.basicVert">
+		<Setter Property="Template">
+			<ControlTemplate>
+
+				<ItemsControl
+					x:Name="PART_Container"
+					Items="{TemplateBinding ChildControls}"
+				>
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Vertical"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+				</ItemsControl>
+
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+
+	<!--class: oneToTwoRatio-->
+	<!--summary: Pair displayed in order horizontally, where the ratio of the
+	width of the first control to the last control is 1:2-->
+	<Style Selector="controls|ContentPair.oneToTwoRatio">
+		<Setter Property="Template">
+			<ControlTemplate>
+
+				<StackPanel>
+					<ItemsControl
+						x:Name="PART_Container"
+						Items="{TemplateBinding ChildControls}"
+					>
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<Grid
+									ColumnDefinitions="*,2*"
+									RowDefinitions="*"
+									ShowGridLines="False"
+									
+								/>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+					</ItemsControl>
+				</StackPanel>
+
+			</ControlTemplate>
+		</Setter>
+	</Style>
+	<Style Selector="controls|ContentPair.oneToTwoRatio StackPanel > ItemsControl > :is(Control)">
+		<Setter Property="Grid.Column" Value="0"/>
+		<Setter Property="Grid.Row" Value="0"/>
+	</Style>
+	<Style Selector="controls|ContentPair.oneToTwoRatio StackPanel > ItemsControl > :is(Layoutable):nth-child(1)">
+		<Setter Property="Grid.Column" Value="0"/>
+	</Style>
+	<Style Selector="controls|ContentPair.oneToTwoRatio StackPanel > ItemsControl > :is(Layoutable):nth-child(2)">
+		<Setter Property="Grid.Column" Value="1"/>
+	</Style>
+	
 </Styles>

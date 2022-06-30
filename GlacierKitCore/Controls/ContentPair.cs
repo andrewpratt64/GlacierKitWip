@@ -20,6 +20,7 @@ namespace GlacierKitCore.Controls
 		#region Private_fields
 
 		private Avalonia.Controls.Controls _childControls;
+		private IControl? _firstShownControl, _lastShownControl;
 
 		#endregion
 
@@ -36,12 +37,30 @@ namespace GlacierKitCore.Controls
 		}
 
 		/// <summary>
+		/// The first to appear of two controls
+		/// </summary>
+		public IControl? FirstShownControl
+		{
+			get => _firstShownControl;
+			private set => SetAndRaise(FirstShownControlProperty, ref _firstShownControl, value);
+		}
+
+		/// <summary>
 		/// The second, and also last, of two controls
 		/// </summary>
 		public IControl? LastControl
 		{
 			get => GetValue(LastControlProperty);
 			set => SetValue(LastControlProperty, value);
+		}
+
+		/// <summary>
+		/// The last to appear of two controls
+		/// </summary>
+		public IControl? LastShownControl
+		{
+			get => _lastShownControl;
+			private set => SetAndRaise(LastShownControlProperty, ref _lastShownControl, value);
 		}
 
 		/// <summary>
@@ -74,10 +93,28 @@ namespace GlacierKitCore.Controls
 			AvaloniaProperty.Register<ContentPair, IControl?>(nameof(FirstControl));
 
 		/// <summary>
+		/// Defines the <see cref="FirstShownControl"/> property
+		/// </summary>
+		public static readonly DirectProperty<ContentPair, IControl?> FirstShownControlProperty =
+			AvaloniaProperty.RegisterDirect<ContentPair, IControl?>(
+				name: nameof(FirstShownControl),
+				getter: o => o.FirstShownControl
+			);
+
+		/// <summary>
 		/// Defines the <see cref="LastControl"/> property
 		/// </summary>
 		public static readonly StyledProperty<IControl?> LastControlProperty =
 			AvaloniaProperty.Register<ContentPair, IControl?>(nameof(LastControl));
+
+		/// <summary>
+		/// Defines the <see cref="LastShownControl"/> property
+		/// </summary>
+		public static readonly DirectProperty<ContentPair, IControl?> LastShownControlProperty =
+			AvaloniaProperty.RegisterDirect<ContentPair, IControl?>(  
+				name: nameof(LastShownControl),
+				getter: o => o.LastShownControl
+			);
 
 		/// <summary>
 		/// Defines the <see cref="IsReversed"/> property
@@ -107,8 +144,9 @@ namespace GlacierKitCore.Controls
 		{
 			// Init _childControls
 			_childControls = new();
-			// Populate _childControls
-			UpdateChildControlsOrder();
+
+			// Update everything based on the initial state of the object
+			UpdateControlPair();
 		}
 
 		#endregion
@@ -121,9 +159,9 @@ namespace GlacierKitCore.Controls
 		{
 			base.OnPropertyChanged(change);
 
-			// Update _childControls whenever certain properties change
+			// Handle changes in child controls and the order of child controls
 			if (change.Property == FirstControlProperty || change.Property == LastControlProperty || change.Property == IsReversedProperty)
-				UpdateChildControlsOrder();
+				UpdateControlPair();
 		}
 
 		#endregion
@@ -159,6 +197,31 @@ namespace GlacierKitCore.Controls
 			Debug.Assert(_childControls.Count == 2);
 			Debug.Assert(_childControls.Contains(FirstControl));
 			Debug.Assert(_childControls.Contains(LastControl));
+		}
+
+
+		/// <summary>
+		/// Updates the value of <see cref="FirstShownControl"/> and <see cref="LastShownControl"/>
+		/// </summary>
+		private void UpdateFirstAndLastShownControls()
+		{
+			FirstShownControl = _childControls.FirstOrDefault();
+			IControl? lastShownControl = _childControls.LastOrDefault();
+
+			if (FirstShownControl == lastShownControl)
+				LastShownControl = null;
+			else
+				LastShownControl = lastShownControl;
+		}
+
+
+		/// <summary>
+		/// Updates the state of the control pair in response to a change in child controls or order of child controls
+		/// </summary>
+		private void UpdateControlPair()
+		{
+			UpdateChildControlsOrder();
+			UpdateFirstAndLastShownControls();
 		}
 
 		#endregion
