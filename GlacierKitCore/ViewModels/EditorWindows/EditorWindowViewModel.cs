@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace GlacierKitCore.ViewModels.EditorWindows
 {
-    /// <summary>
-    /// Base class for an individual editor window's view model
-    /// </summary>
-    [GKViewModel]
-    public abstract class EditorWindowViewModel :
+	/// <summary>
+	/// Base class for an individual editor window's view model
+	/// </summary>
+	[GKViewModel]
+	public abstract class EditorWindowViewModel :
 		Tool,
 		IActivatableViewModel,
 		IActivationHandler
@@ -67,15 +67,15 @@ namespace GlacierKitCore.ViewModels.EditorWindows
 		/// <returns>True if <paramref name="type"/> is a concrete subclass, false otherwise</returns>
 		public static bool IsTypeAnInstantiableEditorWindow(Type? type)
 
-        {
-            // A type may be instantiated as an editor window if it is:
-            //  - Not null
-            //  - A subclass of EditorWindowViewModel
-            //  - Not abstract
-            return (type?.IsSubclassOf(typeof(EditorWindowViewModel)) ?? false) && !type!.IsAbstract;
-        }
+		{
+			// A type may be instantiated as an editor window if it is:
+			//  - Not null
+			//  - A subclass of EditorWindowViewModel
+			//  - Not abstract
+			return (type?.IsSubclassOf(typeof(EditorWindowViewModel)) ?? false) && !type!.IsAbstract;
+		}
 
 
 
-    }
+	}
 }

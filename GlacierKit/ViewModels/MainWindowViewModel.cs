@@ -18,12 +18,12 @@ using System.Windows.Input;
 
 namespace GlacierKit.ViewModels
 {
-    public class MainWindowViewModel : ViewModelBase
-    {
+	public class MainWindowViewModel : ViewModelBase
+	{
 		#region Private_fields
 
 		private ReactiveCommand<Type, Unit> CreateEditorWindow
-        { get; set; }
+		{ get; set; }
 
 		#endregion
 
@@ -38,13 +38,13 @@ namespace GlacierKit.ViewModels
 		/// <summary>
 		/// The main dock factory instance
 		/// </summary>
-        public MainDockFactory DockFactory { get; }
+		public MainDockFactory DockFactory { get; }
 
 		/// <summary>
 		/// The main layout for the editor's docking system
 		/// </summary>
-        [Reactive]
-        public IDock DockLayout { get; private set; }
+		[Reactive]
+		public IDock DockLayout { get; private set; }
 
 		#endregion
 
@@ -78,35 +78,35 @@ namespace GlacierKit.ViewModels
 				Ctx = ctx;
 			}
 
-            // Create the dock factory
-            DockFactory = new MainDockFactory(Ctx);
-            // Creare the dock layout
-            IDock? dockLayout = DockFactory.CreateLayout();
-            // Initialize the dock layout
-            DockLayout = dockLayout;
-            DockFactory.InitLayout(DockLayout);
+			// Create the dock factory
+			DockFactory = new MainDockFactory(Ctx);
+			// Creare the dock layout
+			IDock? dockLayout = DockFactory.CreateLayout();
+			// Initialize the dock layout
+			DockLayout = dockLayout;
+			DockFactory.InitLayout(DockLayout);
 
 
-            // Initialize command for creating new editor window instances
-            CreateEditorWindow = ReactiveCommand.Create((Type windowType) =>
-            {
-                DockFactory!.MainDockable!.NewDocumentType = windowType;
-                DockFactory!.MainDockable!.CreateDocument!.Execute(Unit.Default);
-                return Unit.Default;
-            });
+			// Initialize command for creating new editor window instances
+			CreateEditorWindow = ReactiveCommand.Create((Type windowType) =>
+			{
+				DockFactory!.MainDockable!.NewDocumentType = windowType;
+				DockFactory!.MainDockable!.CreateDocument!.Execute(Unit.Default);
+				return Unit.Default;
+			});
 
 			// Execute our private CreateEditorWindow command when the editor context's
 			//  CreateEditorWindow command is executed with valid arguments
 			this.WhenAnyObservable(x => x.Ctx.CreateEditorWindow)
-                .WhereNotNull()
-                .InvokeCommand(CreateEditorWindow);
+				.WhereNotNull()
+				.InvokeCommand(CreateEditorWindow);
 
 			// Set MainMenuBar from the context after gk modules have loaded
 			this.WhenAnyValue(x => x.Ctx.ModuleLoader.State)
 				.Where(x => x == GKModuleLoaderService.ELoaderState.Loaded)
 				.Select(_ => Ctx.MainMenuBar)
 				.ToPropertyEx(this, x => x.MainMenuBar);
-        }
+		}
 
 		#endregion
 	}

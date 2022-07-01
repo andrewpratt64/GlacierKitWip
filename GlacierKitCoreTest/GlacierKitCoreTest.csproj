@@ -1,46 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+	<TargetFramework>net5.0</TargetFramework>
 
-    <IsPackable>false</IsPackable>
+	<IsPackable>false</IsPackable>
 
-    <Nullable>enable</Nullable>
+	<Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>XUNIT_NULLABLE</DefineConstants>
+	<DefineConstants>XUNIT_NULLABLE</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>XUNIT_NULLABLE</DefineConstants>
+	<DefineConstants>XUNIT_NULLABLE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.15" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.15" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.15" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.15" />
-    <PackageReference Include="Dock.Avalonia" Version="0.10.14" />
-    <PackageReference Include="Dock.Model.ReactiveUI" Version="0.10.14" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
-    <PackageReference Include="ReactiveUI.Fody" Version="18.1.8" />
-    <PackageReference Include="ReactiveUI.Testing" Version="18.1.8" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="3.1.2">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+	<PackageReference Include="Avalonia" Version="0.10.15" />
+	<PackageReference Include="Avalonia.Desktop" Version="0.10.15" />
+	<PackageReference Include="Avalonia.Diagnostics" Version="0.10.15" />
+	<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.15" />
+	<PackageReference Include="Dock.Avalonia" Version="0.10.14" />
+	<PackageReference Include="Dock.Model.ReactiveUI" Version="0.10.14" />
+	<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
+	<PackageReference Include="ReactiveUI.Fody" Version="18.2.5" />
+	<PackageReference Include="ReactiveUI.Testing" Version="18.2.5" />
+	<PackageReference Include="xunit" Version="2.4.1" />
+	<PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  <PrivateAssets>all</PrivateAssets>
+	</PackageReference>
+	<PackageReference Include="coverlet.collector" Version="3.1.2">
+	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  <PrivateAssets>all</PrivateAssets>
+	</PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GlacierKitCore\GlacierKitCore.csproj" />
-    <ProjectReference Include="..\GlacierKitTestShared\GlacierKitTestShared.csproj" />
-    <ProjectReference Include="..\PlaceholderModule\PlaceholderModule.csproj" />
+	<ProjectReference Include="..\GlacierKitCore\GlacierKitCore.csproj" />
+	<ProjectReference Include="..\GlacierKitTestShared\GlacierKitTestShared.csproj" />
+	<ProjectReference Include="..\PlaceholderModule\PlaceholderModule.csproj" />
   </ItemGroup>
 
 	<Import Project="$(MSBuildProjectDirectory)\MSBuildFiles\GlacierKitCoreTest.props" />

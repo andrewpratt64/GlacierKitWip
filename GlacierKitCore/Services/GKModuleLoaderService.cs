@@ -13,7 +13,7 @@ using System.Reflection;
 namespace GlacierKitCore.Services
 {
 	public class GKModuleLoaderService : ReactiveObject
-    {
+	{
 		#region Public enums
 
 		/// <summary>
@@ -65,25 +65,25 @@ namespace GlacierKitCore.Services
 		/// </summary>
 		[Reactive]
 		public ELoaderState State
-        { get; private set; } = ELoaderState.NotLoaded;
+		{ get; private set; } = ELoaderState.NotLoaded;
 
 
-        /// <summary>
-        /// Collection of loaded GK module assemblies
-        /// </summary>
-        public ICollection<Assembly> ModuleAssemblies => _moduleAssemblies;
+		/// <summary>
+		/// Collection of loaded GK module assemblies
+		/// </summary>
+		public ICollection<Assembly> ModuleAssemblies => _moduleAssemblies;
 
 
-        /// <summary>
-        /// Collection of view model types for editor windows loaded from GK modules
-        /// </summary>
-        public ICollection<Type> EditorWindowViewModels => _editorWindowViewModels;
+		/// <summary>
+		/// Collection of view model types for editor windows loaded from GK modules
+		/// </summary>
+		public ICollection<Type> EditorWindowViewModels => _editorWindowViewModels;
 
 
-        /// <summary>
-        /// Collection of GK commands loaded from GK modules
-        /// </summary>
-        public ICollection<IGKCommand> GKCommands => _gkCommands;
+		/// <summary>
+		/// Collection of GK commands loaded from GK modules
+		/// </summary>
+		public ICollection<IGKCommand> GKCommands => _gkCommands;
 
 
 		/// <summary>
@@ -193,14 +193,14 @@ namespace GlacierKitCore.Services
 		#region Private_methods
 
 		private void LoadDataFromProvider(Type providerType)
-        {
+		{
 			// Create an instance of the data provider
 			GKDataProviderService dataProvider = (GKDataProviderService)Activator
 				.CreateInstance(providerType, Ctx)!;
 
-            // Iterate over all of the properties in providerType
-            foreach (PropertyInfo property in providerType.GetProperties())
-            {
+			// Iterate over all of the properties in providerType
+			foreach (PropertyInfo property in providerType.GetProperties())
+			{
 				// Skip any members that aren't read-only or static
 				if (property.IsStatic() || property.CanWrite)
 					continue;
@@ -223,8 +223,8 @@ namespace GlacierKitCore.Services
 						_mainMenuItemsSetupInfo.Add(setupInfo);
 					}
 				}
-            }
-        }
+			}
+		}
 
 		#endregion
 	}

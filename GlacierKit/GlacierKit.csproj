@@ -25,7 +25,7 @@
 		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.15" />
 		<PackageReference Include="Dock.Avalonia" Version="0.10.14" />
 		<PackageReference Include="Dock.Model.ReactiveUI" Version="0.10.14" />
-		<PackageReference Include="ReactiveUI.Fody" Version="18.1.8" />
+		<PackageReference Include="ReactiveUI.Fody" Version="18.2.5" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\GlacierKitCoreTest\GlacierKitCoreTest.csproj" />
