@@ -76,39 +76,42 @@ namespace GlacierKitCore.DesignTime
 				}
 			);
 
-			TextBlock exampleStyleClassesViewerControl = new()
-			{
-				Text = "Hello, world!",
+			Button exampleStyleClassesViewerControl = new()
+			{  
+				Content = "Hello, world!",  
 				HorizontalAlignment = HorizontalAlignment.Center,
-				VerticalAlignment = VerticalAlignment.Stretch
+				VerticalAlignment = VerticalAlignment.Stretch,
+				HorizontalContentAlignment = HorizontalAlignment.Center,
+				VerticalContentAlignment = VerticalAlignment.Center
 			};
 
-			Style exampleStyleClassesViewerControlWideStyle = new(selector => selector.OfType<TextBlock>().Class("wide"));
+			Style exampleStyleClassesViewerControlWideStyle = new(selector => selector.OfType<Button>().Class("wide"));
 			exampleStyleClassesViewerControlWideStyle.Setters.Add(new Setter(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch));
+			exampleStyleClassesViewerControlWideStyle.Setters.Add(new Setter(ContentControl.HorizontalContentAlignmentProperty, HorizontalAlignment.Stretch));
 			exampleStyleClassesViewerControl.Styles.Add(exampleStyleClassesViewerControlWideStyle);
 
-			Style exampleStyleClassesViewerControlTallStyle = new(selector => selector.OfType<TextBlock>().Class("tall"));
+			Style exampleStyleClassesViewerControlTallStyle = new(selector => selector.OfType<Button>().Class("tall"));
 			exampleStyleClassesViewerControlTallStyle.Setters.Add(new Setter(Layoutable.HeightProperty, 100.0d));
 			exampleStyleClassesViewerControl.Styles.Add(exampleStyleClassesViewerControlTallStyle);
 
-			Style exampleStyleClassesViewerControlRedStyle = new(selector => selector.OfType<TextBlock>().Class("red"));
-			exampleStyleClassesViewerControlRedStyle.Setters.Add(new Setter(TextBlock.ForegroundProperty, Brushes.Red));
+			Style exampleStyleClassesViewerControlRedStyle = new(selector => selector.OfType<Button>().Class("red"));
+			exampleStyleClassesViewerControlRedStyle.Setters.Add(new Setter(Button.ForegroundProperty, Brushes.Red));
 			exampleStyleClassesViewerControl.Styles.Add(exampleStyleClassesViewerControlRedStyle);
 
-			Style exampleStyleClassesViewerControlGreenStyle = new(selector => selector.OfType<TextBlock>().Class("green"));
-			exampleStyleClassesViewerControlGreenStyle.Setters.Add(new Setter(TextBlock.ForegroundProperty, Brushes.Green));
+			Style exampleStyleClassesViewerControlGreenStyle = new(selector => selector.OfType<Button>().Class("green"));
+			exampleStyleClassesViewerControlGreenStyle.Setters.Add(new Setter(Button.ForegroundProperty, Brushes.Green));
 			exampleStyleClassesViewerControl.Styles.Add(exampleStyleClassesViewerControlGreenStyle);
 
-			Style exampleStyleClassesViewerControlBlueStyle = new(selector => selector.OfType<TextBlock>().Class("blue"));
-			exampleStyleClassesViewerControlBlueStyle.Setters.Add(new Setter(TextBlock.ForegroundProperty, Brushes.Blue));
+			Style exampleStyleClassesViewerControlBlueStyle = new(selector => selector.OfType<Button>().Class("blue"));
+			exampleStyleClassesViewerControlBlueStyle.Setters.Add(new Setter(Button.ForegroundProperty, Brushes.Blue));
 			exampleStyleClassesViewerControl.Styles.Add(exampleStyleClassesViewerControlBlueStyle);
 
-			Style exampleStyleClassesViewerControlBoldStyle = new(selector => selector.OfType<TextBlock>().Class("bold"));
-			exampleStyleClassesViewerControlBoldStyle.Setters.Add(new Setter(TextBlock.FontWeightProperty, FontWeight.Bold));
+			Style exampleStyleClassesViewerControlBoldStyle = new(selector => selector.OfType<Button>().Class("bold"));
+			exampleStyleClassesViewerControlBoldStyle.Setters.Add(new Setter(Button.FontWeightProperty, FontWeight.Bold));
 			exampleStyleClassesViewerControl.Styles.Add(exampleStyleClassesViewerControlBoldStyle);
 
-			Style exampleStyleClassesViewerControlHighlightStyle = new(selector => selector.OfType<TextBlock>().Class("highlight"));
-			exampleStyleClassesViewerControlHighlightStyle.Setters.Add(new Setter(TextBlock.BackgroundProperty, Brushes.Yellow));
+			Style exampleStyleClassesViewerControlHighlightStyle = new(selector => selector.OfType<Button>().Class("highlight"));
+			exampleStyleClassesViewerControlHighlightStyle.Setters.Add(new Setter(Button.BackgroundProperty, Brushes.Yellow));
 			exampleStyleClassesViewerControl.Styles.Add(exampleStyleClassesViewerControlHighlightStyle);
 
 			ExampleStyleClassesViewerViewModel.PreviewControl = exampleStyleClassesViewerControl;
