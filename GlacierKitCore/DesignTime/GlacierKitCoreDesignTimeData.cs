@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.TextFormatting;
@@ -11,6 +12,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -60,6 +62,8 @@ namespace GlacierKitCore.DesignTime
 
 			FakeProperties_Car_HasTrunk = true;
 
+			#region StyleClassesViewerViewModel_instances
+
 			#region ExampleStyleClassesViewerViewModel
 
 			ExampleStyleClassesViewerViewModel = new(
@@ -80,7 +84,7 @@ namespace GlacierKitCore.DesignTime
 			{  
 				Content = "Hello, world!",  
 				HorizontalAlignment = HorizontalAlignment.Center,
-				VerticalAlignment = VerticalAlignment.Stretch,
+				VerticalAlignment = VerticalAlignment.Center,
 				HorizontalContentAlignment = HorizontalAlignment.Center,
 				VerticalContentAlignment = VerticalAlignment.Center
 			};
@@ -120,9 +124,13 @@ namespace GlacierKitCore.DesignTime
 
 			#endregion
 
+
+			#region ButtonStyleClassesViewerViewModel
+
 			ButtonStyleClassesViewerViewModel = new(
 				new string[]
 				{
+					":pointerover",
 					":focus",
 					":disabled",
 					":pressed",
@@ -133,14 +141,21 @@ namespace GlacierKitCore.DesignTime
 					"iconButton"
 				}
 			);
-
+			
 			ButtonStyleClassesViewerViewModel.PreviewControl = new Button()
 			{
-				Content = "Hello, world!"
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+				HorizontalContentAlignment = HorizontalAlignment.Center,
+				VerticalContentAlignment = VerticalAlignment.Center
 			};
 
 			ButtonStyleClassesViewerViewModel.PreviewControlNormalBackground = Brushes.White;
 			ButtonStyleClassesViewerViewModel.PreviewControlInvertedBackground = Brushes.Black;
+
+			#endregion
+
+			#endregion
 		}
 	}
 }

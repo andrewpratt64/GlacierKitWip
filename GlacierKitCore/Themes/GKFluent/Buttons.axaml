@@ -8,32 +8,55 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:dd="clr-namespace:GlacierKitCore.DesignTime;assembly=GlacierKitCore"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:System="clr-namespace:System;assembly=mscorlib"
 		mc:Ignorable="d"
 >
 	<Design.PreviewWith>
+		<Border>
 
-		<StackPanel Orientation="Vertical" Spacing="3" Margin="20">
+			<Border.Styles>
+				<Style Selector="StackPanel > gkv_debug|StyleClassesViewerView#PART_StyleClassesViewer.ShouldPreviewButtonWithIconContent Button">
+					<Setter Property="Content">
+						<Template>
+							<PathIcon Data="{StaticResource rocket_regular}"/>
+						</Template>
+					</Setter>
+				</Style>
 
-			<gk:ContentPair Classes="basicHoriz">
-				<gk:ContentPair.FirstControl>
-					<CheckBox x:Name="PART_PreviewButtonWithIconContent"/>
-				</gk:ContentPair.FirstControl>
-
-				<gk:ContentPair.LastControl>
-					<TextBlock
-						Text="Use icon as button content"
-						VerticalAlignment="Center"
-					/>
-				</gk:ContentPair.LastControl>
-		</gk:ContentPair>
-
-			<gkv_debug:StyleClassesViewerView
-				x:Name="PART_StyleClassesViewer"
-				DataContext="{x:Static dd:GlacierKitCoreDesignTimeData.ButtonStyleClassesViewerViewModel}"
-			/>
+				<Style Selector="StackPanel > gkv_debug|StyleClassesViewerView#PART_StyleClassesViewer:not(.ShouldPreviewButtonWithIconContent) Button">
+					<Setter Property="Content">
+						<Template>
+							<TextBlock Text="Hello, world!"/>
+						</Template>
+					</Setter>
+				</Style>
+			</Border.Styles>
 			
-		</StackPanel>
-		
+			
+			<StackPanel Orientation="Vertical" Spacing="3" Margin="20">
+
+				<gk:ContentPair Classes="basicHoriz">
+					<gk:ContentPair.FirstControl>
+						<CheckBox x:Name="PART_PreviewButtonWithIconContent"/>
+					</gk:ContentPair.FirstControl>
+
+					<gk:ContentPair.LastControl>
+						<TextBlock
+							Text="Use icon as button content"
+							VerticalAlignment="Center"
+						/>
+					</gk:ContentPair.LastControl>
+			</gk:ContentPair>
+
+				<gkv_debug:StyleClassesViewerView
+					x:Name="PART_StyleClassesViewer"
+					DataContext="{x:Static dd:GlacierKitCoreDesignTimeData.ButtonStyleClassesViewerViewModel}"
+					Classes.ShouldPreviewButtonWithIconContent="{Binding #PART_PreviewButtonWithIconContent.IsChecked}"
+				/>
+			
+			</StackPanel>
+			
+		</Border>
 	</Design.PreviewWith>
 
 
@@ -52,7 +75,8 @@
 
 	<!--class: noDisabledBgButton-->
 	<!--summary: A button without a background when disabled-->
-	<Style Selector="Button.noDisabledBgButton:disabled">
+	<!--TODO: How to require both a class and pseudo class? This dosen't seem to work-->
+	<Style Selector="Button:disabled.noDisabledBgButton">
 		<Setter Property="Background" Value="Transparent"/>
 	</Style>
 
