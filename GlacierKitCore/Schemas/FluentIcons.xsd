@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="FluentIcons"
+	targetNamespace="https://github.com/glacier-modding/GlacierKit/tree/glacierkit/GlacierKitCore/Schemas/FluentIcons.xsd"
+	elementFormDefault="qualified"
+	xmlns="https://github.com/glacier-modding/GlacierKit/tree/glacierkit/GlacierKitCore/Schemas/FluentIcons.xsd"
+	xmlns:mstns="https://github.com/glacier-modding/GlacierKit/tree/glacierkit/GlacierKitCore/Schemas/FluentIcons.xsd"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+>
+	<xs:complexType name="StreamGeometryCollection">
+		<xs:annotation>
+			<xs:documentation>A collection of StreamGeometry xml elements</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element
+				name="StreamGeometry"
+				type="StreamGeometry"
+				minOccurs="0"
+				maxOccurs="unbounded"
+			>
+				<xs:annotation>
+					<xs:documentation>A single icon defined by a StreamGeometry element, exactly how it would appear in axaml</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<xs:complexType name="StreamGeometry">
+		<xs:annotation>
+			<xs:documentation>An element identical to Avalonia.Media.StreamGeometry to be included in a resource dictionary</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:anyAttribute namespace="##any"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+</xs:schema>

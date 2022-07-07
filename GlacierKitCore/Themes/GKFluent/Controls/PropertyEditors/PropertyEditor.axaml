@@ -1,0 +1,23 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:controls="using:GlacierKitCore.Controls"
+		xmlns:propertyEditorControls="using:GlacierKitCore.Controls.PropertyEditors"
+>
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<propertyEditorControls:PropertyEditor/>
+		</Border>
+	</Design.PreviewWith>
+
+
+
+	<Style Selector="propertyEditorControls|PropertyEditor">
+		<Setter Property="Template">
+			<ControlTemplate>
+
+				<TextBlock Text="TODO"/>
+
+			</ControlTemplate>
+		</Setter>
+	</Style>
+</Styles>

@@ -1,4 +1,21 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <StyleInclude Source="/Themes/GKFluent/Controls/ContentPair.axaml"/>
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<TextBlock Text="This is the main file for Glacier Kit's &quot;Fluent&quot; theme, it includes all of the theme's source .axaml files"/>
+		</Border>
+	</Design.PreviewWith>
+	
+	
+	<StyleInclude Source="/Themes/GKFluent/Buttons.axaml"/>
+	<StyleInclude Source="/Themes/GKFluent/Icons.axaml"/>
+	
+	<StyleInclude Source="/Themes/GKFluent/TextHeaders.axaml"/>
+	<StyleInclude Source="/Themes/GKFluent/TextStyles.axaml"/>
+	
+	<StyleInclude Source="/Themes/GKFluent/Controls/ContentPair.axaml"/>
+	<StyleInclude Source="/Themes/GKFluent/Controls/PropertyEditors/PropertyEditor.axaml"/>
+	<StyleInclude Source="/Themes/GKFluent/Controls/PropertyEditors/PropertyGroupEditor.axaml"/>
+	<StyleInclude Source="/Themes/GKFluent/Controls/PropertyEditors/SinglePropertyEditor.axaml"/>
 </Styles>

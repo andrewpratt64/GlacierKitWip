@@ -1,14 +1,14 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:m="using:PlaceholderModule.Models"
 			 xmlns:vm="using:PlaceholderModule.ViewModels"
 			 xmlns:gkvm="using:GlacierKitCore.ViewModels"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:dd="clr-namespace:PlaceholderModule.DesignTime;assembly=PlaceholderModule"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 d:DataContext="{x:Static dd:PlaceholderModuleDesignTimeData.ExampleForestEditorViewModel}"
-             x:Class="PlaceholderModule.Views.ForestEditorView">
+			 x:Class="PlaceholderModule.Views.ForestEditorView">
 	<DockPanel LastChildFill="True">
 
 		<!--Top bar-->

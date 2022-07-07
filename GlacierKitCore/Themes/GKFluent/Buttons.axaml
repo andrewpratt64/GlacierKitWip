@@ -1,0 +1,64 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:gk="using:GlacierKitCore.Controls"
+		xmlns:gkv="using:GlacierKitCore.Views"
+		xmlns:gkv_debug="using:GlacierKitCore.Views.Debug"
+		xmlns:gkvm="using:GlacierKitCore.ViewModels"
+		xmlns:gkvm_debug="using:GlacierKitCore.ViewModels.Debug"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:dd="clr-namespace:GlacierKitCore.DesignTime;assembly=GlacierKitCore"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d"
+>
+	<Design.PreviewWith>
+
+		<StackPanel Orientation="Vertical" Spacing="3" Margin="20">
+
+			<gk:ContentPair Classes="basicHoriz">
+				<gk:ContentPair.FirstControl>
+					<CheckBox x:Name="PART_PreviewButtonWithIconContent"/>
+				</gk:ContentPair.FirstControl>
+
+				<gk:ContentPair.LastControl>
+					<TextBlock
+						Text="Use icon as button content"
+						VerticalAlignment="Center"
+					/>
+				</gk:ContentPair.LastControl>
+		</gk:ContentPair>
+
+			<gkv_debug:StyleClassesViewerView
+				x:Name="PART_StyleClassesViewer"
+				DataContext="{x:Static dd:GlacierKitCoreDesignTimeData.ButtonStyleClassesViewerViewModel}"
+			/>
+			
+		</StackPanel>
+		
+	</Design.PreviewWith>
+
+
+	<!--class: noBgButton-->
+	<!--summary: A button without a background-->
+	<Style Selector="Button.noBgButton /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+
+
+	<!--class: noDefaultBgButton-->
+	<!--summary: A button without a background when not focused/hovered/clicked-->
+	<Style Selector="Button.noDefaultBgButton">
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+
+	<!--class: noDisabledBgButton-->
+	<!--summary: A button without a background when disabled-->
+	<Style Selector="Button.noDisabledBgButton:disabled">
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+
+	<!--class: iconButton-->
+	<!--summary: A button styled for displaying a single icon-->
+	<Style Selector="Button.iconButton">
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+</Styles>

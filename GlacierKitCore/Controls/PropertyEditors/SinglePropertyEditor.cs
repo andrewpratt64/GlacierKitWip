@@ -1,8 +1,11 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using GlacierKitCore.Misc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +15,7 @@ namespace GlacierKitCore.Controls.PropertyEditors
 	/// <summary>
 	/// Allows editing the value of a single property
 	/// </summary>
+	[TemplatePart("PART_InnerEditor", typeof(IControl))]
 	public class SinglePropertyEditor :
 		TemplatedControl,
 		IVisiblyDocumentable
@@ -121,6 +125,17 @@ namespace GlacierKitCore.Controls.PropertyEditors
 
 
 		#endregion
+
+		#endregion
+
+
+		#region Public_methods
+
+		public void TryOpenHelp()
+		{
+			if (HelpUri != null)
+				Process.Start(HelpUri.ToString());
+		}
 
 		#endregion
 	}

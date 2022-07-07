@@ -1,0 +1,67 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:dd="clr-namespace:GlacierKitCore.DesignTime;assembly=GlacierKitCore"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d"
+		xmlns:controls="using:GlacierKitCore.Controls"
+		xmlns:propertyEditorControls="using:GlacierKitCore.Controls.PropertyEditors"
+>
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<propertyEditorControls:SinglePropertyEditor
+				Value="{Binding dd:GlacierKitCoreDesignTimeData.FakeProperties_Car_TotalMilesDriven}"
+				IsOptional="False"
+				PrintName="Total Miles Driven"
+				Description="How many miles the car has driven"
+				VerboseDescription="Here's some more info about the property, notice how it's longer than the other description."
+				HelpUri="https://wiki.notex.app/"
+			/>
+		</Border>
+	</Design.PreviewWith>
+
+
+
+	<!--Default style-->
+	<Style Selector="propertyEditorControls|SinglePropertyEditor">
+		<Setter Property="Template">
+			<ControlTemplate>
+
+				<StackPanel
+					Orientation="Vertical"
+					
+					ToolTip.Placement="Top"
+					ToolTip.Tip="{Binding VerboseDescription, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type propertyEditorControls:SinglePropertyEditor}}}"
+				>
+
+					<StackPanel Orientation="Horizontal" Spacing="5">
+						<TextBlock
+							Text="{TemplateBinding PrintName}"
+							Classes="h1"
+						/>
+
+						<Button>
+							<PathIcon
+								Data="{StaticResource question_circle_regular}"
+								Classes="faded"
+							/>
+						</Button>
+					</StackPanel>
+					
+					<TextBlock
+						Text="{TemplateBinding Description}"
+					/>
+					
+					<ContentControl x:Name="PART_InnerEditor">
+						<TextBlock
+							Text="No editor available for this property type"
+							IsEnabled="False"
+							Classes="faded italic"
+						/>
+					</ContentControl>
+				</StackPanel>
+
+			</ControlTemplate>
+		</Setter>
+	</Style>
+</Styles>

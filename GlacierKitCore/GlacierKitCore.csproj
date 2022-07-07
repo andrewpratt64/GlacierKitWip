@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <IsPublishable>False</IsPublishable>
-    <EnableNETAnalyzers>True</EnableNETAnalyzers>
+	<TargetFramework>net5.0</TargetFramework>
+	<Nullable>enable</Nullable>
+	<IsPublishable>False</IsPublishable>
+	<EnableNETAnalyzers>True</EnableNETAnalyzers>
   </PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Avalonia" Version="0.10.15" />
@@ -18,5 +18,21 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="MSBuildFiles\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+	<ItemGroup>
+	  <AvaloniaXaml Update="Themes\GKFluent\Icons.axaml">
+		<DesignTime>True</DesignTime>
+		<AutoGen>True</AutoGen>
+		<DependentUpon>Icons.tt</DependentUpon>
+	  </AvaloniaXaml>
+	</ItemGroup>
+	<ItemGroup>
+	  <None Update="Themes\GKFluent\Icons.tt">
+		<Generator>TextTemplatingFileGenerator</Generator>
+		<LastGenOutput>Icons.axaml</LastGenOutput>
+	  </None>
 	</ItemGroup>
 </Project>

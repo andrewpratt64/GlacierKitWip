@@ -1,0 +1,84 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<StackPanel Orientation="Vertical" Spacing="10">
+
+				<StackPanel.Styles>
+					<Style Selector="TextBlock.previewLabel">
+						<Setter Property="Grid.Column" Value="0"/>
+						<Setter Property="Grid.Row" Value="0"/>
+						<Setter Property="Margin" Value="0 0 75 0"/>
+					</Style>
+
+					<Style Selector="TextBlock.previewText">
+						<Setter Property="Grid.Column" Value="1"/>
+						<Setter Property="Grid.Row" Value="0"/>
+					</Style>
+				</StackPanel.Styles>
+
+
+
+				<Grid ColumnDefinitions="*,*" RowDefinitions="Auto">
+					<TextBlock Classes="previewLabel" Text="No style classes: "/>
+					<TextBlock Classes="previewText" Text="The quick brown fox jumps over the lazy dog"/>
+				</Grid>
+
+
+				<Grid ColumnDefinitions="*,*" RowDefinitions="Auto">
+					<TextBlock Classes="previewLabel" Text="faded: "/>
+					<TextBlock Classes="previewText faded" Text="The quick brown fox jumps over the lazy dog"/>
+				</Grid>
+
+
+				<Grid ColumnDefinitions="*,*" RowDefinitions="Auto">
+					<TextBlock Classes="previewLabel" Text="small: "/>
+					<TextBlock Classes="previewText small" Text="The quick brown fox jumps over the lazy dog"/>
+				</Grid>
+
+
+				<Grid ColumnDefinitions="*,*" RowDefinitions="Auto">
+					<TextBlock Classes="previewLabel" Text="big: "/>
+					<TextBlock Classes="previewText big" Text="The quick brown fox jumps over the lazy dog"/>
+				</Grid>
+
+
+				<Grid ColumnDefinitions="*,*" RowDefinitions="Auto">
+					<TextBlock Classes="previewLabel" Text="italic: "/>
+					<TextBlock Classes="previewText italic" Text="The quick brown fox jumps over the lazy dog"/>
+				</Grid>
+
+
+				<Grid ColumnDefinitions="*,*" RowDefinitions="Auto">
+					<TextBlock Classes="previewLabel" Text="bold: "/>
+					<TextBlock Classes="previewText bold" Text="The quick brown fox jumps over the lazy dog"/>
+				</Grid>
+
+			</StackPanel>
+		</Border>
+	</Design.PreviewWith>
+
+	
+
+	<Style Selector="TextBlock.faded">
+		<Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"/>
+	</Style>
+
+	<Style Selector="TextBlock.small">
+		<Setter Property="FontSize" Value="12"/>
+	</Style>
+
+	<Style Selector="TextBlock.big">
+		<Setter Property="FontSize" Value="16"/>
+	</Style>
+
+	<Style Selector="TextBlock.italic">
+		<Setter Property="FontStyle" Value="Italic"/>
+	</Style>
+
+	<Style Selector="TextBlock.bold">
+		<Setter Property="FontWeight" Value="Bold"/>
+	</Style>
+
+</Styles>

@@ -28,7 +28,7 @@
 		<PackageReference Include="ReactiveUI.Fody" Version="18.2.5" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\GlacierKitCoreTest\GlacierKitCoreTest.csproj" />
+	  <ProjectReference Include="..\GlacierKitCore\GlacierKitCore.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Update="Views\MainWindowView.axaml.cs">

@@ -13,8 +13,8 @@ using System.Threading.Tasks;
 
 namespace GlacierKitCore.ViewModels.Common
 {
-    public class MenuBarViewModel : ViewModelBase
-    {
+	public class MenuBarViewModel : ViewModelBase
+	{
 		private readonly ReadOnlyObservableCollection<MenuBarItemViewModel> _rootItems;
 
 

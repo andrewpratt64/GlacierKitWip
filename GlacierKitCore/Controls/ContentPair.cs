@@ -13,8 +13,6 @@ using System.Threading.Tasks;
 namespace GlacierKitCore.Controls
 {
 	[TemplatePart("PART_Container", typeof(IPanel))]
-	//[TemplatePart("PART_FirstControl", typeof(IControl))]
-	//[TemplatePart("PART_LastControl", typeof(IControl))]
 	public class ContentPair : TemplatedControl
 	{
 		#region Private_fields
