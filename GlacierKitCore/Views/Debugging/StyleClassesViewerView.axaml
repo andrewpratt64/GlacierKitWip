@@ -1,0 +1,98 @@
+<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:gk="using:GlacierKitCore.Controls"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:dd="clr-namespace:GlacierKitCore.DesignTime;assembly=GlacierKitCore"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DataContext="{x:Static dd:GlacierKitCoreDesignTimeData.ExampleStyleClassesViewerViewModel}"
+	x:Class="GlacierKitCore.Views.Debugging.StyleClassesViewerView"
+>
+	<ScrollViewer
+		Margin="5"
+		VerticalScrollBarVisibility="Visible"
+		AllowAutoHide="False"
+	>
+		<StackPanel Orientation="Vertical" MinWidth="300">
+			
+			<Border
+				x:Name="PART_PreviewControlParent"
+				Child="{Binding PreviewControl}"
+				Background="{Binding PreviewControlCurrentBackground}"
+				BorderBrush="Black"
+				BorderThickness="2"
+				Padding="2"
+				HorizontalAlignment="Stretch"
+			/>
+
+			<gk:ContentPair Classes="oneToTwoRatio">
+				<gk:ContentPair.FirstControl>
+					<TextBlock
+						Text="Control: "
+						Classes="small"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Center"
+					/>
+				</gk:ContentPair.FirstControl>
+				<gk:ContentPair.LastControl>
+					<TextBlock
+						Text="{Binding PreviewControl, TargetNullValue=_null_, FallbackValue=_fallback_}"
+						Classes="small"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"
+					/>
+				</gk:ContentPair.LastControl>
+			</gk:ContentPair>
+			
+			<gk:ContentPair Classes="oneToTwoRatio">
+				<gk:ContentPair.FirstControl>
+					<CheckBox
+						IsChecked="{Binding IsPreviewControlBackgroundInverted}"
+						IsThreeState="False"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Center"
+					/>
+				</gk:ContentPair.FirstControl>
+				<gk:ContentPair.LastControl>
+					<TextBlock
+						Text="Invert background color"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"
+					/>
+				</gk:ContentPair.LastControl>
+			</gk:ContentPair>
+		
+			<Separator Margin="10"/>
+		
+			<TextBlock
+				Text="{Binding ClassesStringifiedValue, TargetNullValue=_null_, FallbackValue=_fallback_, StringFormat=Classes: {0}, Mode=OneWay}"
+				HorizontalAlignment="Left"
+			/>
+		
+		
+				<ItemsControl Items="{Binding ClassItems}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Vertical"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Border
+								BorderThickness="1"
+								BorderBrush="{StaticResource SystemControlForegroundBaseHighBrush}"
+								Padding="3"
+							>
+								<StackPanel Orientation="Horizontal">
+									<CheckBox IsChecked="{Binding IsActive}" VerticalAlignment="Center"/>
+									<TextBlock Text="{Binding ClassName}" VerticalAlignment="Center"/>
+								</StackPanel>
+							</Border>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+		
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

@@ -6,7 +6,7 @@ using Avalonia.Media;
 using Avalonia.Media.TextFormatting;
 using Avalonia.Styling;
 using GlacierKitCore.Models;
-using GlacierKitCore.ViewModels.Debug;
+using GlacierKitCore.ViewModels.Debugging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
