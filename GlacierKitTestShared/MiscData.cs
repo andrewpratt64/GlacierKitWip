@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace GlacierKitTestShared
 {
-    /// <summary>
-    /// Miscellaneous data for unit test
-    /// </summary>
-    public sealed class MiscData
-    {
-        /// <summary>
-        /// The amount of modules in the gkmodules directory (one .dll = one module)
-        /// </summary>
-        public static readonly int ExpectedModules = 2;
-    }
+	/// <summary>
+	/// Miscellaneous data for unit test
+	/// </summary>
+	public sealed class MiscData
+	{
+		/// <summary>
+		/// The amount of modules in the gkmodules directory (one .dll = one module)
+		/// </summary>
+		public static readonly int ExpectedModules = 2;
+	}
 
 
 	public sealed class GeneralUseData
@@ -38,6 +38,15 @@ namespace GlacierKitTestShared
 			+ "Mauris pulvinar eget metus ut tincidunt."
 			+ "Nam nec ornare sem, aliquet condimentum est."
 			+ "Sed maximus nisi vitae neque maximus, nec accumsan velit blandit.";
+
+		public static IEnumerable<string> SeveralStrings => new string[]
+		{
+			string.Empty,
+			OneCharString,
+			TinyString,
+			SmallString,
+			LongString
+		};
 
 
 		public static int SmallInt => 5;

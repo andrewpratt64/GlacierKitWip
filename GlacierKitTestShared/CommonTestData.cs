@@ -11,32 +11,32 @@ using Xunit;
 
 namespace GlacierKitTestShared.CommonTestData
 {
-    /// <summary>
-    /// Provides theory data for all possible boolean values
-    /// </summary>
-    public class BoolTheoryData : TheoryData<bool>
-    {
-        public BoolTheoryData()
-        {
-            Add(false);
-            Add(true);
-        }
-    }
+	/// <summary>
+	/// Provides theory data for all possible boolean values
+	/// </summary>
+	public class BoolTheoryData : TheoryData<bool>
+	{
+		public BoolTheoryData()
+		{
+			Add(false);
+			Add(true);
+		}
+	}
 
 
-    /// <summary>
-    /// Provides theory data for all possible values of a given enumerated type
-    /// </summary>
-    /// <typeparam name="TEnum">The enum who's values are to be used</typeparam>
-    public class EnumTheoryData<TEnum> : TheoryData<TEnum>
-        where TEnum : struct, Enum
-    {
-        public EnumTheoryData()
-        {
-            foreach (TEnum enumVal in Enum.GetValues<TEnum>())
-                Add(enumVal);
-        }
-    }
+	/// <summary>
+	/// Provides theory data for all possible values of a given enumerated type
+	/// </summary>
+	/// <typeparam name="TEnum">The enum who's values are to be used</typeparam>
+	public class EnumTheoryData<TEnum> : TheoryData<TEnum>
+		where TEnum : struct, Enum
+	{
+		public EnumTheoryData()
+		{
+			foreach (TEnum enumVal in Enum.GetValues<TEnum>())
+				Add(enumVal);
+		}
+	}
 
 
 	// TODO: Remove ExpectedFlagValue<TFlag>?

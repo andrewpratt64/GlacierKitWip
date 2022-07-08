@@ -407,7 +407,7 @@ namespace GlacierKitCoreTest.Tests.Models
 
 		#region Constructor
 
-			[Fact]
+		[Fact]
 		[Trait("TreeClass", "SingleRootTree")]
 		public static void SingleRootTree_Default_ctor_works()
 		{

@@ -32,7 +32,7 @@ namespace GlacierKitCore.ViewModels.Debugging
 		/// The name of the style class
 		/// </summary>
 		public string ClassName { get; }
-
+		
 
 		/// <summary>
 		/// Creates a new <see cref="StyleClassesViewerItem"/> instance

@@ -109,7 +109,6 @@ namespace GlacierKitCoreTest.Tests.Models
 
 		#region Theory_data_tests
 
-#pragma warning disable IDE1006 // Naming Styles
 
 		private static void TheoryData_provides_unique_instances_on_each_invoke(Func<object> treeSource)
 		{
@@ -145,7 +144,6 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 #pragma warning restore xUnit1026 // Theory methods should use all of their parameters
-#pragma warning restore IDE1006 // Naming Styles
 
 		#endregion
 
