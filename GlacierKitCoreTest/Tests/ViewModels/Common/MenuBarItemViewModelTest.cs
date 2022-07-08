@@ -40,7 +40,7 @@ namespace GlacierKitCoreTest.Tests.ViewModels.Common
 				data.Add(new object[] { _DATA_ctorValues[i] });
 			return data;
 		})();
-
+		
 		public static readonly IEnumerable<object[]> _DATA_ctorIdAndTitleParamValues = new Func<IEnumerable<object[]>>(() =>
 		{
 			List<object[]> data = new();
@@ -508,7 +508,7 @@ namespace GlacierKitCoreTest.Tests.ViewModels.Common
 
 			// Act
 			viewModel = new(id, title, command);
-			Debug.Assert(
+			System.Diagnostics.Debug.Assert(
 				viewModel.ItemCommand == null,
 				"ItemCommand is expected to be null to be able to test properly"
 			);
@@ -531,7 +531,7 @@ namespace GlacierKitCoreTest.Tests.ViewModels.Common
 
 			// Act
 			viewModel = new(id, title, command);
-			Debug.Assert(
+			System.Diagnostics.Debug.Assert(
 				viewModel.ItemCommand != null,
 				"ItemCommand is expected to be non-null to be able to test properly"
 			);
@@ -558,7 +558,7 @@ namespace GlacierKitCoreTest.Tests.ViewModels.Common
 			// Act
 			viewModel = new(id, title, command);
 
-			Debug.Assert(
+			System.Diagnostics.Debug.Assert(
 				viewModel.ItemCommand != null,
 				"ItemCommand is expected to be non-null to be able to test properly"
 			);

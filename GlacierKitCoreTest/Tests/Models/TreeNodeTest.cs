@@ -66,11 +66,10 @@ namespace GlacierKitCoreTest.Tests.Models
 
 
 		#region Theory_data
-#pragma warning disable IDE1006 // Naming Styles
 
-		public class _TYPE_DeleteTheoryData : TheoryData<Func<Tree<object>>, bool>
+		public class DeleteTheoryData : TheoryData<Func<Tree<object>>, bool>
 		{
-			public _TYPE_DeleteTheoryData()
+			public DeleteTheoryData()
 			{
 				Add(() => new SingleRootTree<object>(), false);
 				Add(() => new SingleRootTree<object>(), true);
@@ -80,7 +79,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 
-		public class _TYPE_Value_test_TheoryData : TheoryData<Func<Tree<object?>>, object?>
+		public class Value_test_TheoryData : TheoryData<Func<Tree<object?>>, object?>
 		{
 			private void AddWithValue(object? v)
 			{
@@ -88,7 +87,7 @@ namespace GlacierKitCoreTest.Tests.Models
 				Add(() => new MultiRootTree<object?>(), v);
 			}
 
-			public _TYPE_Value_test_TheoryData()
+			public Value_test_TheoryData()
 			{
 
 				AddWithValue(null);
@@ -101,11 +100,10 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 
-		public static readonly _TYPE_TreeTheoryData<object> _DATA_TreeTheoryData = new();
-		public static readonly _TYPE_DeleteTheoryData _DATA_DeleteTheoryData = new();
-		public static readonly _TYPE_Value_test_TheoryData _DATA_Value_test_TheoryData = new();
+		public static readonly TreeTheoryData<object> _DATA_TreeTheoryData = new();
+		public static readonly DeleteTheoryData _DATA_DeleteTheoryData = new();
+		public static readonly Value_test_TheoryData _DATA_Value_test_TheoryData = new();
 
-#pragma warning restore IDE1006 // Naming Styles
 		#endregion
 
 

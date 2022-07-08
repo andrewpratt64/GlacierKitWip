@@ -21,23 +21,21 @@ using Xunit;
 
 namespace GlacierKitCoreTest.Tests.Models
 {
-    public class EditorContextTest
-    {
+	public class EditorContextTest
+	{
 		#region Theory_data
 
 		private static readonly Type? _DATA_ValidInputForCreateEditorWindow = typeof(FooViewModel);
-        private static readonly Type? _DATA_InvalidInputForCreateEditorWindow = typeof(BarViewModel);
-        private static readonly string _DATA_ValidIdForGetCommand = "PlaceholderModule_PrintHi";
-        private static readonly string _DATA_InvalidIdForGetCommand = "IDontExist";
+		private static readonly Type? _DATA_InvalidInputForCreateEditorWindow = typeof(BarViewModel);
+		private static readonly string _DATA_ValidIdForGetCommand = "PlaceholderModule_PrintHi";
+		private static readonly string _DATA_InvalidIdForGetCommand = "IDontExist";
 
-#pragma warning disable IDE1006 // Naming Styles
-		private class _TYPE_ContextualItem : IContextualItem
-#pragma warning restore IDE1006 // Naming Styles
+		private class ContextualItem : IContextualItem
 		{
 			public EditorContext Ctx { get; }
 			public string Name { get; set; }
 
-			public _TYPE_ContextualItem(EditorContext ctx, string name)
+			public ContextualItem(EditorContext ctx, string name)
 			{
 				Ctx = ctx;
 				Name = name;
@@ -52,9 +50,9 @@ namespace GlacierKitCoreTest.Tests.Models
 		[Fact]
 		[Trait("TestingMember", "Constructor")]
 		public static void Default_ctor_works()
-        {
-            Util.AssertDefaultCtorWorks<EditorContext>();
-        }
+		{
+			Util.AssertDefaultCtorWorks<EditorContext>();
+		}
 
 		#endregion
 
@@ -64,18 +62,18 @@ namespace GlacierKitCoreTest.Tests.Models
 		[Fact]
 		[Trait("TestingMember", "Property_ModuleLoader")]
 		public static void ModuleLoader_not_null()
-        {
-            // Arrange
-            EditorContext? ctx;
-            GKModuleLoaderService? actualValue;
+		{
+			// Arrange
+			EditorContext? ctx;
+			GKModuleLoaderService? actualValue;
 
-            // Act
-            ctx = new();
-            actualValue = ctx.ModuleLoader;
+			// Act
+			ctx = new();
+			actualValue = ctx.ModuleLoader;
 
-            // Assert
-            Assert.NotNull(actualValue);
-        }
+			// Assert
+			Assert.NotNull(actualValue);
+		}
 
 		#endregion
 
@@ -183,153 +181,153 @@ namespace GlacierKitCoreTest.Tests.Models
 		[Fact]
 		[Trait("TestingMember", "Command_CreateEditorWindow")]
 		public static void CreateEditorWindow_isnt_null()
-        {
-            // Arrange
-            EditorContext? ctx;
-            object? actualValue;
+		{
+			// Arrange
+			EditorContext? ctx;
+			object? actualValue;
 
-            // Act
-            ctx = new();
-            actualValue = ctx.CreateEditorWindow;
+			// Act
+			ctx = new();
+			actualValue = ctx.CreateEditorWindow;
 
-            // Assert
-            Assert.NotNull(actualValue);
-        }
+			// Assert
+			Assert.NotNull(actualValue);
+		}
 
-        [Fact]
+		[Fact]
 		[Trait("TestingMember", "Command_CreateEditorWindow")]
 		public static void CreateEditorWindow_with_invalid_type_does_not_throw()
-        {
-            // Arrange
-            EditorContext? ctx;
-            Type? input = _DATA_InvalidInputForCreateEditorWindow;
+		{
+			// Arrange
+			EditorContext? ctx;
+			Type? input = _DATA_InvalidInputForCreateEditorWindow;
 
-            // Act
-            ctx = new();
+			// Act
+			ctx = new();
 
-            // Assert
-            Util.AssertCodeDoesNotThrowException(
-                () =>
-                ctx.CreateEditorWindow
-                .Execute(input)
-                .Subscribe()
-                .Dispose()
-            );
-        }
+			// Assert
+			Util.AssertCodeDoesNotThrowException(
+				() =>
+				ctx.CreateEditorWindow
+				.Execute(input)
+				.Subscribe()
+				.Dispose()
+			);
+		}
 
-        [Fact]
+		[Fact]
 		[Trait("TestingMember", "Command_CreateEditorWindow")]
 		public static void CreateEditorWindow_with_invalid_type_returns_null()
-        {
-            // Arrange
-            EditorContext? ctx;
-            Type? input = _DATA_InvalidInputForCreateEditorWindow;
-            Type? expectedValue = null;
-            Type? actualValue;
-            IObservable<Type?> commandObservable;
-            IDisposable commandDisposable;
+		{
+			// Arrange
+			EditorContext? ctx;
+			Type? input = _DATA_InvalidInputForCreateEditorWindow;
+			Type? expectedValue = null;
+			Type? actualValue;
+			IObservable<Type?> commandObservable;
+			IDisposable commandDisposable;
 
-            // Act
-            ctx = new();
-            commandObservable = ctx.CreateEditorWindow.Execute(input).ObserveOn(RxApp.MainThreadScheduler);
-            commandDisposable = commandObservable.Subscribe();
-            actualValue = commandObservable.Wait();
+			// Act
+			ctx = new();
+			commandObservable = ctx.CreateEditorWindow.Execute(input).ObserveOn(RxApp.MainThreadScheduler);
+			commandDisposable = commandObservable.Subscribe();
+			actualValue = commandObservable.Wait();
 
 
-            // Assert
-            Assert.Equal(expectedValue, actualValue);
-            commandDisposable.Dispose();
-        }
+			// Assert
+			Assert.Equal(expectedValue, actualValue);
+			commandDisposable.Dispose();
+		}
 
-        [Fact]
+		[Fact]
 		[Trait("TestingMember", "Command_CreateEditorWindow")]
 		public static void CreateEditorWindow_with_null_type_does_not_throw()
-        {
-            // Arrange
-            EditorContext? ctx;
-            Type? input = null;
+		{
+			// Arrange
+			EditorContext? ctx;
+			Type? input = null;
 
-            // Act
-            ctx = new();
+			// Act
+			ctx = new();
 
-            // Assert
-            Util.AssertCodeDoesNotThrowException(
-                () =>
-                ctx.CreateEditorWindow
-                .Execute(input)
-                .Subscribe()
-                .Dispose()
-            );
-        }
+			// Assert
+			Util.AssertCodeDoesNotThrowException(
+				() =>
+				ctx.CreateEditorWindow
+				.Execute(input)
+				.Subscribe()
+				.Dispose()
+			);
+		}
 
-        [Fact]
+		[Fact]
 		[Trait("TestingMember", "Command_CreateEditorWindow")]
 		public static void CreateEditorWindow_with_null_type_returns_null()
-        {
-            // Arrange
-            EditorContext? ctx;
-            Type? input = null;
-            Type? expectedValue = null;
-            Type? actualValue;
-            IObservable<Type?> commandObservable;
-            IDisposable commandDisposable;
+		{
+			// Arrange
+			EditorContext? ctx;
+			Type? input = null;
+			Type? expectedValue = null;
+			Type? actualValue;
+			IObservable<Type?> commandObservable;
+			IDisposable commandDisposable;
 
-            // Act
-            ctx = new();
-            commandObservable = ctx.CreateEditorWindow.Execute(input).ObserveOn(RxApp.MainThreadScheduler);
-            commandDisposable = commandObservable.Subscribe();
-            actualValue = commandObservable.Wait();
+			// Act
+			ctx = new();
+			commandObservable = ctx.CreateEditorWindow.Execute(input).ObserveOn(RxApp.MainThreadScheduler);
+			commandDisposable = commandObservable.Subscribe();
+			actualValue = commandObservable.Wait();
 
 
-            // Assert
-            Assert.Equal(expectedValue, actualValue);
-            commandDisposable.Dispose();
-        }
+			// Assert
+			Assert.Equal(expectedValue, actualValue);
+			commandDisposable.Dispose();
+		}
 
-        [Fact]
+		[Fact]
 		[Trait("TestingMember", "Command_CreateEditorWindow")]
 		public static void CreateEditorWindow_with_valid_type_does_not_throw()
-        {
-            // Arrange
-            EditorContext? ctx;
-            Type? input = _DATA_ValidInputForCreateEditorWindow;
+		{
+			// Arrange
+			EditorContext? ctx;
+			Type? input = _DATA_ValidInputForCreateEditorWindow;
 
-            // Act
-            ctx = new();
+			// Act
+			ctx = new();
 
-            // Assert
-            Util.AssertCodeDoesNotThrowException(
-                () =>
-                ctx.CreateEditorWindow
-                .Execute(input)
-                .Subscribe()
-                .Dispose()
-            );
-        }
+			// Assert
+			Util.AssertCodeDoesNotThrowException(
+				() =>
+				ctx.CreateEditorWindow
+				.Execute(input)
+				.Subscribe()
+				.Dispose()
+			);
+		}
 
-        [Fact]
+		[Fact]
 		[Trait("TestingMember", "Command_CreateEditorWindow")]
 		public static void CreateEditorWindow_with_valid_type_returns_same_type_as_input()
-        {
-            // Arrange
-            EditorContext? ctx;
-            Type? input = _DATA_ValidInputForCreateEditorWindow;
-            Type? expectedValue = input;
-            Type? actualValue;
-            IObservable<Type?> commandObservable;
-            IDisposable commandDisposable;
+		{
+			// Arrange
+			EditorContext? ctx;
+			Type? input = _DATA_ValidInputForCreateEditorWindow;
+			Type? expectedValue = input;
+			Type? actualValue;
+			IObservable<Type?> commandObservable;
+			IDisposable commandDisposable;
 
-            // Act
-            ctx = new();
-            commandObservable = ctx.CreateEditorWindow.Execute(input).ObserveOn(RxApp.MainThreadScheduler);
-            commandDisposable = commandObservable.Subscribe();
-            actualValue = commandObservable.Wait();
+			// Act
+			ctx = new();
+			commandObservable = ctx.CreateEditorWindow.Execute(input).ObserveOn(RxApp.MainThreadScheduler);
+			commandDisposable = commandObservable.Subscribe();
+			actualValue = commandObservable.Wait();
 
 
-            // Assert
-            Assert.Equal(expectedValue, actualValue);
-            commandDisposable.Dispose();
-        }
+			// Assert
+			Assert.Equal(expectedValue, actualValue);
+			commandDisposable.Dispose();
+		}
 
 		#endregion
 
@@ -362,7 +360,7 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			ctx = new();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			firstItem = new ContextualItem(ctx, "Foo");
 
 			// Assert
 			Util.AssertCodeDoesNotThrowException(
@@ -384,7 +382,7 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			ctx = new();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			firstItem = new ContextualItem(ctx, "Foo");
 			returnValue = ctx.AddItem.Execute(firstItem).Wait();
 
 			// Assert
@@ -401,8 +399,8 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			ctx = new();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
-			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			firstItem = new ContextualItem(ctx, "Foo");
+			secondItem = new ContextualItem(ctx, "Bar");
 			Debug.Assert(
 				firstItem != secondItem,
 				$"Can't finish unit test; {nameof(firstItem)} and {nameof(secondItem)} are supposed to be two seperate instances."
@@ -435,7 +433,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Act
 			ctx = new();
 			ctxItemsSubscription = ctx.ConnectToItems().Bind(out items).Subscribe();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			firstItem = new ContextualItem(ctx, "Foo");
 			_ = ctx.AddItem.Execute(firstItem).Wait();
 			actualSize = items.Count;
 
@@ -463,7 +461,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Act
 			ctx = new();
 			ctxItemsSubscription = ctx.ConnectToItems().Bind(out items).Subscribe();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
+			firstItem = new ContextualItem(ctx, "Foo");
 			expected = firstItem;
 			_ = ctx.AddItem.Execute(firstItem).Wait();
 			actual = items.FirstOrDefault();
@@ -486,8 +484,8 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			ctx = new();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
-			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			firstItem = new ContextualItem(ctx, "Foo");
+			secondItem = new ContextualItem(ctx, "Bar");
 			Debug.Assert(
 				firstItem != secondItem,
 				$"Can't finish unit test; {nameof(firstItem)} and {nameof(secondItem)} are supposed to be two seperate instances."
@@ -516,8 +514,8 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Act
 			ctx = new();
 			ctxItemsSubscription = ctx.ConnectToItems().Bind(out items).Subscribe();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
-			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			firstItem = new ContextualItem(ctx, "Foo");
+			secondItem = new ContextualItem(ctx, "Bar");
 			Debug.Assert(
 				firstItem != secondItem,
 				$"Can't finish unit test; {nameof(firstItem)} and {nameof(secondItem)} are supposed to be two seperate instances."
@@ -551,8 +549,8 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Act
 			ctx = new();
 			ctxItemsSubscription = ctx.ConnectToItems().Bind(out items).Subscribe();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
-			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			firstItem = new ContextualItem(ctx, "Foo");
+			secondItem = new ContextualItem(ctx, "Bar");
 			Debug.Assert(
 				firstItem != secondItem,
 				$"Can't finish unit test; {nameof(firstItem)} and {nameof(secondItem)} are supposed to be two seperate instances."
@@ -579,8 +577,8 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			ctx = new();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
-			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			firstItem = new ContextualItem(ctx, "Foo");
+			secondItem = new ContextualItem(ctx, "Bar");
 			Debug.Assert(
 				firstItem != secondItem,
 				$"Can't finish unit test; {nameof(firstItem)} and {nameof(secondItem)} are supposed to be two seperate instances."
@@ -608,8 +606,8 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			ctx = new();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
-			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			firstItem = new ContextualItem(ctx, "Foo");
+			secondItem = new ContextualItem(ctx, "Bar");
 			Debug.Assert(
 				firstItem != secondItem,
 				$"Can't finish unit test; {nameof(firstItem)} and {nameof(secondItem)} are supposed to be two seperate instances."
@@ -639,8 +637,8 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Act
 			ctx = new();
 			ctxItemsSubscription = ctx.ConnectToItems().Bind(out items).Subscribe();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
-			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			firstItem = new ContextualItem(ctx, "Foo");
+			secondItem = new ContextualItem(ctx, "Bar");
 			Debug.Assert(
 				firstItem != secondItem,
 				$"Can't finish unit test; {nameof(firstItem)} and {nameof(secondItem)} are supposed to be two seperate instances."
@@ -690,9 +688,9 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			ctx = new();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
-			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
-			itemToRemove = new _TYPE_ContextualItem(ctx, "Missing");
+			firstItem = new ContextualItem(ctx, "Foo");
+			secondItem = new ContextualItem(ctx, "Bar");
+			itemToRemove = new ContextualItem(ctx, "Missing");
 			_ = ctx.AddItem.Execute(firstItem).Wait();
 			_ = ctx.AddItem.Execute(secondItem).Wait();
 
@@ -716,9 +714,9 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			ctx = new();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
-			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
-			itemToRemove = new _TYPE_ContextualItem(ctx, "Missing");
+			firstItem = new ContextualItem(ctx, "Foo");
+			secondItem = new ContextualItem(ctx, "Bar");
+			itemToRemove = new ContextualItem(ctx, "Missing");
 			_ = ctx.AddItem.Execute(firstItem).Wait();
 			_ = ctx.AddItem.Execute(secondItem).Wait();
 			returnValue = ctx.RemoveItem.Execute(itemToRemove).Wait();
@@ -744,9 +742,9 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Act
 			ctx = new();
 			ctxItemsSubscription = ctx.ConnectToItems().Bind(out items).Subscribe();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
-			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
-			itemToRemove = new _TYPE_ContextualItem(ctx, "Missing");
+			firstItem = new ContextualItem(ctx, "Foo");
+			secondItem = new ContextualItem(ctx, "Bar");
+			itemToRemove = new ContextualItem(ctx, "Missing");
 			_ = ctx.AddItem.Execute(firstItem).Wait();
 			_ = ctx.AddItem.Execute(secondItem).Wait();
 
@@ -771,8 +769,8 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			ctx = new();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
-			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			firstItem = new ContextualItem(ctx, "Foo");
+			secondItem = new ContextualItem(ctx, "Bar");
 			itemToRemove = secondItem;
 			_ = ctx.AddItem.Execute(firstItem).Wait();
 			_ = ctx.AddItem.Execute(secondItem).Wait();
@@ -797,8 +795,8 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			ctx = new();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
-			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			firstItem = new ContextualItem(ctx, "Foo");
+			secondItem = new ContextualItem(ctx, "Bar");
 			itemToRemove = secondItem;
 			_ = ctx.AddItem.Execute(firstItem).Wait();
 			_ = ctx.AddItem.Execute(secondItem).Wait();
@@ -825,8 +823,8 @@ namespace GlacierKitCoreTest.Tests.Models
 			// Act
 			ctx = new();
 			ctxItemsSubscription = ctx.ConnectToItems().Bind(out items).Subscribe();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
-			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			firstItem = new ContextualItem(ctx, "Foo");
+			secondItem = new ContextualItem(ctx, "Bar");
 			itemToRemove = secondItem;
 			_ = ctx.AddItem.Execute(firstItem).Wait();
 			_ = ctx.AddItem.Execute(secondItem).Wait();
@@ -854,8 +852,8 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			ctx = new();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
-			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			firstItem = new ContextualItem(ctx, "Foo");
+			secondItem = new ContextualItem(ctx, "Bar");
 			itemToRemove = secondItem;
 			_ = ctx.AddItem.Execute(firstItem).Wait();
 			_ = ctx.AddItem.Execute(secondItem).Wait();
@@ -880,8 +878,8 @@ namespace GlacierKitCoreTest.Tests.Models
 
 			// Act
 			ctx = new();
-			firstItem = new _TYPE_ContextualItem(ctx, "Foo");
-			secondItem = new _TYPE_ContextualItem(ctx, "Bar");
+			firstItem = new ContextualItem(ctx, "Foo");
+			secondItem = new ContextualItem(ctx, "Bar");
 			itemToRemove = secondItem;
 			_ = ctx.AddItem.Execute(firstItem).Wait();
 			_ = ctx.AddItem.Execute(secondItem).Wait();
@@ -936,93 +934,93 @@ namespace GlacierKitCoreTest.Tests.Models
 		[Fact]
 		[Trait("TestingMember", "Method_CreateEditorWindow")]
 		public static void GetCommand_with_valid_id_before_loading_returns_null()
-        {
-            // Arrange
-            EditorContext? ctx;
-            string commandId = _DATA_ValidIdForGetCommand;
-            GKCommand<Unit, Unit>? returnValue;
+		{
+			// Arrange
+			EditorContext? ctx;
+			string commandId = _DATA_ValidIdForGetCommand;
+			GKCommand<Unit, Unit>? returnValue;
 
-            // Act
-            ctx = new();
-            returnValue = ctx.GetCommand<Unit, Unit>(commandId);
+			// Act
+			ctx = new();
+			returnValue = ctx.GetCommand<Unit, Unit>(commandId);
 
-            // Assert
-            Assert.Null(returnValue);
-        }
+			// Assert
+			Assert.Null(returnValue);
+		}
 
-        [Fact]
+		[Fact]
 		[Trait("TestingMember", "Method_CreateEditorWindow")]
 		public static void GetCommand_with_invalid_id_before_loading_returns_null()
-        {
-            // Arrange
-            EditorContext? ctx;
-            string commandId = _DATA_InvalidIdForGetCommand;
-            GKCommand<Unit, Unit>? returnValue;
+		{
+			// Arrange
+			EditorContext? ctx;
+			string commandId = _DATA_InvalidIdForGetCommand;
+			GKCommand<Unit, Unit>? returnValue;
 
-            // Act
-            ctx = new();
-            returnValue = ctx.GetCommand<Unit, Unit>(commandId);
+			// Act
+			ctx = new();
+			returnValue = ctx.GetCommand<Unit, Unit>(commandId);
 
-            // Assert
-            Assert.Null(returnValue);
-        }
+			// Assert
+			Assert.Null(returnValue);
+		}
 
-        [Fact]
+		[Fact]
 		[Trait("TestingMember", "Method_CreateEditorWindow")]
 		public static void GetCommand_with_valid_id_after_loading_dosent_return_null()
-        {
-            // Arrange
-            EditorContext? ctx;
-            string commandId = _DATA_ValidIdForGetCommand;
-            GKCommand<Unit, Unit>? returnValue;
+		{
+			// Arrange
+			EditorContext? ctx;
+			string commandId = _DATA_ValidIdForGetCommand;
+			GKCommand<Unit, Unit>? returnValue;
 
-            // Act
-            ctx = new();
-            ctx.ModuleLoader.LoadModules();
-            returnValue = ctx.GetCommand<Unit, Unit>(commandId);
+			// Act
+			ctx = new();
+			ctx.ModuleLoader.LoadModules();
+			returnValue = ctx.GetCommand<Unit, Unit>(commandId);
 
-            // Assert
-            Assert.NotNull(returnValue);
-        }
+			// Assert
+			Assert.NotNull(returnValue);
+		}
 
-        [Fact]
+		[Fact]
 		[Trait("TestingMember", "Method_CreateEditorWindow")]
 		public static void GetCommand_with_invalid_id_after_loading_returns_null()
-        {
-            // Arrange
-            EditorContext? ctx;
-            string commandId = _DATA_InvalidIdForGetCommand;
-            GKCommand<Unit, Unit>? returnValue;
+		{
+			// Arrange
+			EditorContext? ctx;
+			string commandId = _DATA_InvalidIdForGetCommand;
+			GKCommand<Unit, Unit>? returnValue;
 
-            // Act
-            ctx = new();
-            ctx.ModuleLoader.LoadModules();
-            returnValue = ctx.GetCommand<Unit, Unit>(commandId);
+			// Act
+			ctx = new();
+			ctx.ModuleLoader.LoadModules();
+			returnValue = ctx.GetCommand<Unit, Unit>(commandId);
 
-            // Assert
-            Assert.Null(returnValue);
-        }
+			// Assert
+			Assert.Null(returnValue);
+		}
 
-        [Fact]
+		[Fact]
 		[Trait("TestingMember", "Method_CreateEditorWindow")]
 		public static void Executing_command_with_assumed_value_from_GetCommand_does_not_throw()
-        {
-            // Arrange
-            EditorContext? ctx;
-            string commandId = _DATA_ValidIdForGetCommand;
-            GKCommand<Unit, Unit>? returnValue;
+		{
+			// Arrange
+			EditorContext? ctx;
+			string commandId = _DATA_ValidIdForGetCommand;
+			GKCommand<Unit, Unit>? returnValue;
 
-            // Act
-            ctx = new();
-            ctx.ModuleLoader.LoadModules();
-            returnValue = ctx.GetCommand<Unit, Unit>(commandId);
+			// Act
+			ctx = new();
+			ctx.ModuleLoader.LoadModules();
+			returnValue = ctx.GetCommand<Unit, Unit>(commandId);
 
-            // Assert
-            Util.AssertCodeDoesNotThrowException(() =>
-            {
-                returnValue!.Command.Execute().Subscribe();
-            });
-        }
+			// Assert
+			Util.AssertCodeDoesNotThrowException(() =>
+			{
+				returnValue!.Command.Execute().Subscribe();
+			});
+		}
 
 		#endregion
 	}

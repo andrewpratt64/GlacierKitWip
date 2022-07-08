@@ -17,18 +17,16 @@ using Xunit;
 namespace GlacierKitCoreTest.Tests.Models
 {
 	#region Shared_theory_data
-#pragma warning disable IDE1006 // Naming Styles
 
-	public class _TYPE_TreeTheoryData<TNodeValue> : TheoryData<Func<Tree<TNodeValue>>>
+	public class TreeTheoryData<TNodeValue> : TheoryData<Func<Tree<TNodeValue>>>
 	{
-		public _TYPE_TreeTheoryData()
+		public TreeTheoryData()
 		{
 			Add(() => new SingleRootTree<TNodeValue>());
 			Add(() => new MultiRootTree<TNodeValue>());
 		}
 	}
 
-#pragma warning restore IDE1006 // Naming Styles
 	#endregion
 
 
@@ -49,7 +47,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			}
 		}
 
-		public static readonly _TYPE_TreeTheoryData<object> _DATA_TreeTheoryData = new();
+		public static readonly TreeTheoryData<object> _DATA_TreeTheoryData = new();
 
 		#endregion
 

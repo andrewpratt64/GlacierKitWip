@@ -9,20 +9,19 @@ using Xunit;
 
 namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 {
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Naming scheme dosen't matter for some of the private implementation here")]
 	public class GKDataProviderTest
-    {
+	{
 		#region Theory_data
 
-		public class _TYPE_NotAGKCommandProvider
+		public class NotAGKCommandProvider
 		{ }
 
 		[GKDataProviderAttribute]
-		public static class _TYPE_AGKCommandProvider
+		public static class AGKCommandProvider
 		{ }
 
-		private static readonly Type _DATA_InvalidTypeForIsTypeAGKCommandProvider = typeof(_TYPE_NotAGKCommandProvider);
-		private static readonly Type _DATA_ValidTypeForIsTypeAGKCommandProvider = typeof(_TYPE_AGKCommandProvider);
+		private static readonly Type _DATA_InvalidTypeForIsTypeAGKCommandProvider = typeof(NotAGKCommandProvider);
+		private static readonly Type _DATA_ValidTypeForIsTypeAGKCommandProvider = typeof(AGKCommandProvider);
 
 		#endregion
 

@@ -13,7 +13,6 @@ namespace GlacierKitTestShared.Tests
 {
 	public class CommonTestDataTest
 	{
-#pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA2211 // Non-constant fields should not be visible
 
 		public class InfoForEnumTheoryData : TheoryData<IEnumerable<object[]>, IEnumerable<object>>
@@ -34,62 +33,61 @@ namespace GlacierKitTestShared.Tests
 			}
 		}
 
-		public enum _TYPE_BasicEnumForEnumTheoryData
-        {
-            First,
-            Second,
-            Third,
-            Fourth
-        }
-		public static InfoForEnumTheoryData _DATA_BasicEnumForEnumTheoryData =
+		public enum EBasicEnumForEnumTheoryData
+		{
+			First,
+			Second,
+			Third,
+			Fourth
+		}
+		public static InfoForEnumTheoryData BasicEnumForEnumTheoryDataValues =
 		new(
-			theoryData: new EnumTheoryData<_TYPE_BasicEnumForEnumTheoryData>(),
+			theoryData: new EnumTheoryData<EBasicEnumForEnumTheoryData>(),
 
 			enumValues: new List<object>
 			{
-				_TYPE_BasicEnumForEnumTheoryData.First,
-				_TYPE_BasicEnumForEnumTheoryData.Second,
-				_TYPE_BasicEnumForEnumTheoryData.Third,
-				_TYPE_BasicEnumForEnumTheoryData.Fourth
+				EBasicEnumForEnumTheoryData.First,
+				EBasicEnumForEnumTheoryData.Second,
+				EBasicEnumForEnumTheoryData.Third,
+				EBasicEnumForEnumTheoryData.Fourth
 			}
 		);
 
-		public enum _TYPE_LongValuedEnumForEnumTheoryData : long
+		public enum ELongValuedEnumForEnumTheoryData : long
 		{
-            First = 59L,
-            Second = 0L,
-            Third = -123L,
-            Fourth = 999L
-        }
-		public static InfoForEnumTheoryData _DATA_LongValuedEnumForEnumTheoryData =
+			First = 59L,
+			Second = 0L,
+			Third = -123L,
+			Fourth = 999L
+		}
+		public static InfoForEnumTheoryData LongValuedEnumForEnumTheoryDataValues =
 		new(
-			theoryData: new EnumTheoryData<_TYPE_LongValuedEnumForEnumTheoryData>(),
+			theoryData: new EnumTheoryData<ELongValuedEnumForEnumTheoryData>(),
 
 			enumValues: new List<object>
 			{
-				_TYPE_LongValuedEnumForEnumTheoryData.First,
-				_TYPE_LongValuedEnumForEnumTheoryData.Second,
-				_TYPE_LongValuedEnumForEnumTheoryData.Third,
-				_TYPE_LongValuedEnumForEnumTheoryData.Fourth
+				ELongValuedEnumForEnumTheoryData.First,
+				ELongValuedEnumForEnumTheoryData.Second,  
+				ELongValuedEnumForEnumTheoryData.Third,
+				ELongValuedEnumForEnumTheoryData.Fourth
 			}
 		);
 
 
 #pragma warning restore CA2211 // Non-constant fields should not be visible
-#pragma warning restore IDE1006 // Naming Styles
 
 
 
 		[Fact]
-        public static void BoolTheoryData_uses_all_values()
-        {
-            // Arrange
-            BoolTheoryData theoryData;
-            IEnumerable<object> expectedValues = new List<object>
-            {
-                false,
+		public static void BoolTheoryData_uses_all_values()
+		{
+			// Arrange
+			BoolTheoryData theoryData;
+			IEnumerable<object> expectedValues = new List<object>
+			{
+				false,
 				true
-            };
+			};
 			IEnumerable<object> actualValues;
 
 			// Act
@@ -109,10 +107,10 @@ namespace GlacierKitTestShared.Tests
 		}
 
 		// NOTE: There's an issue with this method and MethodData
-        [Theory]
-		[InlineData(nameof(_DATA_BasicEnumForEnumTheoryData))]
-		[InlineData(nameof(_DATA_LongValuedEnumForEnumTheoryData))]
-        public static void EnumTheoryData_uses_all_values(
+		[Theory]
+		[InlineData(nameof(BasicEnumForEnumTheoryDataValues))]
+		[InlineData(nameof(LongValuedEnumForEnumTheoryDataValues))]
+		public static void EnumTheoryData_uses_all_values(
 			string propertyName
 			/*IEnumerable<object[]> theoryData,
 			IEnumerable<object> expectedValues*/
@@ -122,7 +120,7 @@ namespace GlacierKitTestShared.Tests
 			InfoForEnumTheoryData? info;
 			IEnumerable<object[]> theoryData;
 			IEnumerable<object> expectedValues;
-            IEnumerable<object> actualValues;
+			IEnumerable<object> actualValues;
 
 			// Act
 			info = null;
@@ -151,6 +149,6 @@ namespace GlacierKitTestShared.Tests
 				expectedValues,
 				actualValues
 			);
-        }
+		}
 	}
 }

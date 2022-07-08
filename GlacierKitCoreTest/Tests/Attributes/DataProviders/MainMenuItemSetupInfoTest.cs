@@ -15,12 +15,10 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 	{
 		#region Theory_data
 
-#pragma warning disable IDE1006 // Naming Styles
-		public class _TYPE_MainMenuItemSetupInfoTestConstructorParams :
+		public class MainMenuItemSetupInfoTestConstructorParams :
 			TheoryData<string, IEnumerable<string>, GKCommand<Unit, Unit>?, int>
-#pragma warning restore IDE1006 // Naming Styles
 		{
-			public _TYPE_MainMenuItemSetupInfoTestConstructorParams()
+			public MainMenuItemSetupInfoTestConstructorParams()
 			{
 				string[] pathValues = new string[] { "One", "Two", "Three" };
 				GKCommand<Unit, Unit>?[] commandValues = new GKCommand<Unit, Unit>?[] { null, GeneralUseData.StubGKCommand };
@@ -34,7 +32,7 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 				}
 			}
 		}
-		public static readonly _TYPE_MainMenuItemSetupInfoTestConstructorParams
+		public static readonly MainMenuItemSetupInfoTestConstructorParams
 			_DATA_MainMenuItemSetupInfoTestConstructorParams = new();
 
 		#endregion
