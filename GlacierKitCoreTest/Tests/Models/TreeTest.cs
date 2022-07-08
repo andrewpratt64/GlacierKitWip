@@ -47,7 +47,7 @@ namespace GlacierKitCoreTest.Tests.Models
 			}
 		}
 
-		public static readonly TreeTheoryData<object> _DATA_TreeTheoryData = new();
+		public static readonly TreeTheoryData<object> TreeTheoryData = new();
 
 		#endregion
 
@@ -55,9 +55,9 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Theory_data_tests
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 #pragma warning disable IDE1006 // Naming Styles
-		public static void _DATA_TreeTheoryData_Provides_unique_instances_on_each_invoke(Func<Tree<object>> treeSource)
+		public static void TreeTheoryData_Provides_unique_instances_on_each_invoke(Func<Tree<object>> treeSource)
 #pragma warning restore IDE1006 // Naming Styles
 		{
 			// Arrange
@@ -83,7 +83,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region CreateRootNode
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		[Trait("TreeClass", "Tree")]
 		public static void CreateRootNode_CanExecute_is_true_only_when_CanAddRootNode_is_true(Func<Tree<object>> treeSource)
 		{
@@ -126,7 +126,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		[Trait("TreeClass", "Tree")]
 		public static void Executing_CreateRootNode_doesnt_throw(Func<Tree<object>> treeSource)
 		{
@@ -150,7 +150,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region ConnectToNodes
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		[Trait("TreeClass", "Tree")]
 		public static void Calling_ConnectToNodes_doesnt_throw(Func<Tree<object>> treeSource)
 		{
@@ -167,7 +167,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		[Trait("TreeClass", "Tree")]
 		public static void ConnectToNodes_doesnt_return_null(Func<Tree<object>> treeSource)
 		{
@@ -182,7 +182,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		[Trait("TreeClass", "Tree")]
 		public static void ConnectToNodes_return_value_contains_pre_existing_nodes(Func<Tree<object>> treeSource)
 		{
@@ -232,7 +232,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		[Trait("TreeClass", "Tree")]
 		public static void ConnectToNodes_return_value_reflects_future_added_nodes(Func<Tree<object>> treeSource)
 		{
@@ -290,7 +290,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		[Trait("TreeClass", "Tree")]
 		public static void ConnectToNodes_return_value_reflects_future_removed_nodes(Func<Tree<object>> treeSource)
 		{
@@ -364,7 +364,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region ShouldRecursivelyNotifyNodesOfReparenting
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		[Trait("TreeClass", "Tree")]
 		[Trait("TestingMember", "Property_ShouldRecursivelyNotifyNodesOfReparenting")]
 		public static void Changes_to_ShouldRecursivelyNotifyNodesOfReparenting_may_be_reacted_to(Func<Tree<object>> treeSource)

@@ -16,8 +16,8 @@ namespace GlacierKitCoreTest.Tests.Commands
 {
     public class GKCommandTest
     {
-        private static readonly string _DATA_CommandId = "GKCommandTest_Foo";
-        private static readonly string _DATA_CommandDisplayName = "Foo";
+        private static readonly string CommandId = "GKCommandTest_Foo";
+        private static readonly string CommandDisplayName = "Foo";
 
 
 		private static GKCommand<TParam, TResult> NewGKCommandWith<TParam, TResult>(
@@ -39,7 +39,7 @@ namespace GlacierKitCoreTest.Tests.Commands
 			);
 		}
 
-		public static readonly List<object[]> _DATA_ParamAndResultValues = new()
+		public static readonly List<object[]> ParamAndResultValues = new()
 		{
 			new object[]{Unit.Default, Unit.Default},
 			new object[]{Unit.Default, "Return this"},
@@ -51,7 +51,7 @@ namespace GlacierKitCoreTest.Tests.Commands
 
 
         [Theory]
-        [MemberData(nameof(_DATA_ParamAndResultValues))]
+        [MemberData(nameof(ParamAndResultValues))]
         public static void Ctor_with_type_args_does_not_throw<TParam, TResult>(TParam TParamValue, TResult TResultValue)
         {
             // Arrange
@@ -63,8 +63,8 @@ namespace GlacierKitCoreTest.Tests.Commands
                 cmd = NewGKCommandWith(
                     TParamValue,
                     TResultValue,
-                    _DATA_CommandId,
-                    _DATA_CommandDisplayName
+                    CommandId,
+                    CommandDisplayName
                 );
             });
         }
@@ -88,7 +88,7 @@ namespace GlacierKitCoreTest.Tests.Commands
             {
                 gkCommand = new GKCommand<Unit, Unit>(
                     commandId,
-                    _DATA_CommandDisplayName,
+                    CommandDisplayName,
                     cmd
                 );
             });
@@ -105,7 +105,7 @@ namespace GlacierKitCoreTest.Tests.Commands
             Util.AssertCodeDoesNotThrowException(() =>
             {
                 gkCommand = new(
-                    _DATA_CommandId,
+                    CommandId,
                     displayName,
                     ReactiveCommand.Create<Unit, Unit>(_ =>
                     {
@@ -133,7 +133,7 @@ namespace GlacierKitCoreTest.Tests.Commands
         }
 
         [Theory]
-		[MemberData(nameof(_DATA_ParamAndResultValues))]
+		[MemberData(nameof(ParamAndResultValues))]
 		public static void TParamValue_and_TResultValue_have_correct_values<TParam, TResult>(TParam TParamValue, TResult TResultValue)
         {
             // Arrange
@@ -147,8 +147,8 @@ namespace GlacierKitCoreTest.Tests.Commands
             cmd = NewGKCommandWith(
                 TParamValue,
                 TResultValue,
-                _DATA_CommandId,
-                _DATA_CommandDisplayName
+                CommandId,
+                CommandDisplayName
             );
 
             actualTParamValue = cmd.TParamValue;

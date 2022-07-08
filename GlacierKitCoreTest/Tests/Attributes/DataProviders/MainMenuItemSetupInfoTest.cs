@@ -33,7 +33,7 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 			}
 		}
 		public static readonly MainMenuItemSetupInfoTestConstructorParams
-			_DATA_MainMenuItemSetupInfoTestConstructorParams = new();
+			MainMenuItemSetupInfoTestConstructorParamsValue = new();
 
 		#endregion
 
@@ -41,7 +41,7 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 		#region Constructor
 
 		[Theory]
-		[MemberData(nameof(_DATA_MainMenuItemSetupInfoTestConstructorParams))]
+		[MemberData(nameof(MainMenuItemSetupInfoTestConstructorParamsValue))]
 		[Trait("TestingMember", "Constructor")]
 		public static void MainMenuItemSetupInfo_constructor_doesnt_throw(
 			string title,
@@ -61,7 +61,7 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 		#region Title
 
 		[Theory]
-		[MemberData(nameof(_DATA_MainMenuItemSetupInfoTestConstructorParams))]
+		[MemberData(nameof(MainMenuItemSetupInfoTestConstructorParamsValue))]
 		[Trait("TestingMember", "Property_Title")]
 		public static void Title_is_set_by_constructor(
 			string title,
@@ -88,7 +88,7 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 		#region Path
 
 		[Theory]
-		[MemberData(nameof(_DATA_MainMenuItemSetupInfoTestConstructorParams))]
+		[MemberData(nameof(MainMenuItemSetupInfoTestConstructorParamsValue))]
 		[Trait("TestingMember", "Property_Path")]
 		public static void Path_is_set_by_constructor(
 			string title,
@@ -110,7 +110,7 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_MainMenuItemSetupInfoTestConstructorParams))]
+		[MemberData(nameof(MainMenuItemSetupInfoTestConstructorParamsValue))]
 		[Trait("TestingMember", "Property_Path")]
 #pragma warning disable IDE0079 // Remove unnecessary suppression
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters
@@ -136,7 +136,7 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 		#region Command
 
 		[Theory]
-		[MemberData(nameof(_DATA_MainMenuItemSetupInfoTestConstructorParams))]
+		[MemberData(nameof(MainMenuItemSetupInfoTestConstructorParamsValue))]
 		[Trait("TestingMember", "Property_Command")]
 		public static void Command_is_set_by_constructor(
 			string title,
@@ -163,7 +163,7 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 		#region Order
 
 		[Theory]
-		[MemberData(nameof(_DATA_MainMenuItemSetupInfoTestConstructorParams))]
+		[MemberData(nameof(MainMenuItemSetupInfoTestConstructorParamsValue))]
 		[Trait("TestingMember", "Property_Order")]
 		public static void Order_is_set_by_constructor(
 			string title,

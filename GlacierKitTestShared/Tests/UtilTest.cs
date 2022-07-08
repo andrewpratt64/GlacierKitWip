@@ -15,21 +15,21 @@ namespace GlacierKitTestShared.Tests
     public class UtilTest
     {
 #pragma warning disable IDE1006 // Naming Styles
-        private static object _DATA_NotNullValue => new();
+        private static object NotNullValue => new();
 
-        private static Action _DATA_GoodCode => new(() => {});
-        private static Action _DATA_BadCode => new(() => {throw new Exception(); });
+        private static Action GoodCode => new(() => {});
+        private static Action BadCode => new(() => {throw new Exception(); });
 
         
-        private class _DATA_GoodClass
+        private class GoodClass
         {
-            public _DATA_GoodClass()
+            public GoodClass()
             { }
         }
 
-        private class _DATA_BadClass
+        private class BadClass
         {
-            public _DATA_BadClass()
+            public BadClass()
             {
                 throw new Exception();
             }
@@ -70,7 +70,7 @@ namespace GlacierKitTestShared.Tests
             Exception? exception;
 
             // Act
-            exception = Record.Exception(() => Util.AssertNullConditional(true, _DATA_NotNullValue));
+            exception = Record.Exception(() => Util.AssertNullConditional(true, NotNullValue));
 
             // Assert
             Assert.NotNull(exception);
@@ -83,7 +83,7 @@ namespace GlacierKitTestShared.Tests
             Exception? exception;
 
             // Act
-            exception = Record.Exception(() => Util.AssertNullConditional(false, _DATA_NotNullValue));
+            exception = Record.Exception(() => Util.AssertNullConditional(false, NotNullValue));
 
             // Assert
             Assert.Null(exception);
@@ -97,7 +97,7 @@ namespace GlacierKitTestShared.Tests
             bool? returnval;
 
             // Act
-            returnval = Util.DidCodeThrowException(_DATA_BadCode);
+            returnval = Util.DidCodeThrowException(BadCode);
 
             // Assert
             Assert.NotNull(returnval);
@@ -112,7 +112,7 @@ namespace GlacierKitTestShared.Tests
             bool? returnval;
 
             // Act
-            returnval = Util.DidCodeThrowException(_DATA_GoodCode);
+            returnval = Util.DidCodeThrowException(GoodCode);
 
             // Assert
             Assert.NotNull(returnval);
@@ -127,7 +127,7 @@ namespace GlacierKitTestShared.Tests
             Exception? exception;
 
             // Act
-            exception = Record.Exception(() => Util.AssertCodeThrowsException(_DATA_BadCode));
+            exception = Record.Exception(() => Util.AssertCodeThrowsException(BadCode));
 
             // Assert
             Assert.Null(exception);
@@ -140,7 +140,7 @@ namespace GlacierKitTestShared.Tests
             Exception? exception;
 
             // Act
-            exception = Record.Exception(() => Util.AssertCodeThrowsException(_DATA_GoodCode));
+            exception = Record.Exception(() => Util.AssertCodeThrowsException(GoodCode));
 
             // Assert
             Assert.NotNull(exception);
@@ -154,7 +154,7 @@ namespace GlacierKitTestShared.Tests
             Exception? exception;
 
             // Act
-            exception = Record.Exception(() => Util.AssertCodeDoesNotThrowException(_DATA_BadCode));
+            exception = Record.Exception(() => Util.AssertCodeDoesNotThrowException(BadCode));
 
             // Assert
             Assert.NotNull(exception);
@@ -167,7 +167,7 @@ namespace GlacierKitTestShared.Tests
             Exception? exception;
 
             // Act
-            exception = Record.Exception(() => Util.AssertCodeDoesNotThrowException(_DATA_GoodCode));
+            exception = Record.Exception(() => Util.AssertCodeDoesNotThrowException(GoodCode));
 
             // Assert
             Assert.Null(exception);
@@ -183,7 +183,7 @@ namespace GlacierKitTestShared.Tests
             Exception? exception;
 
             // Act
-            exception = Record.Exception(() => Util.AssertDefaultCtorDoesNotThrowException<_DATA_BadClass>());
+            exception = Record.Exception(() => Util.AssertDefaultCtorDoesNotThrowException<BadClass>());
 
             // Assert
             Assert.NotNull(exception);
@@ -196,7 +196,7 @@ namespace GlacierKitTestShared.Tests
             Exception? exception;
 
             // Act
-            exception = Record.Exception(() => Util.AssertDefaultCtorDoesNotThrowException<_DATA_GoodClass>());
+            exception = Record.Exception(() => Util.AssertDefaultCtorDoesNotThrowException<GoodClass>());
 
             // Assert
             Assert.Null(exception);
@@ -209,7 +209,7 @@ namespace GlacierKitTestShared.Tests
             Exception? exception;
 
             // Act
-            exception = Record.Exception(() => Util.AssertDefaultCtorWorks<_DATA_BadClass>());
+            exception = Record.Exception(() => Util.AssertDefaultCtorWorks<BadClass>());
 
             // Assert
             Assert.NotNull(exception);
@@ -222,7 +222,7 @@ namespace GlacierKitTestShared.Tests
             Exception? exception;
 
             // Act
-            exception = Record.Exception(() => Util.AssertDefaultCtorWorks<_DATA_GoodClass>());
+            exception = Record.Exception(() => Util.AssertDefaultCtorWorks<GoodClass>());
 
             // Assert
             Assert.Null(exception);

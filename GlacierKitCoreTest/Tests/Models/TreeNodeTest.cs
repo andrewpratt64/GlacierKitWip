@@ -100,9 +100,9 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 
-		public static readonly TreeTheoryData<object> _DATA_TreeTheoryData = new();
-		public static readonly DeleteTheoryData _DATA_DeleteTheoryData = new();
-		public static readonly Value_test_TheoryData _DATA_Value_test_TheoryData = new();
+		public static readonly TreeTheoryData<object> TreeTheoryData = new();
+		public static readonly DeleteTheoryData DeleteTheoryDataValue = new();
+		public static readonly Value_test_TheoryData Value_test_TheoryDataValue = new();
 
 		#endregion
 
@@ -131,15 +131,15 @@ namespace GlacierKitCoreTest.Tests.Models
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters
 
 		[Theory]
-		[MemberData(nameof(_DATA_DeleteTheoryData))]
-		public static void _DATA_DeleteTheoryData_Provides_unique_instances_on_each_invoke(Func<Tree<object>> treeSource, bool _)
+		[MemberData(nameof(DeleteTheoryDataValue))]
+		public static void DeleteTheoryData_Provides_unique_instances_on_each_invoke(Func<Tree<object>> treeSource, bool _)
 		{
 			TheoryData_provides_unique_instances_on_each_invoke(treeSource);
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_Value_test_TheoryData))]
-		public static void _DATA_Value_test_TheoryData_Provides_unique_instances_on_each_invoke(Func<Tree<object?>> treeSource, object? _)
+		[MemberData(nameof(Value_test_TheoryDataValue))]
+		public static void Value_test_TheoryData_Provides_unique_instances_on_each_invoke(Func<Tree<object?>> treeSource, object? _)
 		{
 			TheoryData_provides_unique_instances_on_each_invoke(treeSource);
 		}
@@ -153,7 +153,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region ConnectToChildNodes
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Calling_ConnectToChildNodes_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -171,7 +171,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void ConnectToChildNodes_doesnt_return_null(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -187,7 +187,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void ConnectToChildNodes_return_value_contains_pre_existing_nodes(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -218,7 +218,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void ConnectToChildNodes_return_value_reflects_future_added_nodes(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -253,7 +253,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void ConnectToChildNodes_return_value_reflects_future_removed_nodes(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -298,7 +298,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region IsChildOf
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Calling_IsChildOf_with_direct_parent_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -319,7 +319,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Calling_IsChildOf_with_direct_parent_returns_true(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -338,7 +338,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Calling_IsChildOf_with_indirect_parent_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -360,7 +360,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Calling_IsChildOf_with_indirect_parent_returns_true(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -380,7 +380,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Calling_IsChildOf_with_child_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -401,7 +401,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Calling_IsChildOf_with_child_returns_false(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -456,7 +456,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Calling_IsChildOf_with_non_root_sibling_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -477,7 +477,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Calling_IsChildOf_with_non_root_sibling_returns_false(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -496,7 +496,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Calling_IsChildOf_with_itself_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -517,7 +517,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Calling_IsChildOf_with_itself_returns_false(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -541,7 +541,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region ContainingTree
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void ContainingTree_matches_tree_it_was_created_from(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -564,7 +564,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Value
 
 		[Theory]
-		[MemberData(nameof(_DATA_Value_test_TheoryData))]
+		[MemberData(nameof(Value_test_TheoryDataValue))]
 		public static void Value_matches_given_parameter(Func<Tree<object?>> treeSource, object? valueToUse)
 		{
 			// Arrange
@@ -583,7 +583,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Changes_to_Value_may_be_reacted_to(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -632,7 +632,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Parent
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Parent_is_initially_null_for_root_nodes(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -650,7 +650,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Parent_is_initially_not_null_for_non_root_nodes(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -669,7 +669,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Parent_is_null_after_becoming_a_root_node(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -713,7 +713,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Changes_to_Parent_may_be_reacted_to(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -773,7 +773,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region DesiredParent
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void DesiredParent_is_initally_empty(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -791,7 +791,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void DesiredParent_is_empty_after_executing_Reparent(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -817,7 +817,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Changes_to_DesiredParent_may_be_reacted_to(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -866,7 +866,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region AddChild
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void AddChild_CanExecute_is_true_for_root_node(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -888,7 +888,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void AddChild_CanExecute_is_true_for_non_root_node(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -911,7 +911,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_AddChild_on_root_node_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -929,7 +929,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_AddChild_on_non_root_node_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -948,7 +948,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_AddChild_on_root_node_returns_non_null_value(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -966,7 +966,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_AddChild_on_non_root_node_returns_non_null_value(Func<Tree<object>> treeSource)
 		{
 			// NOTE: This technically requires AddChild to be working to be able to test but it's probably not a big deal
@@ -992,7 +992,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Delete
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Delete_CanExecute_is_true_for_root_node(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1014,7 +1014,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Delete_CanExecute_is_true_for_non_root_node(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1037,7 +1037,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_DeleteTheoryData))]
+		[MemberData(nameof(DeleteTheoryDataValue))]
 		public static void Executing_Delete_on_root_node_doesnt_throw(Func<Tree<object>> treeSource, bool shouldDeleteRecursively)
 		{
 			// Arrange
@@ -1055,7 +1055,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_DeleteTheoryData))]
+		[MemberData(nameof(DeleteTheoryDataValue))]
 		public static void Executing_Delete_on_non_root_node_doesnt_throw(Func<Tree<object>> treeSource, bool shouldDeleteRecursively)
 		{
 			// Arrange
@@ -1074,7 +1074,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Delete_with_false_moves_direct_children_up_one_level(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1100,7 +1100,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Delete_with_false_moves_indirect_children_up_one_level(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1141,7 +1141,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Delete_with_true_deletes_all_direct_children(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1176,7 +1176,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Delete_with_true_deletes_all_indirect_children(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1231,7 +1231,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Reparent_from_root_to_child_->_direct_child
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_false_for_root_node_whos_DesiredParent_is_a_direct_child(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1258,7 +1258,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_root_node_whos_DesiredParent_is_a_direct_child_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1284,7 +1284,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		// NOTE: "Grandchild" refers to an indirect child, i.e. a direct child of a direct child
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_false_for_root_node_whos_DesiredParent_is_a_grandchild(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1312,7 +1312,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_root_node_whos_DesiredParent_is_a_grandchild_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1340,7 +1340,7 @@ namespace GlacierKitCoreTest.Tests.Models
 
 		#region Reparent_from_root_to_non_child_->_empty
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_false_for_root_node_whos_DesiredParent_is_empty(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1365,7 +1365,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_root_node_whos_DesiredParent_is_empty_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1387,7 +1387,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Reparent_from_root_to_child_->_itself
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_false_for_root_node_whos_DesiredParent_is_itself(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1414,7 +1414,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_root_node_whos_DesiredParent_is_itself_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1500,7 +1500,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Reparent_from_non_root_to_parent_->_root_direct_parent
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_false_for_non_root_node_whos_DesiredParent_is_a_root_direct_parent(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1527,7 +1527,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_non_root_node_whos_DesiredParent_is_a_root_direct_parent_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1552,7 +1552,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Reparent_from_non_root_to_parent_->_non_root_direct_parent
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_false_for_non_root_node_whos_DesiredParent_is_a_non_root_direct_parent(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1580,7 +1580,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_non_root_node_whos_DesiredParent_is_a_non_root_direct_parent_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1611,7 +1611,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Reparent_from_non_root_to_parent_->_root_grandparent
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_true_for_non_root_node_whos_DesiredParent_is_a_root_grandparent(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1639,7 +1639,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_non_root_node_whos_DesiredParent_is_a_root_grandparent_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1665,7 +1665,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Reparent_from_non_root_to_parent_->_non_root_grandparent
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_true_for_non_root_node_whos_DesiredParent_is_a_non_root_grandparent(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1694,7 +1694,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_non_root_node_whos_DesiredParent_is_a_non_root_grandparent_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1778,7 +1778,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Reparent_from_non_root_to_parent_->_non_root_uncle
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_true_for_non_root_node_whos_DesiredParent_is_a_non_root_uncle(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1807,7 +1807,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_non_root_node_whos_DesiredParent_is_a_non_root_uncle_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1841,7 +1841,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Reparent_from_non_root_to_child_->_direct_child
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_false_for_non_root_node_whos_DesiredParent_is_a_direct_child(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1869,7 +1869,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_non_root_node_whos_DesiredParent_is_a_direct_child_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1896,7 +1896,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		// NOTE: "Grandchild" refers to an indirect child, i.e. a direct child of a direct child
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_false_for_non_root_node_whos_DesiredParent_is_a_grandchild(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1925,7 +1925,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_non_root_node_whos_DesiredParent_is_a_grandchild_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1953,7 +1953,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		// NOTE: "Nephew" refers to a direct child of a sibling
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_true_for_non_root_node_whos_DesiredParent_is_a_nephew(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -1982,7 +1982,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_non_root_node_whos_DesiredParent_is_a_nephew_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2014,7 +2014,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Reparent_from_non_root_to_misc_->_empty
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_false_for_non_root_node_whos_DesiredParent_is_empty(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2040,7 +2040,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_non_root_node_whos_DesiredParent_is_empty_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2063,7 +2063,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Reparent_from_non_root_to_misc_->_itself
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_false_for_non_root_node_whos_DesiredParent_is_itself(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2091,7 +2091,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_non_root_node_whos_DesiredParent_is_itself_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2117,7 +2117,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region Reparent_from_non_root_to_misc_->_a_sibling
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_true_for_non_root_node_whos_DesiredParent_is_a_sibling(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2145,7 +2145,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_non_root_node_whos_DesiredParent_is_a_sibling_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2172,7 +2172,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		// NOTE: "Cousin" refers to a direct child of a sibling of a direct parent
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Both_CanReparent_and_Reparent_CanExecute_are_true_for_non_root_node_whos_DesiredParent_is_a_cousin(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2202,7 +2202,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void Executing_Reparent_on_non_root_node_whos_DesiredParent_is_a_cousin_doesnt_throw(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2238,7 +2238,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region IsRootNode
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void IsRootNode_is_true_for_a_node_created_as_a_root_node(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2254,7 +2254,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void IsRootNode_is_false_for_a_node_created_as_a_non_root_node(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2271,7 +2271,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void IsRootNode_is_true_for_a_node_after_becoming_a_root_node(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2324,7 +2324,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		#region PathToRoot
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void PathToRoot_has_expected_value_for_root_node(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2345,7 +2345,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void PathToRoot_has_expected_value_for_direct_child_of_root_node(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2367,7 +2367,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void PathToRoot_has_expected_value_for_indirect_child_of_root_node(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2393,7 +2393,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void PathToRoot_has_expected_value_for_indirect_child_of_root_node_when_unrelated_nodes_exist(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2426,7 +2426,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void PathToRoot_is_unchanged_after_reparenting_when_ShouldRecursivelyNotifyNodesOfReparenting_is_false(Func<Tree<object>> treeSource)
 		{
 			// Arrange
@@ -2442,7 +2442,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_TreeTheoryData))]
+		[MemberData(nameof(TreeTheoryData))]
 		public static void PathToRoot_changes_after_reparenting_when_ShouldRecursivelyNotifyNodesOfReparenting_is_true(Func<Tree<object>> treeSource)
 		{
 			// Arrange

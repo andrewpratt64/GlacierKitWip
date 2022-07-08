@@ -17,14 +17,14 @@ namespace GlacierKitTest.Tests
 	public class ViewLocatorTest
 	{
 #pragma warning disable IDE1006 // Naming Styles
-		private class _DATA_BadViewModel : ReactiveObject
+		private class BadViewModel : ReactiveObject
 		{
 			public static string Words = "I\'m not a valid Glacier Kit ViewModel";
 		}
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
-		private static object _DATA_BadData => new _DATA_BadViewModel();
-		private static object _DATA_GoodData => new MainWindowViewModel();
+		private static object BadData => new BadViewModel();
+		private static object GoodData => new MainWindowViewModel();
 
 		private static bool IsExpectedReturnValueFromBuild(object returnedData, bool wasGoodInput)
 		{
@@ -48,7 +48,7 @@ namespace GlacierKitTest.Tests
 		{
 			// Arrange
 			GlacierKit.ViewLocator viewLocator = new();
-			object data = _DATA_BadData;
+			object data = BadData;
 			object actual;
 
 			// Act
@@ -65,7 +65,7 @@ namespace GlacierKitTest.Tests
 		{
 			// Arrange
 			GlacierKit.ViewLocator viewLocator = new();
-			object data = _DATA_GoodData;
+			object data = GoodData;
 			object actual;
 
 			// Act
@@ -81,7 +81,7 @@ namespace GlacierKitTest.Tests
 		{
 			// Arrange
 			GlacierKit.ViewLocator viewLocator = new();
-			object data = _DATA_BadData;
+			object data = BadData;
 			bool returnVal;
 
 			// Act
@@ -97,7 +97,7 @@ namespace GlacierKitTest.Tests
 		{
 			// Arrange
 			GlacierKit.ViewLocator viewLocator = new();
-			object data = _DATA_GoodData;
+			object data = GoodData;
 			bool returnVal;
 
 			// Act

@@ -18,8 +18,8 @@ namespace GlacierKitTest.Tests.ViewModels
     public class MainViewModelTest
     {
         
-        private static readonly Type? _DATA_ValidValueForNewDocumentType = typeof(FooViewModel);
-        private static readonly Type? _DATA_AbstractValueForNewDocumentType = typeof(BarViewModel);
+        private static readonly Type? ValidValueForNewDocumentType = typeof(FooViewModel);
+        private static readonly Type? AbstractValueForNewDocumentType = typeof(BarViewModel);
 
 
         #region Constructor
@@ -98,7 +98,7 @@ namespace GlacierKitTest.Tests.ViewModels
         {
             // Arrange
             MainViewModel vm;
-            Type? newDocumentType = _DATA_ValidValueForNewDocumentType;
+            Type? newDocumentType = ValidValueForNewDocumentType;
 
             // Act
             vm = new();
@@ -112,7 +112,7 @@ namespace GlacierKitTest.Tests.ViewModels
         {
             // Arrange
             MainViewModel vm;
-            Type? newDocumentType = _DATA_ValidValueForNewDocumentType;
+            Type? newDocumentType = ValidValueForNewDocumentType;
             Type? expectedValueAfterSet = newDocumentType;
             Type? actualValueAfterSet;
 
@@ -130,7 +130,7 @@ namespace GlacierKitTest.Tests.ViewModels
         {
             // Arrange
             MainViewModel vm;
-            Type? newDocumentType = _DATA_AbstractValueForNewDocumentType;
+            Type? newDocumentType = AbstractValueForNewDocumentType;
 
             // Act
             vm = new();
@@ -178,8 +178,8 @@ namespace GlacierKitTest.Tests.ViewModels
         {
             // Arrange
             MainViewModel vm;
-            Type? initialDocumentType = _DATA_ValidValueForNewDocumentType;
-            Type? newDocumentType = _DATA_AbstractValueForNewDocumentType;
+            Type? initialDocumentType = ValidValueForNewDocumentType;
+            Type? newDocumentType = AbstractValueForNewDocumentType;
             bool actualValue;
 
             // Act
@@ -197,7 +197,7 @@ namespace GlacierKitTest.Tests.ViewModels
         {
             // Arrange
             MainViewModel vm;
-            Type? initialDocumentType = _DATA_ValidValueForNewDocumentType;
+            Type? initialDocumentType = ValidValueForNewDocumentType;
             Type? newDocumentType = null;
             bool actualValue;
 
@@ -216,7 +216,7 @@ namespace GlacierKitTest.Tests.ViewModels
         {
             // Arrange
             MainViewModel vm;
-            Type? newDocumentType = _DATA_ValidValueForNewDocumentType;
+            Type? newDocumentType = ValidValueForNewDocumentType;
             bool actualValue;
 
             // Act
@@ -310,7 +310,7 @@ namespace GlacierKitTest.Tests.ViewModels
         {
             // Arrange
             MainViewModel vm;
-            Type? initialDocumentType = _DATA_ValidValueForNewDocumentType;
+            Type? initialDocumentType = ValidValueForNewDocumentType;
             Type? newDocumentType = null;
 
             // Act
@@ -326,7 +326,7 @@ namespace GlacierKitTest.Tests.ViewModels
         {
             // Arrange
             MainViewModel vm;
-            Type? initialDocumentType = _DATA_ValidValueForNewDocumentType;
+            Type? initialDocumentType = ValidValueForNewDocumentType;
             Type? newDocumentType = null;
             int? countBefore;
             int? countAfter;
@@ -347,8 +347,8 @@ namespace GlacierKitTest.Tests.ViewModels
         {
             // Arrange
             MainViewModel vm;
-            Type? initialDocumentType = _DATA_ValidValueForNewDocumentType;
-            Type? newDocumentType = _DATA_AbstractValueForNewDocumentType;
+            Type? initialDocumentType = ValidValueForNewDocumentType;
+            Type? newDocumentType = AbstractValueForNewDocumentType;
 
             // Act
             vm = new();
@@ -363,8 +363,8 @@ namespace GlacierKitTest.Tests.ViewModels
         {
             // Arrange
             MainViewModel vm;
-            Type? initialDocumentType = _DATA_ValidValueForNewDocumentType;
-            Type? newDocumentType = _DATA_AbstractValueForNewDocumentType;
+            Type? initialDocumentType = ValidValueForNewDocumentType;
+            Type? newDocumentType = AbstractValueForNewDocumentType;
             int? countBefore;
             int? countAfter;
 
@@ -384,7 +384,7 @@ namespace GlacierKitTest.Tests.ViewModels
         {
             // Arrange
             MainViewModel vm;
-            Type? newDocumentType = _DATA_ValidValueForNewDocumentType;
+            Type? newDocumentType = ValidValueForNewDocumentType;
 
             // Act
             vm = new();
@@ -402,7 +402,7 @@ namespace GlacierKitTest.Tests.ViewModels
             EditorContext initialCtx;
             IFactory initialFactory;
             IDockable initialDockable;
-            Type? newDocumentType = _DATA_ValidValueForNewDocumentType;
+            Type? newDocumentType = ValidValueForNewDocumentType;
             int? countBefore;
             int? countAfter;
             int expectedDifference = 1;

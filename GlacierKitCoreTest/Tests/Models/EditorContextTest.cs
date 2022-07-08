@@ -25,10 +25,10 @@ namespace GlacierKitCoreTest.Tests.Models
 	{
 		#region Theory_data
 
-		private static readonly Type? _DATA_ValidInputForCreateEditorWindow = typeof(FooViewModel);
-		private static readonly Type? _DATA_InvalidInputForCreateEditorWindow = typeof(BarViewModel);
-		private static readonly string _DATA_ValidIdForGetCommand = "PlaceholderModule_PrintHi";
-		private static readonly string _DATA_InvalidIdForGetCommand = "IDontExist";
+		private static readonly Type? ValidInputForCreateEditorWindow = typeof(FooViewModel);
+		private static readonly Type? InvalidInputForCreateEditorWindow = typeof(BarViewModel);
+		private static readonly string ValidIdForGetCommand = "PlaceholderModule_PrintHi";
+		private static readonly string InvalidIdForGetCommand = "IDontExist";
 
 		private class ContextualItem : IContextualItem
 		{
@@ -200,7 +200,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
-			Type? input = _DATA_InvalidInputForCreateEditorWindow;
+			Type? input = InvalidInputForCreateEditorWindow;
 
 			// Act
 			ctx = new();
@@ -221,7 +221,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
-			Type? input = _DATA_InvalidInputForCreateEditorWindow;
+			Type? input = InvalidInputForCreateEditorWindow;
 			Type? expectedValue = null;
 			Type? actualValue;
 			IObservable<Type?> commandObservable;
@@ -290,7 +290,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
-			Type? input = _DATA_ValidInputForCreateEditorWindow;
+			Type? input = ValidInputForCreateEditorWindow;
 
 			// Act
 			ctx = new();
@@ -311,7 +311,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
-			Type? input = _DATA_ValidInputForCreateEditorWindow;
+			Type? input = ValidInputForCreateEditorWindow;
 			Type? expectedValue = input;
 			Type? actualValue;
 			IObservable<Type?> commandObservable;
@@ -937,7 +937,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
-			string commandId = _DATA_ValidIdForGetCommand;
+			string commandId = ValidIdForGetCommand;
 			GKCommand<Unit, Unit>? returnValue;
 
 			// Act
@@ -954,7 +954,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
-			string commandId = _DATA_InvalidIdForGetCommand;
+			string commandId = InvalidIdForGetCommand;
 			GKCommand<Unit, Unit>? returnValue;
 
 			// Act
@@ -971,7 +971,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
-			string commandId = _DATA_ValidIdForGetCommand;
+			string commandId = ValidIdForGetCommand;
 			GKCommand<Unit, Unit>? returnValue;
 
 			// Act
@@ -989,7 +989,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
-			string commandId = _DATA_InvalidIdForGetCommand;
+			string commandId = InvalidIdForGetCommand;
 			GKCommand<Unit, Unit>? returnValue;
 
 			// Act
@@ -1007,7 +1007,7 @@ namespace GlacierKitCoreTest.Tests.Models
 		{
 			// Arrange
 			EditorContext? ctx;
-			string commandId = _DATA_ValidIdForGetCommand;
+			string commandId = ValidIdForGetCommand;
 			GKCommand<Unit, Unit>? returnValue;
 
 			// Act

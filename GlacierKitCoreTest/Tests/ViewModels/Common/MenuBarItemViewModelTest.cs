@@ -23,7 +23,7 @@ namespace GlacierKitCoreTest.Tests.ViewModels.Common
 	{
 		#region Theory_data
 
-		private static readonly string[] _DATA_ctorValues = new[]
+		private static readonly string[] ctorValues = new[]
 		{
 			"",
 			"lowercase",
@@ -33,19 +33,19 @@ namespace GlacierKitCoreTest.Tests.ViewModels.Common
 			 "I have spaces... and symbols!!! >:)"
 		};
 
-		public static readonly IEnumerable<object[]> _DATA_ctorIdParamValues = new Func<IEnumerable<object[]>>(() =>
+		public static readonly IEnumerable<object[]> ctorIdParamValues = new Func<IEnumerable<object[]>>(() =>
 		{
 			List<object[]> data = new();
-			for (int i = 0; i < _DATA_ctorValues.Length; i++)
-				data.Add(new object[] { _DATA_ctorValues[i] });
+			for (int i = 0; i < ctorValues.Length; i++)
+				data.Add(new object[] { ctorValues[i] });
 			return data;
 		})();
 		
-		public static readonly IEnumerable<object[]> _DATA_ctorIdAndTitleParamValues = new Func<IEnumerable<object[]>>(() =>
+		public static readonly IEnumerable<object[]> ctorIdAndTitleParamValues = new Func<IEnumerable<object[]>>(() =>
 		{
 			List<object[]> data = new();
-			for (int i = 0; i < _DATA_ctorValues.Length; i++)
-				data.Add(new object[] { _DATA_ctorValues[i], _DATA_ctorValues[^(i + 1)] });
+			for (int i = 0; i < ctorValues.Length; i++)
+				data.Add(new object[] { ctorValues[i], ctorValues[^(i + 1)] });
 			return data;
 		})();
 
@@ -55,7 +55,7 @@ namespace GlacierKitCoreTest.Tests.ViewModels.Common
 		#region Constructor
 
 		[Theory]
-		[MemberData(nameof(_DATA_ctorIdParamValues))]
+		[MemberData(nameof(ctorIdParamValues))]
 		[Trait("TestingMember", "Constructor")]
 		public static void MenuBarViewModel_ctor_with_id_doesnt_throw(string id)
 		{
@@ -65,7 +65,7 @@ namespace GlacierKitCoreTest.Tests.ViewModels.Common
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_ctorIdAndTitleParamValues))]
+		[MemberData(nameof(ctorIdAndTitleParamValues))]
 		[Trait("TestingMember", "Constructor")]
 		public static void MenuBarViewModel_ctor_with_id_and_title_doesnt_throw(string id, string title)
 		{
@@ -75,7 +75,7 @@ namespace GlacierKitCoreTest.Tests.ViewModels.Common
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_ctorIdAndTitleParamValues))]
+		[MemberData(nameof(ctorIdAndTitleParamValues))]
 		[Trait("TestingMember", "Constructor")]
 		public static void MenuBarViewModel_ctor_with_id_title_and_null_command_doesnt_throw(string id, string title)
 		{
@@ -85,7 +85,7 @@ namespace GlacierKitCoreTest.Tests.ViewModels.Common
 		}
 
 		[Theory]
-		[MemberData(nameof(_DATA_ctorIdAndTitleParamValues))]
+		[MemberData(nameof(ctorIdAndTitleParamValues))]
 		[Trait("TestingMember", "Constructor")]
 		public static void MenuBarViewModel_ctor_with_id_title_and_not_null_command_doesnt_throw(string id, string title)
 		{

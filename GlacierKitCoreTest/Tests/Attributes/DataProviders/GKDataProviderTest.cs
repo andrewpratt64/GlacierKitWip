@@ -20,8 +20,8 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 		public static class AGKCommandProvider
 		{ }
 
-		private static readonly Type _DATA_InvalidTypeForIsTypeAGKCommandProvider = typeof(NotAGKCommandProvider);
-		private static readonly Type _DATA_ValidTypeForIsTypeAGKCommandProvider = typeof(AGKCommandProvider);
+		private static readonly Type InvalidTypeForIsTypeAGKCommandProvider = typeof(NotAGKCommandProvider);
+		private static readonly Type ValidTypeForIsTypeAGKCommandProvider = typeof(AGKCommandProvider);
 
 		#endregion
 
@@ -32,7 +32,7 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 		public static void IsTypeAGKDataProvider_with_invalid_type_returns_false()
 		{
 			// Arrange
-			Type type = _DATA_InvalidTypeForIsTypeAGKCommandProvider;
+			Type type = InvalidTypeForIsTypeAGKCommandProvider;
 
 			// Assert
 			Assert.False(GKDataProviderAttribute.IsTypeAGKDataProvider(type));
@@ -42,7 +42,7 @@ namespace GlacierKitCoreTest.Tests.Attributes.DataProviders
 		public static void IsTypeAGKDataProvider_with_valid_type_returns_true()
 		{
 			// Arrange
-			Type type = _DATA_ValidTypeForIsTypeAGKCommandProvider;
+			Type type = ValidTypeForIsTypeAGKCommandProvider;
 
 			// Assert
 			Assert.True(GKDataProviderAttribute.IsTypeAGKDataProvider(type));
