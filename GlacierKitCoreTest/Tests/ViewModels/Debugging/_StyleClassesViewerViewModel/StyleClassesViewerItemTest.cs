@@ -117,30 +117,17 @@ namespace GlacierKitCoreTest.Tests.ViewModels.Debugging
 		{
 			// Arrange
 			StyleClassesViewerItem instance;
-			bool? reactor = null;
-			IDisposable disposable;
 
 			// Act
 			instance = paramsInfo.Constructor();
-			disposable = instance
-				.WhenAnyValue(x => x.IsActive)
-				.Subscribe(x => reactor = x);
 
 			// Act/Assert
-			instance.IsActive = true;
-			Assert.NotNull(reactor);
-			Assert.True(reactor);
-
-			instance.IsActive = false;
-			Assert.NotNull(reactor);
-			Assert.False(reactor);
-
-			instance.IsActive = true;
-			Assert.NotNull(reactor);
-			Assert.True(reactor);
-
-			// Cleanup
-			disposable.Dispose();
+			Util.AssertPropertyIsReactive(
+				source: instance,
+				propertyAccessExpression: x => x.IsActive,
+				propertySetter: (source, value) => source.IsActive = value,
+				valuesToChangeTo: GeneralUseData.SetOfBools
+			);
 		}
 
 		#endregion

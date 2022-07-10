@@ -1,4 +1,5 @@
-﻿using GlacierKitCore.Commands;
+﻿using Avalonia.Media;
+using GlacierKitCore.Commands;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -39,15 +40,6 @@ namespace GlacierKitTestShared
 			+ "Nam nec ornare sem, aliquet condimentum est."
 			+ "Sed maximus nisi vitae neque maximus, nec accumsan velit blandit.";
 
-		public static IEnumerable<string> SeveralStrings => new string[]
-		{
-			string.Empty,
-			OneCharString,
-			TinyString,
-			SmallString,
-			LongString
-		};
-
 
 		public static int SmallInt => 5;
 		public static int LargeInt => 123456789;
@@ -63,5 +55,47 @@ namespace GlacierKitTestShared
 			displayName: "Stub Command for Testing",
 			command: ReactiveCommand.Create<Unit, Unit>(_ => Unit.Default)
 		);
+
+
+
+		public static IEnumerable<string> SetOfStrings => new string[]
+		{
+			string.Empty,
+			OneCharString,
+			TinyString,
+			SmallString,
+			LongString
+		};
+		
+		public static IEnumerable<bool> SetOfBools => new bool[]
+		{
+			true,
+			false,
+			true,
+			false,
+			true,
+			true,
+			false,
+			false
+		};
+
+		public static IEnumerable<int> SetOfInts => new int[]
+		{
+			SmallInt,
+			LargeInt,
+			SmallPositiveInt,
+			LargePositiveInt,
+			SmallNegativeInt,
+			LargeNegativeInt
+		};
+
+		public static IEnumerable<IBrush> SetOfIBrushes => new IBrush[]
+		{
+			Brushes.White,
+			Brushes.Red,
+			Brushes.Green,
+			Brushes.Blue,
+			Brushes.Transparent
+		};
 	}
 }

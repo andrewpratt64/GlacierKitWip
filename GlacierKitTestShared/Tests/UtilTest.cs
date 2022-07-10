@@ -362,7 +362,7 @@ namespace GlacierKitTestShared.Tests
 		{
 			// Arrange
 			ReactiveClass source = new();
-			IEnumerable<string> valuesToChangeTo = GeneralUseData.SeveralStrings;
+			IEnumerable<string> valuesToChangeTo = GeneralUseData.SetOfStrings;
 			Exception? exception;
 
 			// Act
@@ -384,7 +384,7 @@ namespace GlacierKitTestShared.Tests
 		{
 			// Arrange
 			ReactiveClass source = new();
-			IEnumerable<string> valuesToChangeTo = GeneralUseData.SeveralStrings;
+			IEnumerable<string> valuesToChangeTo = GeneralUseData.SetOfStrings;
 			Exception? exception;
 
 			// Act
@@ -406,7 +406,7 @@ namespace GlacierKitTestShared.Tests
 		{
 			// Arrange
 			ReactiveClass source = new();
-			IEnumerable<string> valuesToChangeTo = GeneralUseData.SeveralStrings;
+			IEnumerable<string> valuesToChangeTo = GeneralUseData.SetOfStrings;
 			Exception? exception;
 
 			// Act

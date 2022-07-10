@@ -8,6 +8,7 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Linq;
@@ -125,11 +126,10 @@ namespace GlacierKitCore.ViewModels.Debugging
 		public StyleClassesViewerViewModel(IEnumerable<string> classNames)
 		{
 			_classItems = new(item => item.ClassName);
-			IsPreviewControlBackgroundInverted = false;
 
 #pragma warning disable IDE0008 // Use explicit type
 			var classItemChangeSet = _classItems.Connect()
-				//.AutoRefresh(item => item.IsActive)
+				.AutoRefresh(item => item.IsActive)
 				.Publish();
 #pragma warning restore IDE0008 // Use explicit type
 
@@ -181,8 +181,12 @@ namespace GlacierKitCore.ViewModels.Debugging
 			foreach (string className in classNames)
 				_classItems.AddOrUpdate(new StyleClassesViewerItem(className));
 
-			this.WhenAnyValue(x => x.IsPreviewControlBackgroundInverted)
-				.Select(isInverted => isInverted ? PreviewControlInvertedBackground : PreviewControlNormalBackground)
+			this.WhenAnyValue(
+					x => x.IsPreviewControlBackgroundInverted,
+					x => x.PreviewControlNormalBackground,
+					x => x.PreviewControlInvertedBackground,
+					(isInverted, normalBackground, invertedBackground) => isInverted ? PreviewControlInvertedBackground : PreviewControlNormalBackground
+				)
 				.ToPropertyEx(this, x => x.PreviewControlCurrentBackground);
 		}
 
